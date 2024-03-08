@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.model;
 
-import kg.attractor.jobsearch.enums.AccountType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,5 +14,5 @@ public class User {
     private String password;
     private String phoneNumber;
     private String avatar;
-    private AccountType accountType;
+    private String accountType;
 }

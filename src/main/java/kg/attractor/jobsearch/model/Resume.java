@@ -11,7 +11,7 @@ public class Resume {
     private Integer id;
     private Integer applicantId;
     private String name;
-    private Integer category_id;
+    private Integer categoryId;
     private Double salary;
     private Boolean isActive;
     private LocalDate createdDate;
