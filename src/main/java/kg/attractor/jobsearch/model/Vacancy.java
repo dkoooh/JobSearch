@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.model;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -17,6 +17,6 @@ public class Vacancy {
     private Integer expTo;
     private Boolean isActive;
     private Integer authorId;
-    private LocalDate createdTime;
-    private LocalDate updateTime;
+    private LocalDateTime createdTime;
+    private LocalDateTime updateTime;
 }
