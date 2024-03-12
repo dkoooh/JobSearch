@@ -133,8 +133,8 @@ create table work_experience_info
 );
 
 insert into users (name, surname, age, email, password, phone_number, account_type)
-values ('John', 'Doe', 30, 'jonhdoe@gmail.com', '123', '+996 (700) 700-700', 'applicant'),
-       ('Bill', 'Milner', 45, 'bill.milner@gmail.com', '321', '+996 (505) 500-500', 'employer');
+values ('John', 'Doe', 30, 'jonhdoe@gmail.com', '123', '0700707700', 'applicant'),
+       ('Bill', 'Milner', 45, 'bill.milner@gmail.com', '321', '0505500500', 'employer');
 
 insert into categories (name)
 values ('Web');
@@ -246,3 +246,4 @@ values (
         'Junior Java dev',
         'some responsibilities'
         );
+
