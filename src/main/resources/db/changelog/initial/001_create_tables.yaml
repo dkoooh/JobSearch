@@ -1,0 +1,369 @@
+databaseChangeLog:
+  - changeSet:
+      id: create table for users
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: text
+              - column:
+                  name: age
+                  type: int
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    nullable: false
+#                    unique: true
+              - column:
+                  name: password
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(55)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: avatar
+                  type: text
+              - column:
+                  name: account_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+#        - addUniqueConstraint:
+#            tableName: users
+#            columnNames: email
+  - changeSet:
+      id: create table for categories
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_parent_id
+                    references: categories(id)
+  - changeSet:
+      id: create table for contact types
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: contact_types
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: type
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create table for resumes
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: resumes
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: applicant_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_applicant_id
+                    unique: false
+                    references: users(id)
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_category_id_resumes
+                    references: categories(id)
+              - column:
+                  name: salary
+                  type: real
+              - column:
+                  name: is_active
+                  type: boolean
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: update_time
+                  type: timestamp
+  - changeSet:
+      id: create table for contacts info
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: contacts_info
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: type_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_type_id
+                    references: contact_types(id)
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_resume_id_contacts_info
+                    references: resumes (id)
+              - column:
+                  name: contact_value
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create table for education info
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: education_info
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_resume_id_edu_info
+                    references: resumes(id)
+              - column:
+                  name: institution
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: program
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: degree
+                  type: text
+  - changeSet:
+      id: create table for vacancies
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: vacancies
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_category_id_vacancies
+                    references: categories(id)
+              - column:
+                  name: salary
+                  type: real
+              - column:
+                  name: exp_from
+                  type: int
+              - column:
+                  name: exp_to
+                  type: int
+              - column:
+                  name: is_active
+                  type: boolean
+              - column:
+                  name: author_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_author_id
+                    references: users(id)
+              - column:
+                  name: created_date
+                  type: timestamp
+              - column:
+                  name: update_time
+                  type: timestamp
+  - changeSet:
+      id: create table for responded applicants
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: responded_applicants
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_resume_id_resp_applicants
+                    references: resumes(id)
+              - column:
+                  name: vacancy_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_vacancy_id
+                    references: vacancies (id)
+              - column:
+                  name: confirmation
+                  type: boolean
+  - changeSet:
+      id: create table for messages
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: responded_applicant_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_responded_applicant_id
+                    references: responded_applicants(id)
+              - column:
+                  name: content
+                  type: text
+              - column:
+                  name: timestamp
+                  type: timestamp
+  - changeSet:
+      id: create table for work experience info
+      author: dkoooh
+      changes:
+        - createTable:
+            tableName: work_experience_info
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_resume_id_work_exp_info
+                    references: resumes(id)
+              - column:
+                  name: years
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: company_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: position
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: responsibilities
+                  type: text
+                  constraints:
+                    nullable: false
+
+
+
+
