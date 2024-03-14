@@ -26,10 +26,10 @@ databaseChangeLog:
                   type: int
               - column:
                   name: email
-                  type: text
+                  type: varchar
                   constraints:
                     nullable: false
-#                    unique: true
+                    unique: true
               - column:
                   name: password
                   type: text
