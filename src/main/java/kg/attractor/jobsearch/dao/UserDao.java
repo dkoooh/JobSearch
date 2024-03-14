@@ -3,7 +3,6 @@ package kg.attractor.jobsearch.dao;
 import kg.attractor.jobsearch.service.mapper.UserMapper;
 import kg.attractor.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -19,29 +18,29 @@ public class UserDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
-    public List<User> getUsersByName(String name) {
-        String sql = """
-                select * from users
-                where name = ?;
-                """;
-
-        return template.query(sql, new UserMapper(), name);
-    }
-
     public Optional<User> getUserByEmail(String email) {
         String sql = """
-                select * from users
-                where email = ?;
+                select * from USERS
+                where EMAIL = ?;
                 """;
 
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(template.query(sql, new UserMapper(), email)));
     }
 
+    public List<User> getUsersByName(String name) {
+        String sql = """
+                select * from USERS
+                where NAME = ?;
+                """;
+
+        return template.query(sql, new UserMapper(), name);
+    }
+
     public List<User> getUsersByPhoneNumber(String phoneNumber) {
         String sql = """
-                select * from users
-                where phone_number = ?;
+                select * from USERS
+                where PHONE_NUMBER = ?;
                 """;
 
         return template.query(sql, new UserMapper(), phoneNumber);
@@ -49,11 +48,11 @@ public class UserDao {
 
     public List<User> getApplicantsByVacancy(int vacancyId) {
         String sql = """
-                select * from users where id in (
+                select * from USERS where ID in (
                     select APPLICANT_ID from RESUMES
-                    where id in (
-                        select resume_id from RESPONDED_APPLICANTS
-                        where vacancy_id = ?
+                    where ID in (
+                        select RESUME_ID from RESPONDED_APPLICANTS
+                        where VACANCY_ID = ?
                     )
                 )
                 """;
@@ -61,10 +60,21 @@ public class UserDao {
         return template.query(sql, new UserMapper(), vacancyId);
     }
 
+    public Boolean isUserExists (String email) {
+        String sql = """
+                
+                    select * from USERS
+                    where EMAIL = ?
+                
+                """;
+
+        return !template.query(sql, new UserMapper(), email).isEmpty();
+    }
+
     public void updateUser(User user) {
         String sql = """
                 update USERS
-                set name = :name, surname = :surname, age = :age, email = :email, password = :password,
+                set NAME = :name, SURNAME = :surname, AGE = :age, EMAIL = :email, PASSWORD = :password,
                  PHONE_NUMBER = :phoneNumber, AVATAR = :avatar, ACCOUNT_TYPE = :account_type
                  where id = :id
                 """;

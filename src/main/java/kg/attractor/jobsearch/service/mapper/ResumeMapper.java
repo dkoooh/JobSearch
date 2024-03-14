@@ -1,9 +1,6 @@
 package kg.attractor.jobsearch.service.mapper;
 
 import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.model.Vacancy;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -18,7 +15,8 @@ public class ResumeMapper implements RowMapper<Resume> {
                 .categoryId(rs.getInt("category_id"))
                 .salary(rs.getDouble("salary"))
                 .isActive(rs.getBoolean("is_active"))
+                .createdDate(rs.getTimestamp("created_date").toLocalDateTime())
+                .updateTime(rs.getTimestamp("update_time").toLocalDateTime())
                 .build();
-        // добавить created и update time, из-за парса выходит ошибка с null
     }
 }

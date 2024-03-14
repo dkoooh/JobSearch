@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.model;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -14,6 +14,6 @@ public class Resume {
     private Integer categoryId;
     private Double salary;
     private Boolean isActive;
-    private LocalDate createdDate;
-    private LocalDate updateTime;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateTime;
 }

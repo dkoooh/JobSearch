@@ -1,10 +1,7 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.model.Vacancy;
-import kg.attractor.jobsearch.service.mapper.ResumeMapper;
 import kg.attractor.jobsearch.service.mapper.VacancyMapper;
-import liquibase.sql.Sql;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,13 +21,33 @@ public class VacancyDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
+    public List<Vacancy> getVacancies() {
+        String sql = """
+                select * from VACANCIES;
+                """;
+        return template.query(sql, new VacancyMapper());
+    }
+
+    public Optional<Vacancy> getVacancyById(int vacancyId) {
+        String sql = """
+                select * from VACANCIES
+                where ID = ?
+                """;
+
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        template.query(sql, new VacancyMapper(), vacancyId)
+                )
+        );
+    }
+
     public List<Vacancy> getVacanciesByUser (int userId) {
         String sql = """
-                select * from vacancies
-                where id in (
-                    select vacancy_id from RESPONDED_APPLICANTS
+                select * from VACANCIES
+                where ID in (
+                    select VACANCY_ID from RESPONDED_APPLICANTS
                     where RESUME_ID in (
-                        select id from RESUMES
+                        select ID from RESUMES
                         where APPLICANT_ID = ?
                     )
                 );
@@ -39,17 +55,10 @@ public class VacancyDao {
         return template.query(sql, new VacancyMapper(), userId);
     }
 
-    public List<Vacancy> getVacancies() {
-        String sql = """
-                select * from vacancies;
-                """;
-        return template.query(sql, new VacancyMapper());
-    }
-
     public List<Vacancy> getVacanciesByCategory(int categoryId) {
         String sql = """
                 select * from vacancies
-                where category_id = ?
+                where CATEGORY_ID = ?
                 """;
         return template.query(sql, new VacancyMapper(), categoryId);
     }
@@ -109,18 +118,5 @@ public class VacancyDao {
 
         MapSqlParameterSource dateSource = new MapSqlParameterSource().addValue("vacancyId", vacancyId);
         namedTemplate.update(sql, dateSource);
-    }
-
-    public Optional<Vacancy> getVacancyById(int vacancyId) {
-        String sql = """
-                select * from VACANCIES
-                where ID = ?
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        template.query(sql, new VacancyMapper(), vacancyId)
-                )
-        );
     }
 }

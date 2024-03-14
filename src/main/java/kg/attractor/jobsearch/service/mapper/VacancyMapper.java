@@ -19,6 +19,8 @@ public class VacancyMapper implements RowMapper<Vacancy> {
                 .expTo(rs.getInt("exp_to"))
                 .isActive(rs.getBoolean("is_active"))
                 .authorId(rs.getInt("author_id"))
+                .createdDate(rs.getTimestamp("created_date").toLocalDateTime())
+                .updateTime(rs.getTimestamp("update_time").toLocalDateTime())
                 .build();
         // добавить created и update time, из-за парса выходит ошибка с null
     }

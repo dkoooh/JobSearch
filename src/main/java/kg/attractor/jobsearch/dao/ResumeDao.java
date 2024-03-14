@@ -21,6 +21,15 @@ public class ResumeDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
+    public Optional<Resume> getResumeById(int resumeId) {
+        String sql = """
+                select * from RESUMES
+                where ID = ?
+                """;
+
+        return Optional.ofNullable(DataAccessUtils.singleResult(template.query(sql, new ResumeMapper(), resumeId)));
+    }
+
     public List<Resume> getResumesByCategory(int categoryId) {
         String sql = """
                 select * from RESUMES
@@ -32,23 +41,14 @@ public class ResumeDao {
     public List<Resume> getResumesByApplicant(int applicantId) {
         String sql = """
                 select * from RESUMES
-                where applicant_ID = ?
+                where APPLICANT_ID = ?
                 """;
         return template.query(sql, new ResumeMapper(), applicantId);
     }
 
-    public Optional<Resume> getResumeById(int resumeId) {
-        String sql = """
-                select * from resumes
-                where id = ?
-                """;
-
-        return Optional.ofNullable(DataAccessUtils.singleResult(template.query(sql, new ResumeMapper(), resumeId)));
-    }
-
     public void createResume(Resume resume) {
         String sql = """
-                insert into resumes (APPLICANT_ID, NAME, CATEGORY_ID, SALARY, IS_ACTIVE, CREATED_DATE, UPDATE_TIME)
+                insert into RESUMES (APPLICANT_ID, NAME, CATEGORY_ID, SALARY, IS_ACTIVE, CREATED_DATE, UPDATE_TIME)
                 values ( :applicant_id, :name, :category_id, :salary, :is_active, :created_date, :update_time )
                 """;
 
@@ -59,6 +59,28 @@ public class ResumeDao {
                 .addValue("salary", resume.getSalary())
                 .addValue("is_active", resume.getIsActive())
                 .addValue("created_date", Timestamp.valueOf(LocalDateTime.now()))
+                .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
+
+        namedTemplate.update(sql, dataSource);
+    }
+
+    public void updateResume(Resume resume) {
+        String sql = """
+                update RESUMES
+                set NAME = :name,
+                CATEGORY_ID = :category_id,
+                SALARY = :salary,
+                IS_ACTIVE = :is_active,
+                UPDATE_TIME = :update_time
+                where ID = :id
+                """;
+
+        SqlParameterSource dataSource = new MapSqlParameterSource()
+                .addValue("id", resume.getId())
+                .addValue("name", resume.getName())
+                .addValue("category_id", resume.getCategoryId())
+                .addValue("salary", resume.getSalary())
+                .addValue("is_active", resume.getIsActive())
                 .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
 
         namedTemplate.update(sql, dataSource);
@@ -75,38 +97,16 @@ public class ResumeDao {
                 delete from CONTACTS_INFO
                 where RESUME_ID = :resumeId;
                 delete from MESSAGES
-                where RESPONDED_APPLICANT_ID = (select id from RESPONDED_APPLICANTS
+                where RESPONDED_APPLICANT_ID = (select ID from RESPONDED_APPLICANTS
                     where RESUME_ID = :resumeId);
                 delete from RESPONDED_APPLICANTS
                 where RESUME_ID = :resumeId;
                 delete from RESUMES
-                where id = :resumeId;
+                where ID = :resumeId;
                 """;
 
         MapSqlParameterSource dateSource = new MapSqlParameterSource().addValue("resumeId", resumeId);
 
         namedTemplate.update(sql, dateSource);
-    }
-
-    public void updateResume(Resume resume) {
-        String sql = """
-                update RESUMES
-                set name = :name,
-                category_id = :category_id,
-                salary = :salary,
-                IS_ACTIVE = :is_active,
-                update_time = :update_time
-                where id = :id
-                """;
-
-        SqlParameterSource dataSource = new MapSqlParameterSource()
-                .addValue("id", resume.getId())
-                .addValue("name", resume.getName())
-                .addValue("category_id", resume.getCategoryId())
-                .addValue("salary", resume.getSalary())
-                .addValue("is_active", resume.getIsActive())
-                .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
-
-        namedTemplate.update(sql, dataSource);
     }
 }
