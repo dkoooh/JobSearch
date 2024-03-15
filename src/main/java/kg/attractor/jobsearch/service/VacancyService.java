@@ -7,6 +7,8 @@ import java.util.List;
 public interface VacancyService {
     List<Vacancy> getVacancies ();
 
+    List<Vacancy> getActiveVacancies ();
+
     Vacancy getVacancyById (int vacancyId);
 
     List<Vacancy> getVacanciesByUser (int id);

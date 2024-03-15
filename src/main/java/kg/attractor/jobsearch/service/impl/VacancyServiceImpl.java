@@ -19,6 +19,10 @@ public class VacancyServiceImpl implements VacancyService {
         return vacancyDao.getVacancies();
     }
 
+    public List<Vacancy> getActiveVacancies () {
+        return vacancyDao.getActiveVacancies();
+    }
+
     @SneakyThrows
     public Vacancy getVacancyById (int vacancyId) {
         return vacancyDao.getVacancyById(vacancyId).orElseThrow(() -> new CustomException("Not found"));

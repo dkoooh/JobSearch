@@ -28,6 +28,15 @@ public class VacancyDao {
         return template.query(sql, new VacancyMapper());
     }
 
+    public List<Vacancy> getActiveVacancies () {
+        String sql = """
+                select * from VACANCIES
+                where IS_ACTIVE = true;
+                """;
+
+        return template.query(sql, new VacancyMapper());
+    }
+
     public Optional<Vacancy> getVacancyById(int vacancyId) {
         String sql = """
                 select * from VACANCIES
