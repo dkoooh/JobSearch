@@ -71,6 +71,25 @@ public class UserDao {
         return !template.query(sql, new UserMapper(), email).isEmpty();
     }
 
+    public void createUser (User user) {
+        String sql = """
+                insert into USERS (NAME, SURNAME, AGE, EMAIL, PASSWORD, PHONE_NUMBER, AVATAR, ACCOUNT_TYPE)
+                values ( :name, :surname, :age, :email, :password, :phone_number, :avatar, :account_type );
+                """;
+
+        MapSqlParameterSource dataSource = new MapSqlParameterSource()
+                .addValue("name", user.getName())
+                .addValue("surname", user.getSurname())
+                .addValue("age", user.getAge())
+                .addValue("email", user.getEmail())
+                .addValue("password", user.getPassword())
+                .addValue("phone_number", user.getPhoneNumber())
+                .addValue("avatar", user.getAvatar())
+                .addValue("account_type", user.getAccountType());
+
+        namedTemplate.update(sql, dataSource);
+    }
+
     public void updateUser(User user) {
         String sql = """
                 update USERS
@@ -88,7 +107,7 @@ public class UserDao {
                 .addValue("password", user.getPassword())
                 .addValue("phoneNumber", user.getPhoneNumber())
                 .addValue("avatar", user.getAvatar())
-                .addValue("account-type", user.getAccountType());
+                .addValue("account_type", user.getAccountType());
 
         namedTemplate.update(sql, dataSource);
     }
