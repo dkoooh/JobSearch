@@ -17,9 +17,9 @@ public interface VacancyService {
 
     List<Vacancy> getVacanciesByCategory (int id);
 
-    void createVacancy(VacancyDto vacancyDto) throws CustomException;
+    void createVacancy (VacancyDto vacancyDto) throws CustomException;
 
-    void updateVacancy (Vacancy vacancy);
+    void updateVacancy (VacancyDto vacancyDto) throws CustomException;
 
     void deleteVacancy (int vacancyId);
 }

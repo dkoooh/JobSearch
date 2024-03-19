@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +77,38 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyDao.createVacancy(vacancy);
     }
 
-    public void updateVacancy(Vacancy vacancy) {
+    public void updateVacancy(VacancyDto vacancyDto) throws CustomException {
+        if (vacancyDto.getName() == null || vacancyDto.getName().isBlank()) {
+            throw new CustomException("Name is empty");
+        } else if (vacancyDto.getCategoryId() != null &&
+                !categoryDao.getCategories().stream()
+                        .map(Category::getId)
+                        .toList()
+                        .contains(vacancyDto.getCategoryId())
+        ) {
+            throw new CustomException("Invalid category");
+        } else if (vacancyDto.getId() == null || vacancyDao.getVacancyById(vacancyDto.getId()).isEmpty()) {
+            throw new CustomException("Invalid vacancy ID");
+        } else if (userDao.getUserByEmail(vacancyDto.getAuthorEmail()).isEmpty()
+                || !Objects.equals(
+                        vacancyDao.getVacancyById(vacancyDto.getId()).get().getAuthorId(),
+                        userDao.getUserByEmail(vacancyDto.getAuthorEmail()).get().getId()
+                    )
+        ) {
+            throw new CustomException("You cannot change the vacancy of another employer");
+        }
+
+        Vacancy vacancy = Vacancy.builder()
+                .id(vacancyDto.getId())
+                .name(vacancyDto.getName())
+                .description(vacancyDto.getDescription())
+                .categoryId(vacancyDto.getCategoryId())
+                .salary(vacancyDto.getSalary())
+                .expFrom(vacancyDto.getExpFrom())
+                .expTo(vacancyDto.getExpTo())
+                .isActive(vacancyDto.getIsActive())
+                .build();
+
         vacancyDao.updateVacancy(vacancy);
     }
 
