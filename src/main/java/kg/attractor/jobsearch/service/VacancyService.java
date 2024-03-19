@@ -19,7 +19,7 @@ public interface VacancyService {
 
     void createVacancy (VacancyDto vacancyDto) throws CustomException;
 
-    void updateVacancy (VacancyDto vacancyDto) throws CustomException;
+    void updateVacancy (int vacancyId, VacancyDto vacancyDto) throws CustomException;
 
-    void deleteVacancy (int vacancyId);
+    void deleteVacancy (int vacancyId, Integer authorId) throws CustomException;
 }

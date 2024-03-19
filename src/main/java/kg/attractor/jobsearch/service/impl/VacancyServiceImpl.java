@@ -77,7 +77,7 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyDao.createVacancy(vacancy);
     }
 
-    public void updateVacancy(VacancyDto vacancyDto) throws CustomException {
+    public void updateVacancy(int vacancyId, VacancyDto vacancyDto) throws CustomException {
         if (vacancyDto.getName() == null || vacancyDto.getName().isBlank()) {
             throw new CustomException("Name is empty");
         } else if (vacancyDto.getCategoryId() != null &&
@@ -87,11 +87,11 @@ public class VacancyServiceImpl implements VacancyService {
                         .contains(vacancyDto.getCategoryId())
         ) {
             throw new CustomException("Invalid category");
-        } else if (vacancyDto.getId() == null || vacancyDao.getVacancyById(vacancyDto.getId()).isEmpty()) {
+        } else if (vacancyDao.getVacancyById(vacancyId).isEmpty()) {
             throw new CustomException("Invalid vacancy ID");
         } else if (userDao.getUserByEmail(vacancyDto.getAuthorEmail()).isEmpty()
                 || !Objects.equals(
-                        vacancyDao.getVacancyById(vacancyDto.getId()).get().getAuthorId(),
+                        vacancyDao.getVacancyById(vacancyId).get().getAuthorId(),
                         userDao.getUserByEmail(vacancyDto.getAuthorEmail()).get().getId()
                     )
         ) {
@@ -99,7 +99,7 @@ public class VacancyServiceImpl implements VacancyService {
         }
 
         Vacancy vacancy = Vacancy.builder()
-                .id(vacancyDto.getId())
+                .id(vacancyId)
                 .name(vacancyDto.getName())
                 .description(vacancyDto.getDescription())
                 .categoryId(vacancyDto.getCategoryId())
@@ -112,7 +112,12 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyDao.updateVacancy(vacancy);
     }
 
-    public void deleteVacancy(int vacancyId) {
+    public void deleteVacancy(int vacancyId, Integer authorId) throws CustomException{
+        if (vacancyDao.getVacancyById(vacancyId).isEmpty()) {
+            throw new CustomException("Invalid ID");
+        } else if (authorId == null || vacancyDao.getVacancyById(vacancyId).get().getAuthorId() != authorId) {
+            throw new CustomException("You cannot delete the vacancy of another employer");
+        }
         vacancyDao.deleteVacancy(vacancyId);
     }
 }
