@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface UserService {
 
-    User getUserByEmail(String email);
+    UserDto getUserByEmail(String email);
 
-    List<User> getUsersByName(String name);
+    List<UserDto> getUsersByName(String name);
 
-    List<User> getUsersByPhoneNumber(String phoneNumber);
+    List<UserDto> getUsersByPhoneNumber(String phoneNumber);
 
-    List<User> getApplicantsByVacancy (int vacancyId);
+    List<UserDto> getApplicantsByVacancy (int vacancyId);
 
     Boolean isUserExists (String email);
 

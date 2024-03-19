@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,20 +18,45 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
 
     @SneakyThrows
-    public User getUserByEmail(String email){
-        return userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with ID: " + email));
+    public UserDto getUserByEmail(String email){
+        User user = userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with ID: "
+                + email));
+
+        return transformToDto(user);
     }
 
-    public List<User> getUsersByName(String name){
-        return userDao.getUsersByName(name);
+    public List<UserDto> getUsersByName(String name){
+        List<User> users = userDao.getUsersByName(name);
+
+        List<UserDto> dtos = new ArrayList<>();
+        users.forEach(
+                user -> dtos.add(transformToDto(user))
+        );
+
+        return dtos;
     }
 
-    public List<User> getUsersByPhoneNumber(String phoneNumber){
-        return userDao.getUsersByPhoneNumber(phoneNumber);
+    public List<UserDto> getUsersByPhoneNumber(String phoneNumber) {
+        List<User> users = userDao.getUsersByPhoneNumber(phoneNumber);
+
+        List<UserDto> dtos = new ArrayList<>();
+        users.forEach(
+                user -> dtos.add(transformToDto(user))
+        );
+
+        return dtos;
     }
 
-    public List<User> getApplicantsByVacancy (int vacancyId) {
-        return userDao.getApplicantsByVacancy(vacancyId);
+
+    public List<UserDto> getApplicantsByVacancy (int vacancyId) {
+        List<User> applicants = userDao.getApplicantsByVacancy(vacancyId);
+
+        List<UserDto> dtos = new ArrayList<>();
+        applicants.forEach(
+                user -> dtos.add(transformToDto(user))
+        );
+
+        return dtos;
     }
 
     public Boolean isUserExists (String email) {
@@ -71,5 +97,18 @@ public class UserServiceImpl implements UserService {
 
     public void updateUser (User user) {
         userDao.updateUser(user);
+    }
+
+    private UserDto transformToDto (User user) {
+        return UserDto.builder()
+                .name(user.getName())
+                .surname(user.getSurname())
+                .password(user.getPassword())
+                .age(user.getAge())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .avatar(user.getAvatar())
+                .accountType(user.getAccountType())
+                .build();
     }
 }
