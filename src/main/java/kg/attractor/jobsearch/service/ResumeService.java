@@ -1,7 +1,9 @@
 package kg.attractor.jobsearch.service;
 
+import kg.attractor.jobsearch.dto.ResumeDto;
 import kg.attractor.jobsearch.model.Resume;
 
+import java.security.Signature;
 import java.util.List;
 
 public interface ResumeService {
@@ -11,9 +13,9 @@ public interface ResumeService {
 
     List<Resume> getResumesByApplicant (int applicantId);
 
-    void createResume (Resume resume);
+    void createResume (ResumeDto resume);
 
-    void updateResume (Resume resume);
+    void updateResume (ResumeDto resume);
 
-    void deleteResume (int resumeId);
+    void deleteResume (int resumeId, String email);
 }
