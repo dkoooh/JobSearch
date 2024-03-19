@@ -10,12 +10,14 @@ import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;

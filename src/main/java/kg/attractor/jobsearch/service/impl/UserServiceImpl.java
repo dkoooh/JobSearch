@@ -7,12 +7,14 @@ import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;

@@ -6,11 +6,13 @@ import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
