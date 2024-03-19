@@ -1,5 +1,7 @@
 package kg.attractor.jobsearch.service;
 
+import kg.attractor.jobsearch.dto.VacancyDto;
+import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.Vacancy;
 
 import java.util.List;
@@ -15,7 +17,7 @@ public interface VacancyService {
 
     List<Vacancy> getVacanciesByCategory (int id);
 
-    void createVacancies (Vacancy vacancy);
+    void createVacancy(VacancyDto vacancyDto) throws CustomException;
 
     void updateVacancy (Vacancy vacancy);
 

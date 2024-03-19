@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void createUser (UserDto userDto) throws CustomException{
-        if (userDao.getUserByEmail(userDto.getEmail()).isPresent()) {
+        if (isUserExists(userDto.getEmail())) {
             throw new CustomException("User with this email is already exists");
         } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
             throw new CustomException("Email is blank");
