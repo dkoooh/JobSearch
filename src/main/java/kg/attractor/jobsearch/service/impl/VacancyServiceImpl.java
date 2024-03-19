@@ -22,7 +22,12 @@ public class VacancyServiceImpl implements VacancyService {
     private final UserDao userDao;
     private final CategoryDao categoryDao;
 
-    public List<Vacancy> getVacancies() {
+    public List<Vacancy> getVacancies(String email) throws CustomException{
+        if (!userDao.isUserExists(email) || !"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get()
+                .getAccountType())) {
+            throw new CustomException("Access denied");
+        }
+
         return vacancyDao.getVacancies();
     }
 
@@ -39,8 +44,20 @@ public class VacancyServiceImpl implements VacancyService {
         return vacancyDao.getVacanciesByUser(id);
     }
 
-    public List<Vacancy> getVacanciesByCategory(int id) {
-        return vacancyDao.getVacanciesByCategory(id);
+    public List<Vacancy> getVacanciesByCategory(String email, Integer categoryId) throws CustomException {
+        if (categoryId == null || !categoryDao.getCategories().stream()
+                .map(Category::getId)
+                .toList()
+                .contains(categoryId)) {
+            throw new CustomException("Invalid category ID");
+        }
+
+        if (!userDao.isUserExists(email) || !"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get()
+                .getAccountType())) {
+            throw new CustomException("Access denied");
+        }
+
+        return vacancyDao.getVacanciesByCategory(categoryId);
     }
 
     public void createVacancy(VacancyDto vacancyDto) throws CustomException{
