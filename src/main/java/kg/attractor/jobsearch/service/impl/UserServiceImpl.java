@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @SneakyThrows
     public UserDto getUserByEmail(String email){
-        User user = userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with ID: "
+        User user = userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with email: "
                 + email));
 
         return transformToDto(user);
@@ -58,6 +58,17 @@ public class UserServiceImpl implements UserService {
 
         return dtos;
     }
+
+    public UserDto getEmployer (String employerEmail, String applicantEmail) throws CustomException{
+        validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
+        return getUserByEmail(employerEmail);
+    }
+
+    public UserDto getApplicant (String employerEmail, String applicantEmail) throws CustomException{
+        validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
+        return getUserByEmail(applicantEmail);
+    }
+
 
     public Boolean isUserExists (String email) {
         return userDao.isUserExists(email);
@@ -110,5 +121,17 @@ public class UserServiceImpl implements UserService {
                 .avatar(user.getAvatar())
                 .accountType(user.getAccountType())
                 .build();
+    }
+
+    private void validateApplicantAndEmployerEmail (String employerEmail, String applicantEmail) throws CustomException{
+        if (applicantEmail == null || !isUserExists(applicantEmail) ||
+                !"applicant".equalsIgnoreCase(userDao.getUserByEmail(applicantEmail).get().getAccountType())) {
+            throw new CustomException("Access denied");
+        }
+
+        if (employerEmail == null || !isUserExists(employerEmail) ||
+                !"employer".equalsIgnoreCase(userDao.getUserByEmail(employerEmail).get().getAccountType())) {
+            throw new CustomException("Access denied");
+        }
     }
 }

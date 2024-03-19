@@ -16,6 +16,10 @@ public interface UserService {
 
     List<UserDto> getApplicantsByVacancy (int vacancyId);
 
+    UserDto getEmployer (String employerEmail, String applicantEmail) throws CustomException;
+
+    UserDto getApplicant (String employerEmail, String applicantEmail) throws CustomException;
+
     Boolean isUserExists (String email);
 
     void createUser (UserDto userDto) throws CustomException;

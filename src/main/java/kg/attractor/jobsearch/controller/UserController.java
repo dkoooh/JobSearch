@@ -5,9 +5,7 @@ import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
@@ -23,6 +21,23 @@ public class UserController {
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
+    @GetMapping("employer={employerEmail}")
+    public ResponseEntity<?> getEmployer(@PathVariable String employerEmail, String applicantEmail) {
+        try {
+            return ResponseEntity.ok(service.getEmployer(employerEmail, applicantEmail));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("applicant={applicantEmail}")
+    public ResponseEntity<?> getApplicant (String employerEmail, @PathVariable String applicantEmail) {
+        try {
+            return ResponseEntity.ok(service.getApplicant(employerEmail, applicantEmail));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
