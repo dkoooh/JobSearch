@@ -7,19 +7,19 @@ import kg.attractor.jobsearch.model.Vacancy;
 import java.util.List;
 
 public interface VacancyService {
-    List<Vacancy> getVacancies (String email) throws CustomException;
+    List<VacancyDto> getVacancies (String email) throws CustomException;
 
-    List<Vacancy> getActiveVacancies ();
+    List<VacancyDto> getActiveVacancies ();
 
-    Vacancy getVacancyById (int vacancyId);
+    VacancyDto getVacancyById (int vacancyId);
 
-    List<Vacancy> getVacanciesByUser (int id);
+    List<VacancyDto> getVacanciesByUser (int id);
 
-    List<Vacancy> getVacanciesByCategory (String email, Integer categoryId) throws CustomException;
+    List<VacancyDto> getVacanciesByCategory (String email, Integer categoryId) throws CustomException;
 
     void createVacancy (VacancyDto vacancyDto) throws CustomException;
 
-    void updateVacancy (int vacancyId, VacancyDto vacancyDto) throws CustomException;
+    void updateVacancy (VacancyDto vacancyDto) throws CustomException;
 
     void deleteVacancy (int vacancyId, Integer authorId) throws CustomException;
 }

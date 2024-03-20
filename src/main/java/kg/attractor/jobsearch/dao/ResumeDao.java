@@ -21,6 +21,14 @@ public class ResumeDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
+    public List<Resume> getResumes () {
+        String sql = """
+                select * from RESUMES;
+                """;
+
+        return template.query(sql, new ResumeMapper());
+    }
+
     public Optional<Resume> getResumeById(int resumeId) {
         String sql = """
                 select * from RESUMES

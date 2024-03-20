@@ -14,7 +14,7 @@ public interface UserService {
 
     List<UserDto> getUsersByPhoneNumber(String phoneNumber);
 
-    List<UserDto> getApplicantsByVacancy (int vacancyId);
+    List<UserDto> getApplicantsByVacancy (Integer vacancyId, String email) throws CustomException;
 
     UserDto getEmployer (String employerEmail, String applicantEmail) throws CustomException;
 
@@ -24,5 +24,5 @@ public interface UserService {
 
     void createUser (UserDto userDto) throws CustomException;
 
-    void updateUser (User user);
+    void updateUser (UserDto userDto) throws CustomException;
 }

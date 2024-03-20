@@ -23,7 +23,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("employer={employerEmail}")
+    @GetMapping("employers/{employerEmail}")
     public ResponseEntity<?> getEmployer(@PathVariable String employerEmail, String applicantEmail) {
         try {
             return ResponseEntity.ok(service.getEmployer(employerEmail, applicantEmail));
@@ -32,10 +32,19 @@ public class UserController {
         }
     }
 
-    @GetMapping("applicant={applicantEmail}")
+    @GetMapping("applicants/{applicantEmail}")
     public ResponseEntity<?> getApplicant (String employerEmail, @PathVariable String applicantEmail) {
         try {
             return ResponseEntity.ok(service.getApplicant(employerEmail, applicantEmail));
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @RequestMapping("vacancies/{vacancyId}")
+    public ResponseEntity<?> getApplicantsByVacancy (@PathVariable Integer vacancyId, String email) {
+        try {
+            return ResponseEntity.ok(service.getApplicantsByVacancy(vacancyId, email));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

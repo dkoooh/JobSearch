@@ -1,21 +1,24 @@
 package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.Resume;
 
 import java.security.Signature;
 import java.util.List;
 
 public interface ResumeService {
-    Resume getResumeById(int resumeId);
+    List<ResumeDto> getResumes (String employerEmail) throws CustomException;
 
-    List<Resume> getResumesByCategory (int categoryId);
+    ResumeDto getResumeById(int resumeId);
 
-    List<Resume> getResumesByApplicant (int applicantId);
+    List<ResumeDto> getResumesByCategory (int categoryId, String email) throws CustomException;
 
-    void createResume (ResumeDto resume);
+    List<ResumeDto> getResumesByApplicant (int applicantId);
 
-    void updateResume (ResumeDto resume);
+    void createResume (ResumeDto resume) throws CustomException;
 
-    void deleteResume (int resumeId, String email);
+    void updateResume (ResumeDto resume) throws CustomException;
+
+    void deleteResume (int resumeId, String email) throws CustomException;
 }

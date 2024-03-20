@@ -23,7 +23,7 @@ public class VacancyController {
         }
     }
 
-    @GetMapping("category={categoryId}")
+    @GetMapping("category/{categoryId}")
     public ResponseEntity<?> getVacanciesByCategory (@PathVariable Integer categoryId, String email) {
         try {
             return ResponseEntity.ok(vacancyService.getVacanciesByCategory(email, categoryId));
@@ -43,9 +43,9 @@ public class VacancyController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateVacancy (@PathVariable int id, VacancyDto vacancyDto) {
+    public ResponseEntity<?> updateVacancy (VacancyDto vacancyDto) {
         try {
-            vacancyService.updateVacancy(id, vacancyDto);
+            vacancyService.updateVacancy(vacancyDto);
             return ResponseEntity.ok("Vacancy is successfully updated");
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

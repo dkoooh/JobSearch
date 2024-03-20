@@ -20,28 +20,28 @@ public class ResponseServiceImpl implements ResponseService {
     private final UserDao userDao;
     private final VacancyDao vacancyDao;
 
-    public ResponseDto getResponseByVacancy (Integer vacancyId, String email) throws CustomException {
+    public ResponseDto getResponseByVacancy(Integer vacancyId, String email) throws CustomException {
         if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
             throw new CustomException("Invalid vacancy ID");
         } else if (email == null || email.isBlank() || !userDao.isUserExists(email)) {
             throw new CustomException("Invalid email");
         }
 
-        if (!"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get().getAccountType()) ||
-                !vacancyDao.getVacanciesByUser(userDao.getUserByEmail(email).get().getId()).stream()
-                        .map(Vacancy::getId)
-                        .toList().contains(vacancyId)) {
+        if (!"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get().getAccountType())) {
             throw new CustomException("Access denied");
         }
 
-        RespondedApplicant response = responseDao.getResponseByVacancy(vacancyId).orElseThrow(() ->
-                new CustomException("Cannot find vacancy with ID: " + vacancyId));
+        int applicantId = userDao.getUserByEmail(email).get().getId();
+
+        RespondedApplicant respondedApplicant = responseDao.getResponseByVacancy(vacancyId, applicantId)
+                .orElseThrow(() -> new CustomException("Not found")
+        );
 
         return ResponseDto.builder()
-                .id(response.getId())
-                .resumeId(response.getResumeId())
-                .vacancyId(response.getVacancyId())
-                .isConfirmed(response.getIsConfirmed())
+                .id(respondedApplicant.getId())
+                .resumeId(respondedApplicant.getResumeId())
+                .vacancyId(respondedApplicant.getVacancyId())
+                .isConfirmed(respondedApplicant.getIsConfirmed())
                 .build();
     }
 }

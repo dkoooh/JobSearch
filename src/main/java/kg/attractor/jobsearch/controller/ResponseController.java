@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResponseController {
     private final ResponseService responseService;
 
-    @GetMapping()
-    public ResponseEntity<?> getResponseByVacancy (Integer vacancyId, String email) {
+    @GetMapping
+    public ResponseEntity<?> getResponseByVacancy(Integer vacancyId, String email) {
         try {
             return ResponseEntity.ok(responseService.getResponseByVacancy(vacancyId, email));
         } catch (CustomException e) {
