@@ -1,10 +1,8 @@
 package kg.attractor.jobsearch.service;
 
-import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.model.Resume;
 
-import java.security.Signature;
 import java.util.List;
 
 public interface ResumeService {

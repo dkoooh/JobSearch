@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
-import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;

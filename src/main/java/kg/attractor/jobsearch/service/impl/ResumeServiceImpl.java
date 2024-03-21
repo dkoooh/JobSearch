@@ -3,7 +3,7 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.CategoryDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dto.ResumeDto;
+import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Resume;
@@ -80,7 +80,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .isActive(true)
                 .build();
 
-        resumeDao.createResume(resume);
+        resumeDao.create(resume);
     }
 
     @Override

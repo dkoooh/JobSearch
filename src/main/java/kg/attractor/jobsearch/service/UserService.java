@@ -1,8 +1,9 @@
 package kg.attractor.jobsearch.service;
 
-import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.dto.user.UserCreationDto;
+import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,13 +21,13 @@ public interface UserService {
 
     UserDto getEmployer (String employerEmail, String applicantEmail) throws CustomException;
 
-    UserDto getApplicant (String employerEmail, String applicantEmail) throws CustomException;
+    UserDto getApplicant (String employerEmail, String applicantEmail);
 
     Boolean isUserExists (String email);
 
-    void createUser (UserDto userDto) throws CustomException;
+    void create(UserCreationDto userDto) throws CustomException;
 
-    void updateUser (UserDto userDto) throws CustomException;
+    void update(UserUpdateDto userDto) throws CustomException;
 
     ResponseEntity<?> downloadUserAvatar(String userEmail) throws CustomException;
 

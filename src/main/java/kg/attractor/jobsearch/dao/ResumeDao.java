@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -54,7 +55,7 @@ public class ResumeDao {
         return template.query(sql, new ResumeMapper(), applicantId);
     }
 
-    public void createResume(Resume resume) {
+    public Number create(Resume resume) {
         String sql = """
                 insert into RESUMES (APPLICANT_ID, NAME, CATEGORY_ID, SALARY, IS_ACTIVE, CREATED_DATE, UPDATE_TIME)
                 values ( :applicant_id, :name, :category_id, :salary, :is_active, :created_date, :update_time )
@@ -69,7 +70,11 @@ public class ResumeDao {
                 .addValue("created_date", Timestamp.valueOf(LocalDateTime.now()))
                 .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
 
+
+
         namedTemplate.update(sql, dataSource);
+        return new GeneratedKeyHolder().getKey();
+
     }
 
     public void updateResume(Resume resume) {
@@ -96,25 +101,10 @@ public class ResumeDao {
 
     public void deleteResume(int resumeId) {
         String sql = """
-                delete from CONTACTS_INFO
-                where RESUME_ID = :resumeId;
-                delete from EDUCATION_INFO
-                where RESUME_ID = :resumeId;
-                delete from WORK_EXPERIENCE_INFO
-                where RESUME_ID = :resumeId;
-                delete from CONTACTS_INFO
-                where RESUME_ID = :resumeId;
-                delete from MESSAGES
-                where RESPONDED_APPLICANT_ID = (select ID from RESPONDED_APPLICANTS
-                    where RESUME_ID = :resumeId);
-                delete from RESPONDED_APPLICANTS
-                where RESUME_ID = :resumeId;
                 delete from RESUMES
                 where ID = :resumeId;
                 """;
 
-        MapSqlParameterSource dateSource = new MapSqlParameterSource().addValue("resumeId", resumeId);
-
-        namedTemplate.update(sql, dateSource);
+        template.update(sql, resumeId);
     }
 }

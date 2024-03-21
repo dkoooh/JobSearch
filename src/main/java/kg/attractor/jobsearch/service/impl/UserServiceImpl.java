@@ -2,7 +2,9 @@ package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dao.VacancyDao;
-import kg.attractor.jobsearch.dto.UserDto;
+import kg.attractor.jobsearch.dto.user.UserCreationDto;
+import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
@@ -27,6 +29,66 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final VacancyDao vacancyDao;
     private final FileUtil fileUtil;
+
+    public void create (UserCreationDto userDto) throws CustomException {
+        if (isUserExists(userDto.getEmail())) {
+            throw new CustomException("User with this email is already exists");
+        } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
+            throw new CustomException("Email is blank");
+        } else if (userDto.getAge() != null && userDto.getAge() < 16) {
+            throw new CustomException("User is too young");
+        } else if (userDto.getAccountType() == null || !("employer".equalsIgnoreCase(userDto.getAccountType()) ||
+                "applicant".equalsIgnoreCase(userDto.getAccountType()))) {
+            throw new CustomException("Invalid account type");
+        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
+            throw new CustomException("Name is empty");
+        } else if (userDto.getPassword() == null) {
+            throw new CustomException("Password is empty");
+        } else if (userDto.getPhoneNumber() == null) {
+            throw new CustomException("Phone number is empty");
+        }
+
+        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
+
+        User newUser = User.builder()
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .age(userDto.getAge())
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
+                .phoneNumber(userDto.getPhoneNumber())
+                .avatar(avatarFileName)
+                .accountType(userDto.getAccountType())
+                .build();
+
+        userDao.createUser(newUser);
+    }
+
+    public void update(UserUpdateDto userDto) throws CustomException {
+        if (userDto.getAge() != null && userDto.getAge() < 16) {
+            throw new CustomException("User is too young");
+        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
+            throw new CustomException("Name is empty");
+        } else if (userDto.getPassword() == null) {
+            throw new CustomException("Password is empty");
+        } else if (userDto.getPhoneNumber() == null || userDto.getPhoneNumber().isBlank()) {
+            throw new CustomException("Phone number is empty");
+        }
+
+        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
+
+        User user = User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .surname(userDto.getSurname())
+                .age(userDto.getAge())
+                .password(userDto.getPassword())
+                .phoneNumber(userDto.getPhoneNumber())
+                .avatar(avatarFileName)
+                .build();
+
+        userDao.updateUser(user);
+    }
 
     @SneakyThrows
     public UserDto getUserByEmail(String email) {
@@ -79,69 +141,13 @@ public class UserServiceImpl implements UserService {
         return getUserByEmail(employerEmail);
     }
 
-    public UserDto getApplicant(String employerEmail, String applicantEmail) throws CustomException {
+    public UserDto getApplicant(String employerEmail, String applicantEmail) {
         validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
         return getUserByEmail(applicantEmail);
     }
 
     public Boolean isUserExists(String email) {
         return userDao.isUserExists(email);
-    }
-
-    public void createUser(UserDto userDto) throws CustomException {
-        if (isUserExists(userDto.getEmail())) {
-            throw new CustomException("User with this email is already exists");
-        } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new CustomException("Email is blank");
-        } else if (userDto.getAge() != null && userDto.getAge() < 16) {
-            throw new CustomException("User is too young");
-        } else if (userDto.getAccountType() == null || !("employer".equalsIgnoreCase(userDto.getAccountType()) ||
-                "applicant".equalsIgnoreCase(userDto.getAccountType()))) {
-            throw new CustomException("Invalid account type");
-        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (userDto.getPassword() == null) {
-            throw new CustomException("Password is empty");
-        } else if (userDto.getPhoneNumber() == null) {
-            throw new CustomException("Phone number is empty");
-        }
-
-        User newUser = User.builder()
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .age(userDto.getAge())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .phoneNumber(userDto.getPhoneNumber())
-                .accountType(userDto.getAccountType())
-                .build();
-
-        userDao.createUser(newUser);
-    }
-
-    public void updateUser(UserDto userDto) throws CustomException {
-        if (userDto.getAge() != null && userDto.getAge() < 16) {
-            throw new CustomException("User is too young");
-        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (userDto.getPassword() == null) {
-            throw new CustomException("Password is empty");
-        } else if (userDto.getPhoneNumber() == null || userDto.getPhoneNumber().isBlank()) {
-            throw new CustomException("Phone number is empty");
-        }
-
-        User user = User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .age(userDto.getAge())
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .phoneNumber(userDto.getPhoneNumber())
-                .accountType(userDto.getAccountType())
-                .build();
-
-        userDao.updateUser(user);
     }
 
     @Override
@@ -162,12 +168,13 @@ public class UserServiceImpl implements UserService {
 
     private UserDto transformToDto(User user) {
         return UserDto.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .surname(user.getSurname())
-                .password(user.getPassword())
                 .age(user.getAge())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
+                .avatar(user.getAvatar())
                 .accountType(user.getAccountType())
                 .build();
     }
@@ -178,9 +185,8 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Access denied");
         }
 
-        if (employerEmail == null || !isUserExists(employerEmail) ||
-                !"employer".equalsIgnoreCase(userDao.getUserByEmail(employerEmail).get().getAccountType())) {
-            throw new CustomException("Access denied");
-        }
+        Utils.verifyUser(applicantEmail, "applicant", userDao);
+
+        Utils.verifyUser(employerEmail, "employer", userDao);
     }
 }

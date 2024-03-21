@@ -94,8 +94,8 @@ public class UserDao {
     public void updateUser(User user) {
         String sql = """
                 update USERS
-                set NAME = :name, SURNAME = :surname, AGE = :age, EMAIL = :email, PASSWORD = :password,
-                 PHONE_NUMBER = :phoneNumber, AVATAR = :avatar, ACCOUNT_TYPE = :account_type
+                set NAME = :name, SURNAME = :surname, AGE = :age, PASSWORD = :password,
+                 PHONE_NUMBER = :phoneNumber, AVATAR = :avatar
                  where id = :id
                 """;
 
@@ -104,11 +104,9 @@ public class UserDao {
                 .addValue("name", user.getName())
                 .addValue("surname", user.getSurname())
                 .addValue("age", user.getAge())
-                .addValue("email", user.getEmail())
                 .addValue("password", user.getPassword())
                 .addValue("phoneNumber", user.getPhoneNumber())
-                .addValue("avatar", user.getAvatar())
-                .addValue("account_type", user.getAccountType());
+                .addValue("avatar", user.getAvatar());
 
         namedTemplate.update(sql, dataSource);
     }

@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -72,7 +73,7 @@ public class VacancyDao {
         return template.query(sql, new VacancyMapper(), categoryId);
     }
 
-    public void createVacancy (Vacancy vacancy) {
+    public Number createVacancy (Vacancy vacancy) {
         String sql = """
                 insert into VACANCIES (NAME, DESCRIPTION, CATEGORY_ID, SALARY, EXP_FROM, EXP_TO, IS_ACTIVE, AUTHOR_ID,
                     CREATED_DATE, UPDATE_TIME)
@@ -92,6 +93,8 @@ public class VacancyDao {
                 .addValue("created_date", Timestamp.valueOf(LocalDateTime.now()))
                 .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
         namedTemplate.update(sql, dataSource);
+
+        return new GeneratedKeyHolder().getKey();
     }
 
     public void updateVacancy (Vacancy vacancy) {
@@ -117,10 +120,6 @@ public class VacancyDao {
 
     public void deleteVacancy (int vacancyId) {
         String sql = """
-        delete from MESSAGES
-        where RESPONDED_APPLICANT_ID = (select id from RESPONDED_APPLICANTS where VACANCY_ID = :vacancyId);
-        delete from RESPONDED_APPLICANTS
-        where VACANCY_ID = :vacancyId;
         delete from VACANCIES
         where ID = :vacancyId
         """;

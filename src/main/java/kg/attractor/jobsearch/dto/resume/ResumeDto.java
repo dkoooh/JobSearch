@@ -1,4 +1,4 @@
-package kg.attractor.jobsearch.dto;
+package kg.attractor.jobsearch.dto.resume;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,17 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class VacancyDto {
+public class ResumeDto {
     private Integer id;
+    private Integer applicantId;
+    private String applicantEmail;
     private String name;
-    private String description;
     private Integer categoryId;
     private Double salary;
-    private Integer expFrom;
-    private Integer expTo;
     private Boolean isActive;
-    private String authorEmail;
-    private Integer authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;
 }

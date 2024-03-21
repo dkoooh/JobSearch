@@ -48,9 +48,6 @@ databaseChangeLog:
                   type: varchar(50)
                   constraints:
                     nullable: false
-#        - addUniqueConstraint:
-#            tableName: users
-#            columnNames: email
   - changeSet:
       id: create table for categories
       author: dkoooh
@@ -165,6 +162,7 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_resume_id_contacts_info
                     references: resumes (id)
+                    deleteCascade: true
               - column:
                   name: contact_value
                   type: text
@@ -191,6 +189,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_resume_id_edu_info
                     references: resumes(id)
+                    deleteCascade: true
               - column:
                   name: institution
                   type: text
@@ -286,12 +285,14 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_resume_id_resp_applicants
                     references: resumes(id)
+                    deleteCascade: true
               - column:
                   name: vacancy_id
                   type: int
                   constraints:
                     foreignKeyName: fk_vacancy_id
                     references: vacancies (id)
+                    deleteCascade: true
               - column:
                   name: confirmation
                   type: boolean
@@ -316,6 +317,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_responded_applicant_id
                     references: responded_applicants(id)
+                    deleteCascade: true
               - column:
                   name: content
                   type: text
@@ -343,6 +345,7 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_resume_id_work_exp_info
                     references: resumes(id)
+                    deleteCascade: true
               - column:
                   name: years
                   type: int
