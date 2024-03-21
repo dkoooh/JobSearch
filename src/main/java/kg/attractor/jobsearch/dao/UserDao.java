@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,5 +111,15 @@ public class UserDao {
                 .addValue("account_type", user.getAccountType());
 
         namedTemplate.update(sql, dataSource);
+    }
+
+    public void uploadUserAvatar(String userEmail, String fileName) {
+        String sql = """
+            update USERS
+            set AVATAR = ?
+            where EMAIL = ?;
+            """;
+
+        template.update(sql, fileName, userEmail);
     }
 }

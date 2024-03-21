@@ -13,4 +13,10 @@ public class Utils {
             throw new CustomException("Access denied");
         }
     }
+
+    public static void verifyUser (String email, UserDao userDao) throws CustomException {
+        if (email == null || !userDao.isUserExists(email)) {
+            throw new CustomException("Access denied");
+        }
+    }
 }

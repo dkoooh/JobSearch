@@ -7,11 +7,15 @@ import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.UserService;
+import kg.attractor.jobsearch.util.FileUtil;
 import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final VacancyDao vacancyDao;
+    private final FileUtil fileUtil;
+
     @SneakyThrows
     public UserDto getUserByEmail(String email) {
         User user = userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with email: "
@@ -107,7 +113,6 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .phoneNumber(userDto.getPhoneNumber())
-                .avatar(userDto.getAvatar())
                 .accountType(userDto.getAccountType())
                 .build();
 
@@ -133,11 +138,26 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .phoneNumber(userDto.getPhoneNumber())
-                .avatar(userDto.getAvatar())
                 .accountType(userDto.getAccountType())
                 .build();
 
         userDao.updateUser(user);
+    }
+
+    @Override
+    public void uploadUserAvatar(String userEmail, MultipartFile userImage) throws CustomException {
+        Utils.verifyUser(userEmail, userDao);
+
+        String fileName = fileUtil.saveUploadedFile(userImage, "images/users/");
+        userDao.uploadUserAvatar(userEmail, fileName);
+    }
+
+    @Override
+    public ResponseEntity<?> downloadUserAvatar(String userEmail) throws CustomException {
+        Utils.verifyUser(userEmail, userDao);
+
+        String fileName = userDao.getUserByEmail(userEmail).get().getAvatar();
+        return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }
 
     private UserDto transformToDto(User user) {
@@ -148,7 +168,6 @@ public class UserServiceImpl implements UserService {
                 .age(user.getAge())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
-                .avatar(user.getAvatar())
                 .accountType(user.getAccountType())
                 .build();
     }
