@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     private final VacancyDao vacancyDao;
     private final FileUtil fileUtil;
 
-    public void create (UserCreationDto userDto) throws CustomException {
+    public void create (UserCreationDto userDto){
         if (isUserExists(userDto.getEmail())) {
             throw new CustomException("User with this email is already exists");
         } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         userDao.createUser(newUser);
     }
 
-    public void update(UserUpdateDto userDto) throws CustomException {
+    public void update(UserUpdateDto userDto) {
         if (userDto.getAge() != null && userDto.getAge() < 16) {
             throw new CustomException("User is too young");
         } else if (userDto.getName() == null || userDto.getName().isBlank()) {
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
-    public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) throws CustomException {
+    public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
         Utils.verifyUser(email, "employer", userDao);
 
         if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
-    public UserDto getEmployer(String employerEmail, String applicantEmail) throws CustomException {
+    public UserDto getEmployer(String employerEmail, String applicantEmail) {
         validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
         return getUserByEmail(employerEmail);
     }
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadUserAvatar(String userEmail, MultipartFile userImage) throws CustomException {
+    public void uploadUserAvatar(String userEmail, MultipartFile userImage) {
         Utils.verifyUser(userEmail, userDao);
 
         String fileName = fileUtil.saveUploadedFile(userImage, "images/users/");
@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> downloadUserAvatar(String userEmail) throws CustomException {
+    public ResponseEntity<?> downloadUserAvatar(String userEmail) {
         Utils.verifyUser(userEmail, userDao);
 
         String fileName = userDao.getUserByEmail(userEmail).get().getAvatar();
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private void validateApplicantAndEmployerEmail(String employerEmail, String applicantEmail) throws CustomException {
+    private void validateApplicantAndEmployerEmail(String employerEmail, String applicantEmail) {
         if (applicantEmail == null || !isUserExists(applicantEmail) ||
                 !"applicant".equalsIgnoreCase(userDao.getUserByEmail(applicantEmail).get().getAccountType())) {
             throw new CustomException("Access denied");

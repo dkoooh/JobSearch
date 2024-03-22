@@ -16,7 +16,6 @@ public class VacancyDto {
     private Integer expFrom;
     private Integer expTo;
     private Boolean isActive;
-    private String authorEmail;
     private Integer authorId;
     private LocalDateTime createdDate;
     private LocalDateTime updateTime;

@@ -1,7 +1,9 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
-import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.ResumeService;
@@ -16,51 +18,31 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping
-    public ResponseEntity<?> createResume (@RequestBody ResumeCreateDto resumeDto) {
-        try {
-            resumeService.create(resumeDto);
-            return ResponseEntity.ok("Resume is successfully created");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createResume(@RequestBody @Valid ResumeCreateDto resumeDto) {
+        resumeService.create(resumeDto);
+        return ResponseEntity.ok("Resume is successfully created");
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateResume (@RequestBody ResumeUpdateDto resumeDto) {
-        try {
-            resumeService.update(resumeDto);
-            return ResponseEntity.ok("Resume is successfully updated");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateResume(@RequestBody @Valid ResumeUpdateDto resumeDto) {
+        resumeService.update(resumeDto);
+        return ResponseEntity.ok("Resume is successfully updated");
     }
 
     @DeleteMapping("{resumeId}")
-    public ResponseEntity<?> deleteResume (String email, @PathVariable Integer resumeId) {
-        try {
-            resumeService.deleteResume(resumeId, email);
-            return ResponseEntity.ok("Resume is successfully deleted");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> deleteResume(@NotBlank @Email String email, @PathVariable Integer resumeId) {
+        resumeService.deleteResume(resumeId, email);
+        return ResponseEntity.ok("Resume is successfully deleted");
     }
 
     @GetMapping
-    public ResponseEntity<?> getResumes (String employerEmail) {
-        try {
-            return ResponseEntity.ok(resumeService.getResumes(employerEmail));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> getResumes(@NotBlank @Email String employerEmail) {
+        return ResponseEntity.ok(resumeService.getResumes(employerEmail));
     }
 
     @GetMapping("category={categoryId}")
-    public ResponseEntity<?> getResumeByCategory (@PathVariable int categoryId, String employerEmail) {
-        try {
-            return ResponseEntity.ok(resumeService.getResumesByCategory(categoryId, employerEmail));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> getResumeByCategory(@PathVariable int categoryId, @NotBlank @Email String employerEmail) {
+        return ResponseEntity.ok(resumeService.getResumesByCategory(categoryId, employerEmail));
     }
 
 

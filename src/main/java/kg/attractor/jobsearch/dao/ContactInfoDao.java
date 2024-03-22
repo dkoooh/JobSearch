@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ContactInfoDao {
@@ -24,9 +26,18 @@ public class ContactInfoDao {
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("type_id", info.getTypeId())
                 .addValue("resume_id", info.getResumeId())
-                .addValue("contact_value", info.getValue());
+                .addValue("contact_value", info.getContactValue());
 
-        template.update(sql, info.getTypeId(), info.getResumeId(), info.getValue());
+        template.update(sql, info.getTypeId(), info.getResumeId(), info.getContactValue());
+    }
+
+    public List<ContactInfo> getByResumeId (int resumeId) {
+        String sql = """
+                select * from CONTACTS_INFO
+                where RESUME_ID = ?;
+                """;
+
+        return template.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), resumeId);
     }
 
     public void update(ContactInfo info) {
@@ -40,7 +51,7 @@ public class ContactInfoDao {
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("type_id", info.getTypeId())
                 .addValue("resume_id", info.getResumeId())
-                .addValue("contact_value", info.getValue());
+                .addValue("contact_value", info.getContactValue());
 
         namedTemplate.update(sql, dataSource);
     }

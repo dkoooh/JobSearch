@@ -20,7 +20,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final UserDao userDao;
     private final VacancyDao vacancyDao;
 
-    public ResponseDto getResponseByVacancy(Integer vacancyId, String email) throws CustomException {
+    public ResponseDto getResponseByVacancy(Integer vacancyId, String email){
         if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
             throw new CustomException("Invalid vacancy ID");
         } else if (email == null || email.isBlank() || !userDao.isUserExists(email)) {

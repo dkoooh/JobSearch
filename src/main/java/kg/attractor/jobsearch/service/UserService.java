@@ -17,19 +17,19 @@ public interface UserService {
 
     List<UserDto> getUsersByPhoneNumber(String phoneNumber);
 
-    List<UserDto> getApplicantsByVacancy (Integer vacancyId, String email) throws CustomException;
+    List<UserDto> getApplicantsByVacancy (Integer vacancyId, String email);
 
-    UserDto getEmployer (String employerEmail, String applicantEmail) throws CustomException;
+    UserDto getEmployer (String employerEmail, String applicantEmail);
 
     UserDto getApplicant (String employerEmail, String applicantEmail);
 
     Boolean isUserExists (String email);
 
-    void create(UserCreationDto userDto) throws CustomException;
+    void create(UserCreationDto userDto);
 
-    void update(UserUpdateDto userDto) throws CustomException;
+    void update(UserUpdateDto userDto);
 
-    ResponseEntity<?> downloadUserAvatar(String userEmail) throws CustomException;
+    ResponseEntity<?> downloadUserAvatar(String userEmail);
 
-    void uploadUserAvatar(String userEmail, MultipartFile userImage) throws CustomException;
+    void uploadUserAvatar(String userEmail, MultipartFile userImage);
 }

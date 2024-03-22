@@ -10,6 +10,8 @@ import kg.attractor.jobsearch.service.EduInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class EduInfoInfoServiceImpl implements EduInfoService {
@@ -48,7 +50,7 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
     }
 
     @Override
-    public EduInfoDto getById(int id, String applicantEmail) {
+    public EduInfoDto getById(int id) {
         EducationInfo eduInfo = educationInfoDao.getById(id).orElseThrow(() -> new CustomException("Not found"));
 
         return EduInfoDto.builder()
@@ -60,6 +62,22 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
                 .degree(eduInfo.getDegree())
                 .build();
     }
+
+    public List<EduInfoDto> getByResumeId (int resumeId) {
+        List<EducationInfo> eduInfo = educationInfoDao.getByResumeId(resumeId);
+
+        return eduInfo.stream()
+                .map(info -> EduInfoDto.builder()
+                        .id(info.getId())
+                        .institution(info.getInstitution())
+                        .program(info.getProgram())
+                        .startDate(info.getStartDate())
+                        .endDate(info.getEndDate())
+                        .degree(info.getDegree())
+                        .build())
+                .toList();
+    }
+
 
     @Override
     public void delete(Integer id, String applicantEmail) {

@@ -1,24 +1,26 @@
 package kg.attractor.jobsearch.service;
 
+import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
+import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 
 import java.util.List;
 
 public interface VacancyService {
-    List<VacancyDto> getVacancies (String email) throws CustomException;
+    List<VacancyDto> getVacancies (String email);
 
-    List<VacancyDto> getActiveVacancies ();
+    List<VacancyDto> getActiveVacancies (String email);
 
     VacancyDto getVacancyById (int vacancyId);
 
     List<VacancyDto> getVacanciesByUser (int id);
 
-    List<VacancyDto> getVacanciesByCategory (String email, Integer categoryId) throws CustomException;
+    List<VacancyDto> getVacanciesByCategory (String email, Integer categoryId);
 
-    void createVacancy (VacancyDto vacancyDto) throws CustomException;
+    void createVacancy (VacancyCreateDto vacancyDto);
 
-    void updateVacancy (VacancyDto vacancyDto) throws CustomException;
+    void updateVacancy (VacancyUpdateDto vacancyDto);
 
-    void deleteVacancy (int vacancyId, Integer authorId) throws CustomException;
+    void deleteVacancy (int vacancyId, String email);
 }

@@ -10,6 +10,8 @@ import kg.attractor.jobsearch.service.WorkExpInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
@@ -48,7 +50,9 @@ public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
 
     @Override
     public WorkExpInfoDto getById(int id) {
-        WorkExperienceInfo info = workExperienceInfoDao.getById(id).orElseThrow(() -> new CustomException("Not found"));
+        WorkExperienceInfo info = workExperienceInfoDao.getById(id).orElseThrow(
+                () -> new CustomException("Cannot find WorkExperienceInfo with ID: " + id)
+        );
 
         return WorkExpInfoDto.builder()
                 .id(info.getId())
@@ -58,6 +62,21 @@ public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
                 .position(info.getPosition())
                 .responsibilities(info.getResponsibilities())
                 .build();
+    }
+
+    public List<WorkExpInfoDto> getByResumeId (int resumeId) {
+        List<WorkExperienceInfo> info = workExperienceInfoDao.getByResumeId(resumeId);
+
+        return info.stream()
+                .map(workExperienceInfo -> WorkExpInfoDto.builder()
+                        .id(workExperienceInfo.getId())
+                        .resumeId(workExperienceInfo.getResumeId())
+                        .years(workExperienceInfo.getYears())
+                        .companyName(workExperienceInfo.getCompanyName())
+                        .position(workExperienceInfo.getPosition())
+                        .responsibilities(workExperienceInfo.getResponsibilities())
+                        .build())
+                .toList();
     }
 
     @Override

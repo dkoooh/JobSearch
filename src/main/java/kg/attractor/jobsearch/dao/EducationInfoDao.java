@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -45,6 +46,15 @@ public class EducationInfoDao {
                         template.query(sql, new EducationInfoMapper(), id)
                 )
         );
+    }
+
+    public List<EducationInfo> getByResumeId(int resumeId) {
+        String sql = """
+                select * from EDUCATION_INFO
+                where RESUME_ID = ?;
+                """;
+
+        return template.query(sql, new EducationInfoMapper(), resumeId);
     }
 
     public void update(EducationInfo educationInfo) {

@@ -3,7 +3,6 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.CategoryDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
@@ -34,7 +33,7 @@ public class ResumeServiceImpl implements ResumeService {
     private final ContactInfoService contactInfoService;
 
     @Override
-    public List<ResumeDto> getResumes (String employerEmail) throws CustomException{
+    public List<ResumeDto> getResumes(String employerEmail){
         Utils.verifyUser(employerEmail, "employer", userDao);
 
         return resumeDao.getResumes().stream()
@@ -44,7 +43,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @SneakyThrows
     @Override
-    public ResumeDto getResumeById (int resumeId) {
+    public ResumeDto getResumeById(int resumeId) {
         return convertToDto(
                 resumeDao.getResumeById(resumeId)
                         .orElseThrow(() -> new CustomException("Cannot find resume with ID: " + resumeId))
@@ -52,7 +51,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getResumesByCategory (int categoryId, String email) throws CustomException {
+    public List<ResumeDto> getResumesByCategory(int categoryId, String email){
         Utils.verifyUser(email, "employer", userDao);
 
         List<Resume> list = resumeDao.getResumesByCategory(categoryId);
@@ -62,7 +61,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getResumesByApplicant (int applicantId) {
+    public List<ResumeDto> getResumesByApplicant(int applicantId) {
         List<Resume> list = resumeDao.getResumesByApplicant(applicantId);
         return list.stream()
                 .map(this::convertToDto)
@@ -70,7 +69,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void create (ResumeCreateDto dto) throws CustomException{
+    public void create(ResumeCreateDto dto){
         Utils.verifyUser(dto.getApplicantEmail(), "applicant", userDao);
 
         if (dto.getName() == null || dto.getName().isBlank()) {
@@ -103,7 +102,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void update (ResumeUpdateDto resumeDto) throws CustomException{
+    public void update(ResumeUpdateDto resumeDto) {
         Utils.verifyUser(resumeDto.getApplicantEmail(), "applicant", userDao);
 
         if (resumeDto.getName() == null || resumeDto.getName().isBlank()) {
@@ -128,20 +127,20 @@ public class ResumeServiceImpl implements ResumeService {
                 .build();
 
         resumeDto.getEducationInfo().forEach(
-                    eduInfoUpdateDto -> eduInfoService.update(eduInfoUpdateDto, resume.getId())
+                eduInfoUpdateDto -> eduInfoService.update(eduInfoUpdateDto, resume.getId())
         );
         resumeDto.getWorkExperienceInfo().forEach(
-                    workExpInfoUpdateDto -> workExpInfoService.update(workExpInfoUpdateDto, resume.getId())
+                workExpInfoUpdateDto -> workExpInfoService.update(workExpInfoUpdateDto, resume.getId())
         );
         resumeDto.getContacts().forEach(
-                    contactInfoUpdateDto -> contactInfoService.update(contactInfoUpdateDto, resume.getId())
+                contactInfoUpdateDto -> contactInfoService.update(contactInfoUpdateDto, resume.getId())
         );
 
         resumeDao.updateResume(resume);
     }
 
     @Override
-    public void deleteResume(int resumeId, String email) throws CustomException{
+    public void deleteResume(int resumeId, String email){
         Utils.verifyUser(email, "applicant", userDao);
 
         if (!resumeDao.getResumes().stream().map(Resume::getId).toList().contains(resumeId)) {
@@ -151,7 +150,7 @@ public class ResumeServiceImpl implements ResumeService {
         resumeDao.deleteResume(resumeId);
     }
 
-    private ResumeDto convertToDto (Resume resume) {
+    private ResumeDto convertToDto(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicantId())
@@ -159,16 +158,11 @@ public class ResumeServiceImpl implements ResumeService {
                 .categoryId(resume.getCategoryId())
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
+                .educationInfo(eduInfoService.getByResumeId(resume.getId()))
+                .workExperienceInfo(workExpInfoService.getByResumeId(resume.getId()))
+                .contactInfos(contactInfoService.getByResumeId(resume.getId()))
                 .createdDate(resume.getCreatedDate())
                 .updateTime(resume.getUpdateTime())
                 .build();
     }
-
-    // TODO
-//      - Добавить инфу об образоании и опыте
-//      - Сделать тип профиля неизменияемым
-//      - Поработать с исключениями
-//      - Сделать добавление аватарки
-//      - Что имелось в виду под "Поиск резюме по должности"
-//
 }

@@ -1,6 +1,10 @@
 package kg.attractor.jobsearch.controller;
 
-import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
+import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -15,50 +19,30 @@ public class VacancyController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public ResponseEntity<?> getVacancies (String email) {
-        try {
-            return ResponseEntity.ok(vacancyService.getVacancies(email));
-        } catch (CustomException e) {
-            return new ResponseEntity<>("Access denied", HttpStatus.FORBIDDEN);
-        }
+    public ResponseEntity<?> getVacancies(@NotBlank @Email String email) {
+        return ResponseEntity.ok(vacancyService.getVacancies(email));
     }
 
     @GetMapping("category/{categoryId}")
-    public ResponseEntity<?> getVacanciesByCategory (@PathVariable Integer categoryId, String email) {
-        try {
-            return ResponseEntity.ok(vacancyService.getVacanciesByCategory(email, categoryId));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> getVacanciesByCategory(@PathVariable Integer categoryId, @NotBlank @Email String email) {
+        return ResponseEntity.ok(vacancyService.getVacanciesByCategory(email, categoryId));
     }
 
     @PostMapping
-    public ResponseEntity<?> createVacancy (VacancyDto vacancyDto) {
-        try {
-            vacancyService.createVacancy(vacancyDto);
-            return ResponseEntity.ok("Vacancy is successfully created");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> createVacancy(@RequestBody @Valid VacancyCreateDto vacancyDto) {
+        vacancyService.createVacancy(vacancyDto);
+        return ResponseEntity.ok("Vacancy is successfully created");
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateVacancy (VacancyDto vacancyDto) {
-        try {
-            vacancyService.updateVacancy(vacancyDto);
-            return ResponseEntity.ok("Vacancy is successfully updated");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> updateVacancy(@RequestBody @Valid VacancyUpdateDto vacancyDto) {
+        vacancyService.updateVacancy(vacancyDto);
+        return ResponseEntity.ok("Vacancy is successfully updated");
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteVacancy (@PathVariable int id, Integer authorId) {
-        try {
-            vacancyService.deleteVacancy(id, authorId);
-            return ResponseEntity.ok("Vacancy is successfully deleted");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> deleteVacancy(@PathVariable int id, @NotBlank @Email String authorEmail) {
+        vacancyService.deleteVacancy(id, authorEmail);
+        return ResponseEntity.ok("Vacancy is successfully deleted");
     }
 }
