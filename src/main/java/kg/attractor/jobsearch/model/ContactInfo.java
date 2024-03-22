@@ -1,10 +1,11 @@
 package kg.attractor.jobsearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ContactInfo {
     private Integer id;
     private Integer typeId;

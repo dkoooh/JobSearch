@@ -3,11 +3,17 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dao.CategoryDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.UserDao;
+import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
+import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
+import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.service.ContactInfoService;
+import kg.attractor.jobsearch.service.EduInfoService;
 import kg.attractor.jobsearch.service.ResumeService;
+import kg.attractor.jobsearch.service.WorkExpInfoService;
 import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,6 +29,9 @@ public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
     private final UserDao userDao;
     private final CategoryDao categoryDao;
+    private final WorkExpInfoService workExpInfoService;
+    private final EduInfoService eduInfoService;
+    private final ContactInfoService contactInfoService;
 
     @Override
     public List<ResumeDto> getResumes (String employerEmail) throws CustomException{
@@ -61,30 +70,40 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void createResume (ResumeDto resumeDto) throws CustomException{
-        Utils.verifyUser(resumeDto.getApplicantEmail(), "applicant", userDao);
+    public void create (ResumeCreateDto dto) throws CustomException{
+        Utils.verifyUser(dto.getApplicantEmail(), "applicant", userDao);
 
-        if (resumeDto.getName() == null || resumeDto.getName().isBlank()) {
+        if (dto.getName() == null || dto.getName().isBlank()) {
             throw new CustomException("Name is empty");
-        } else if (resumeDto.getCategoryId() != null && !categoryDao.getCategories().stream()
+        } else if (dto.getCategoryId() != null && !categoryDao.getCategories().stream()
                 .map(Category::getId)
-                .toList().contains(resumeDto.getCategoryId())) {
+                .toList().contains(dto.getCategoryId())) {
             throw new CustomException("Invalid category");
         }
 
         Resume resume = Resume.builder()
-                .applicantId(userDao.getUserByEmail(resumeDto.getApplicantEmail()).get().getId())
-                .name(resumeDto.getName())
-                .categoryId(resumeDto.getCategoryId())
-                .salary(resumeDto.getSalary())
+                .applicantId(userDao.getUserByEmail(dto.getApplicantEmail()).get().getId())
+                .name(dto.getName())
+                .categoryId(dto.getCategoryId())
+                .salary(dto.getSalary())
                 .isActive(true)
                 .build();
 
-        resumeDao.create(resume);
+        int resumeId = resumeDao.create(resume);
+
+        dto.getEducationInfo().forEach(
+                eduInfoCreateDto -> eduInfoService.create(eduInfoCreateDto, resumeId)
+        );
+        dto.getWorkExperienceInfo().forEach(
+                workExpInfoCreateDto -> workExpInfoService.create(workExpInfoCreateDto, resumeId)
+        );
+        dto.getContacts().forEach(
+                contactInfoCreateDto -> contactInfoService.create(contactInfoCreateDto, resumeId)
+        );
     }
 
     @Override
-    public void updateResume (ResumeDto resumeDto) throws CustomException{
+    public void update (ResumeUpdateDto resumeDto) throws CustomException{
         Utils.verifyUser(resumeDto.getApplicantEmail(), "applicant", userDao);
 
         if (resumeDto.getName() == null || resumeDto.getName().isBlank()) {
@@ -107,6 +126,16 @@ public class ResumeServiceImpl implements ResumeService {
                 .salary(resumeDto.getSalary())
                 .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : true)
                 .build();
+
+        resumeDto.getEducationInfo().forEach(
+                    eduInfoUpdateDto -> eduInfoService.update(eduInfoUpdateDto, resume.getId())
+        );
+        resumeDto.getWorkExperienceInfo().forEach(
+                    workExpInfoUpdateDto -> workExpInfoService.update(workExpInfoUpdateDto, resume.getId())
+        );
+        resumeDto.getContacts().forEach(
+                    contactInfoUpdateDto -> contactInfoService.update(contactInfoUpdateDto, resume.getId())
+        );
 
         resumeDao.updateResume(resume);
     }

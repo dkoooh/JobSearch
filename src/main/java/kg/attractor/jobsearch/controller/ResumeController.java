@@ -1,6 +1,8 @@
 package kg.attractor.jobsearch.controller;
 
+import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
+import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,36 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
+
+    @PostMapping
+    public ResponseEntity<?> createResume (@RequestBody ResumeCreateDto resumeDto) {
+        try {
+            resumeService.create(resumeDto);
+            return ResponseEntity.ok("Resume is successfully created");
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateResume (@RequestBody ResumeUpdateDto resumeDto) {
+        try {
+            resumeService.update(resumeDto);
+            return ResponseEntity.ok("Resume is successfully updated");
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{resumeId}")
+    public ResponseEntity<?> deleteResume (String email, @PathVariable Integer resumeId) {
+        try {
+            resumeService.deleteResume(resumeId, email);
+            return ResponseEntity.ok("Resume is successfully deleted");
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     @GetMapping
     public ResponseEntity<?> getResumes (String employerEmail) {
@@ -31,34 +63,5 @@ public class ResumeController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createResume (ResumeDto resumeDto) {
-        try {
-            resumeService.createResume(resumeDto);
-            return ResponseEntity.ok("Resume is successfully created");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
 
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<?> updateResume (ResumeDto resumeDto) {
-        try {
-            resumeService.updateResume(resumeDto);
-            return ResponseEntity.ok("Resume is successfully updated");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("{resumeId}")
-    public ResponseEntity<?> deleteResume (String email, @PathVariable Integer resumeId) {
-        try {
-            resumeService.deleteResume(resumeId, email);
-            return ResponseEntity.ok("Resume is successfully deleted");
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 }

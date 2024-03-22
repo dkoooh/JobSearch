@@ -9,11 +9,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -55,7 +57,7 @@ public class ResumeDao {
         return template.query(sql, new ResumeMapper(), applicantId);
     }
 
-    public Number create(Resume resume) {
+    public int create(Resume resume) {
         String sql = """
                 insert into RESUMES (APPLICANT_ID, NAME, CATEGORY_ID, SALARY, IS_ACTIVE, CREATED_DATE, UPDATE_TIME)
                 values ( :applicant_id, :name, :category_id, :salary, :is_active, :created_date, :update_time )
@@ -71,9 +73,9 @@ public class ResumeDao {
                 .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
 
 
-
-        namedTemplate.update(sql, dataSource);
-        return new GeneratedKeyHolder().getKey();
+        KeyHolder kh = new GeneratedKeyHolder();
+        namedTemplate.update(sql, dataSource, kh);
+        return Objects.requireNonNull(kh.getKey()).intValue();
 
     }
 
