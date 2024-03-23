@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: Edit user table
+      author: dkoooh
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false

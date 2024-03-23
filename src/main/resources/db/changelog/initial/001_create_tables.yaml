@@ -113,6 +113,7 @@ databaseChangeLog:
                     foreignKeyName: fk_applicant_id
                     unique: false
                     references: users(id)
+                    deleteCascade: true
               - column:
                   name: name
                   type: text
@@ -259,6 +260,7 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_author_id
                     references: users(id)
+                    deleteCascade: true
               - column:
                   name: created_date
                   type: timestamp
