@@ -61,12 +61,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                             authorize
-                                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "vacancies").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "resume/**").hasAuthority("EMPLOYER")
-                                    .requestMatchers(HttpMethod.GET, "response/*").hasAuthority("APPLICANT")
-                                    .requestMatchers("vacancies", "users/applicants/*", "users/vacancies/*").hasAuthority("EMPLOYER")
-                                    .requestMatchers("resumes", "users/employers/*").hasAuthority("APPLICANT")
+                                    .requestMatchers(HttpMethod.POST, "users").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "vacancies", "vacancies/*").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "resumes", "resumes/**").hasAuthority("EMPLOYER")
+                                    .requestMatchers(HttpMethod.GET, "responses/*").hasAuthority("APPLICANT")
+                                    .requestMatchers("vacancies", "vacancies/*", "users/applicants/*", "users/vacancies/*").hasAuthority("EMPLOYER")
+                                    .requestMatchers("resumes", "resumes/*", "users/employers/*").hasAuthority("APPLICANT")
                                     .anyRequest().authenticated()
                 );
         return http.build();

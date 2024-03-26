@@ -16,6 +16,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService {
                 .surname(userDto.getSurname())
                 .age(userDto.getAge())
                 .email(userDto.getEmail())
-                .password(userDto.getPassword())
+                .password(new BCryptPasswordEncoder().encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
 //                .avatar(avatarFileName)
                 .accountType(userDto.getAccountType())
@@ -64,27 +66,22 @@ public class UserServiceImpl implements UserService {
         userDao.createUser(newUser);
     }
 
-    public void update(UserUpdateDto userDto) {
-        if (userDto.getAge() != null && userDto.getAge() < 16) {
-            throw new CustomException("User is too young");
-        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (userDto.getPassword() == null) {
-            throw new CustomException("Password is empty");
-        } else if (userDto.getPhoneNumber() == null || userDto.getPhoneNumber().isBlank()) {
-            throw new CustomException("Phone number is empty");
+    public void update(Authentication auth, UserUpdateDto dto, Integer userId) {
+
+        if (!userId.equals(userDao.getUserByEmail(auth.getName()).get().getId())) {
+            throw new CustomException("Access denied");
         }
 
-        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
+//        String avatarFileName = fileUtil.saveUploadedFile(user.getAvatar(), "images/users/");
 
         User user = User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .age(userDto.getAge())
-                .password(userDto.getPassword())
-                .phoneNumber(userDto.getPhoneNumber())
-                .avatar(avatarFileName)
+                .id(userId)
+                .name(dto.getName())
+                .surname(dto.getSurname())
+                .age(dto.getAge())
+                .password(new BCryptPasswordEncoder().encode(dto.getPassword()))
+                .phoneNumber(dto.getPhoneNumber())
+//                .avatar(avatarFileName)
                 .build();
 
         userDao.updateUser(user);
@@ -160,8 +157,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> downloadUserAvatar(String userEmail) {
-        Utils.verifyUser(userEmail, userDao);
-
         String fileName = userDao.getUserByEmail(userEmail).get().getAvatar();
         return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }

@@ -11,8 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @Builder
 public class UserUpdateDto {
-    @NotNull
-    private Integer id;
     @NotBlank
     private String name;
     private String surname;
@@ -22,5 +20,5 @@ public class UserUpdateDto {
     private String password;
     @NotBlank
     private String phoneNumber;
-    private MultipartFile avatar;
+//    private MultipartFile avatar;
 }

@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface UserService {
 
     void create(UserCreationDto userDto);
 
-    void update(UserUpdateDto userDto);
+    void update(Authentication auth, UserUpdateDto dto, Integer userId);
 
     ResponseEntity<?> downloadUserAvatar(String userEmail);
 
