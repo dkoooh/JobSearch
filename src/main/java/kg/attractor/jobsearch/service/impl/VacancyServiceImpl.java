@@ -127,7 +127,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .salary(vacancyDto.getSalary())
                 .expFrom(vacancyDto.getExpFrom())
                 .expTo(vacancyDto.getExpTo())
-                .isActive(vacancyDto.getIsActive())
+                .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : true)
                 .build();
 
         vacancyDao.updateVacancy(vacancy);
