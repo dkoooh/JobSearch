@@ -10,9 +10,6 @@ public class VacancyUpdateDto {
     @NotNull
     private Integer id;
     @NotBlank
-    @Email
-    private String authorEmail;
-    @NotBlank
     private String name;
     private String description;
     @NotNull

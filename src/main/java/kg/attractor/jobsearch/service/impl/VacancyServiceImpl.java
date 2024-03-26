@@ -13,6 +13,7 @@ import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,12 +37,7 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getActiveVacancies(String email) {
-        if (!userDao.isUserExists(email) || !"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get()
-                .getAccountType())) {
-            throw new CustomException("Access denied");
-        }
-
+    public List<VacancyDto> getActiveVacancies() {
         List<Vacancy> list = vacancyDao.getActiveVacancies();
 
         return list.stream()
@@ -68,17 +64,12 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getVacanciesByCategory(String email, Integer categoryId) {
+    public List<VacancyDto> getVacanciesByCategory(Integer categoryId) {
         if (categoryId == null || !categoryDao.getCategories().stream()
                 .map(Category::getId)
                 .toList()
                 .contains(categoryId)) {
             throw new CustomException("Invalid category ID");
-        }
-
-        if (!userDao.isUserExists(email) || !"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get()
-                .getAccountType())) {
-            throw new CustomException("Access denied");
         }
 
         List<Vacancy> list = vacancyDao.getVacanciesByCategory(categoryId);
@@ -88,17 +79,12 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void createVacancy(VacancyCreateDto vacancyDto){
+    public void createVacancy(VacancyCreateDto vacancyDto, Authentication auth){
         if (!categoryDao.getCategories().stream()
                 .map(Category::getId)
                 .toList()
                 .contains(vacancyDto.getCategoryId())) {
             throw new CustomException("Invalid category");
-        } else if (!userDao.isUserExists(vacancyDto.getAuthorEmail())) {
-            throw new CustomException("User is not exists");
-        } else if (!"employer".equalsIgnoreCase(userDao.getUserByEmail(vacancyDto.getAuthorEmail())
-                .get().getAccountType())) {
-            throw new CustomException("User is not employer");
         }
 
         Vacancy vacancy = Vacancy.builder()
@@ -110,7 +96,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .expTo(vacancyDto.getExpTo())
                 .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : true)
                 .authorId(userDao.getUserByEmail(
-                        vacancyDto.getAuthorEmail()).get().getId()
+                        auth.getName()).get().getId()
                 )
                 .build();
 
@@ -118,20 +104,17 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void updateVacancy(VacancyUpdateDto vacancyDto)  {
+    public void updateVacancy(VacancyUpdateDto vacancyDto, Authentication auth)  {
         if (!categoryDao.getCategories().stream()
                 .map(Category::getId)
                 .toList()
                 .contains(vacancyDto.getCategoryId())
         ) {
             throw new CustomException("Invalid category");
-        } else if (vacancyDao.getVacancyById(vacancyDto.getId()).isEmpty()) {
-            throw new CustomException("Invalid vacancy ID");
-        } else if (userDao.getUserByEmail(vacancyDto.getAuthorEmail()).isEmpty()
-                || !Objects.equals(
+        } else if (!Objects.equals(
                 vacancyDao.getVacancyById(vacancyDto.getId()).get().getAuthorId(),
-                userDao.getUserByEmail(vacancyDto.getAuthorEmail()).get().getId()
-        )
+                userDao.getUserByEmail(auth.getName()).get().getId()
+            )
         ) {
             throw new CustomException("You cannot change the vacancy of another employer");
         }
@@ -152,10 +135,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public void deleteVacancy(int vacancyId, String email)  {
-        if (!userDao.isUserExists(email) || !"employer".equalsIgnoreCase(userDao.getUserByEmail(email).get()
-                .getAccountType())) {
-            throw new CustomException("Access denied");
-        } else if (!Objects.equals(
+        if (!Objects.equals(
                 vacancyDao.getVacancyById(vacancyId).get().getAuthorId(),
                 userDao.getUserByEmail(email).get().getId())) {
             throw new CustomException("You cannot delete the vacancy of another employer");

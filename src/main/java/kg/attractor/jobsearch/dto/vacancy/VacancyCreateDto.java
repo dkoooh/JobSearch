@@ -8,9 +8,6 @@ import lombok.Data;
 @Builder
 public class VacancyCreateDto {
     @NotBlank
-    @Email
-    private String authorEmail;
-    @NotBlank
     private String name;
     private String description;
     @NotNull
