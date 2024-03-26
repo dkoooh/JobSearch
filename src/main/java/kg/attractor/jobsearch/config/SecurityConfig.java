@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,12 +24,12 @@ public class SecurityConfig {
     private final DataSource dataSource;
 
     @Bean
-    public PasswordEncoder encoder () {
+    public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Autowired
-    public void configureGlobal (AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         String userQuery = """
                 select email, password, enabled from users
                 where email = ?;
@@ -45,4 +49,27 @@ public class SecurityConfig {
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
 
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        authorize ->
+                            authorize
+                                    .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "vacancies").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "resume/**").hasAuthority("EMPLOYER")
+                                    .requestMatchers(HttpMethod.GET, "response/*").hasAuthority("APPLICANT")
+                                    .requestMatchers("vacancies", "users/applicants/*", "users/vacancies/*").hasAuthority("EMPLOYER")
+                                    .requestMatchers("resumes", "users/employers/*").hasAuthority("APPLICANT")
+                                    .anyRequest().authenticated()
+                );
+        return http.build();
+
+    }
 }

@@ -27,12 +27,7 @@ public class VacancyServiceImpl implements VacancyService {
     private final CategoryDao categoryDao;
 
     @Override
-    public List<VacancyDto> getVacancies(String email) {
-        if (!userDao.isUserExists(email) || !"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get()
-                .getAccountType())) {
-            throw new CustomException("Access denied");
-        }
-
+    public List<VacancyDto> getVacancies() {
         List<Vacancy> list = vacancyDao.getVacancies();
 
         return list.stream()

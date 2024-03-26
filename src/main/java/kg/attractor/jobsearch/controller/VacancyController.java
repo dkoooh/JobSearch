@@ -19,8 +19,8 @@ public class VacancyController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public ResponseEntity<?> getVacancies(@NotBlank @Email String email) {
-        return ResponseEntity.ok(vacancyService.getVacancies(email));
+    public ResponseEntity<?> getVacancies() {
+        return ResponseEntity.ok(vacancyService.getVacancies());
     }
 
     @GetMapping("category/{categoryId}")

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Phone number is empty");
         }
 
-        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
+//        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
 
         User newUser = User.builder()
                 .name(userDto.getName())
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .phoneNumber(userDto.getPhoneNumber())
-                .avatar(avatarFileName)
+//                .avatar(avatarFileName)
                 .accountType(userDto.getAccountType())
                 .build();
 

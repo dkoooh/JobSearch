@@ -8,7 +8,7 @@ import kg.attractor.jobsearch.exception.CustomException;
 import java.util.List;
 
 public interface VacancyService {
-    List<VacancyDto> getVacancies (String email);
+    List<VacancyDto> getVacancies ();
 
     List<VacancyDto> getActiveVacancies (String email);
 
