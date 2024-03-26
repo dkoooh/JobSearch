@@ -15,8 +15,6 @@ import java.util.List;
 @Data
 @Builder
 public class ResumeCreateDto {
-    @Email @NotBlank
-    private String applicantEmail;
     @NotBlank
     private String name;
     @NotNull

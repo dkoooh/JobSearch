@@ -17,8 +17,6 @@ import java.util.List;
 public class ResumeUpdateDto {
     @NotNull
     private Integer id;
-    @Email @NotBlank
-    private String applicantEmail;
     @NotBlank
     private String name;
     @NotNull

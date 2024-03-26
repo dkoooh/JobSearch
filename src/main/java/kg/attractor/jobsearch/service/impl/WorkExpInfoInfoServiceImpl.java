@@ -33,7 +33,7 @@ public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
     @Override
     public void update(WorkExpInfoUpdateDto dto, int resumeId) {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
-                .id(resumeId)
+                .id(dto.getId())
                 .resumeId(resumeId)
                 .years(dto.getYears())
                 .companyName(dto.getCompanyName())

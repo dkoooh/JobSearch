@@ -61,11 +61,12 @@ public class EducationInfoDao {
         String sql = """
                 update EDUCATION_INFO
                 set INSTITUTION = :institution, PROGRAM = :program, START_DATE = :start_date, END_DATE = :end_date, DEGREE = :degree
-                where ID = :id;
+                where ID = :id and RESUME_ID = :resume_id;
                 """;
 
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("id", educationInfo.getId())
+                .addValue("resume_id", educationInfo.getResumeId())
                 .addValue("institution", educationInfo.getInstitution())
                 .addValue("program", educationInfo.getProgram())
                 .addValue("start_date", educationInfo.getStartDate())

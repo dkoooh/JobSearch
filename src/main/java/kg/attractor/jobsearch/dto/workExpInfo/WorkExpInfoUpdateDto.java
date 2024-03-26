@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @Builder
 public class WorkExpInfoUpdateDto {
-    @NotNull
     private Integer id;
     @NotNull
     @Max(80) @Min(1)

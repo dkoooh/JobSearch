@@ -17,6 +17,7 @@ import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +53,6 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public List<ResumeDto> getResumesByCategory(int categoryId, String email){
-        Utils.verifyUser(email, "employer", userDao);
 
         List<Resume> list = resumeDao.getResumesByCategory(categoryId);
         return list.stream()
@@ -69,23 +69,19 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void create(ResumeCreateDto dto){
-        Utils.verifyUser(dto.getApplicantEmail(), "applicant", userDao);
-
-        if (dto.getName() == null || dto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (dto.getCategoryId() != null && !categoryDao.getCategories().stream()
+    public void create(ResumeCreateDto dto, Authentication auth){
+        if (!categoryDao.getCategories().stream()
                 .map(Category::getId)
                 .toList().contains(dto.getCategoryId())) {
             throw new CustomException("Invalid category");
         }
 
         Resume resume = Resume.builder()
-                .applicantId(userDao.getUserByEmail(dto.getApplicantEmail()).get().getId())
+                .applicantId(userDao.getUserByEmail(auth.getName()).get().getId())
                 .name(dto.getName())
                 .categoryId(dto.getCategoryId())
                 .salary(dto.getSalary())
-                .isActive(true)
+                .isActive(dto.getIsActive() != null ? dto.getIsActive() : true)
                 .build();
 
         int resumeId = resumeDao.create(resume);
@@ -102,12 +98,8 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void update(ResumeUpdateDto resumeDto) {
-        Utils.verifyUser(resumeDto.getApplicantEmail(), "applicant", userDao);
-
-        if (resumeDto.getName() == null || resumeDto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (resumeDto.getCategoryId() != null && !categoryDao.getCategories().stream()
+    public void update(ResumeUpdateDto resumeDto, Authentication auth) {
+        if (!categoryDao.getCategories().stream()
                 .map(Category::getId)
                 .toList().contains(resumeDto.getCategoryId())) {
             throw new CustomException("Invalid category");
@@ -119,7 +111,7 @@ public class ResumeServiceImpl implements ResumeService {
 
         Resume resume = Resume.builder()
                 .id(resumeDto.getId())
-                .applicantId(userDao.getUserByEmail(resumeDto.getApplicantEmail()).get().getId())
+                .applicantId(userDao.getUserByEmail(auth.getName()).get().getId())
                 .name(resumeDto.getName())
                 .categoryId(resumeDto.getCategoryId())
                 .salary(resumeDto.getSalary())
@@ -141,10 +133,11 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void deleteResume(int resumeId, String email){
-        Utils.verifyUser(email, "applicant", userDao);
 
         if (!resumeDao.getResumes().stream().map(Resume::getId).toList().contains(resumeId)) {
             throw new CustomException("Cannot find resume with ID: " + resumeId);
+        } if (!userDao.getUserByEmail(email).get().getId().equals(resumeDao.getResumeById(resumeId).get().getApplicantId())) {
+            throw new CustomException("Access denied");
         }
 
         resumeDao.deleteResume(resumeId);

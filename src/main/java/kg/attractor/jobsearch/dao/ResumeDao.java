@@ -87,11 +87,12 @@ public class ResumeDao {
                 SALARY = :salary,
                 IS_ACTIVE = :is_active,
                 UPDATE_TIME = :update_time
-                where ID = :id
+                where ID = :id and APPLICANT_ID = :applicant_id
                 """;
 
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("id", resume.getId())
+                .addValue("applicant_id", resume.getApplicantId())
                 .addValue("name", resume.getName())
                 .addValue("category_id", resume.getCategoryId())
                 .addValue("salary", resume.getSalary())

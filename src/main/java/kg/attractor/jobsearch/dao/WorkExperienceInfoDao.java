@@ -61,11 +61,12 @@ public class WorkExperienceInfoDao {
         String sql = """
                 update WORK_EXPERIENCE_INFO
                 set YEARS = :years, COMPANY_NAME = :company_name, POSITION = :position, RESPONSIBILITIES = :responsibilities
-                where ID = :id;
+                where ID = :id and RESUME_ID = :resume_id;
                 """;
 
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("id", info.getId())
+                .addValue("resume_id", info.getResumeId())
                 .addValue("years", info.getYears())
                 .addValue("company_name", info.getCompanyName())
                 .addValue("position", info.getPosition())
