@@ -68,6 +68,7 @@ public class SecurityConfig {
                                     .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")
                                     .requestMatchers("api/vacancies", "api/vacancies/*", "api/users/applicants/*", "api/users/vacancies/*").hasAuthority("EMPLOYER")
                                     .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
+                                    .requestMatchers("data/**").permitAll()
                                     .anyRequest().authenticated()
 //                                    .anyRequest().permitAll()
                 );
