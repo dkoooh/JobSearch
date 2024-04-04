@@ -76,6 +76,10 @@ public class UserDao {
         String sql = """
                 insert into USERS (NAME, SURNAME, AGE, EMAIL, PASSWORD, PHONE_NUMBER, AVATAR, ACCOUNT_TYPE, ENABLED)
                 values ( :name, :surname, :age, :email, :password, :phone_number, :avatar, :account_type, true);
+                
+                insert into USER_AUTHORITY (USER_ID, AUTHORITY_ID) 
+                VALUES ( (select ID from USERS where EMAIL = :email),
+                         (select ID from AUTHORITIES where AUTHORITY = :account_type) )
                 """;
 
         MapSqlParameterSource dataSource = new MapSqlParameterSource()
