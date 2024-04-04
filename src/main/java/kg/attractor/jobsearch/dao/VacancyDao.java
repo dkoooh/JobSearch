@@ -51,7 +51,7 @@ public class VacancyDao {
         );
     }
 
-    public List<Vacancy> getVacanciesByUser (int userId) {
+    public List<Vacancy> getVacanciesByApplicant(int userId) {
         String sql = """
                 select * from VACANCIES
                 where ID in (
@@ -63,6 +63,18 @@ public class VacancyDao {
                 );
                 """;
         return template.query(sql, new VacancyMapper(), userId);
+    }
+
+    public List<Vacancy> getVacanciesByEmployer(String email) {
+        String sql = """
+                select * from VACANCIES
+                where AUTHOR_ID in (
+                    select ID from USERS
+                    where EMAIL = ?
+                );
+                """;
+
+        return template.query(sql, new VacancyMapper(), email);
     }
 
     public List<Vacancy> getVacanciesByCategory(int categoryId) {

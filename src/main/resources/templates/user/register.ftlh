@@ -17,7 +17,7 @@
             <input type="text" class="form-control" name="surname" placeholder="Surname">
         </div>
         <div class="mb-3">
-            <input type="number" min="16" max="100" class="form-control" name="age" placeholder="Your age" required>
+            <input type="number" min="16" max="100" class="form-control" name="age" placeholder="Your age">
         </div>
         <div class="mb-3">
             <input type="password" class="form-control" name="password" placeholder="New password" required>

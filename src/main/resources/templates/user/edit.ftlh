@@ -21,7 +21,7 @@
         </div>
         <div class="mb-3">
             <label for="age">Age</label>
-            <input type="number" id="age" min="16" max="100" class="form-control" name="age" value="${user.age}" required>
+            <input type="number" id="age" min="16" max="100" class="form-control" name="age" value="${user.age}">
         </div>
         <div class="mb-3">
             <label for="password">New password</label>

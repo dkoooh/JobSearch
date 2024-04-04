@@ -124,4 +124,14 @@ public class UserDao {
 
         template.update(sql, fileName, userEmail);
     }
+
+    public Optional<User> getUserById(int userId) {
+        String sql = """
+                select * from USERS
+                where ID = ?;
+                """;
+
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), userId)));
+    }
 }

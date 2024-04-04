@@ -3,7 +3,6 @@ package kg.attractor.jobsearch.service;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -15,7 +14,9 @@ public interface VacancyService {
 
     VacancyDto getVacancyById (int vacancyId);
 
-    List<VacancyDto> getVacanciesByUser (int id);
+    List<VacancyDto> getVacanciesByApplicant(int id);
+
+    List<VacancyDto> getVacanciesByEmployer(Authentication auth);
 
     List<VacancyDto> getVacanciesByCategory (Integer categoryId);
 

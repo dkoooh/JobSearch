@@ -7,6 +7,7 @@ import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.VacancyService;
@@ -56,8 +57,15 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getVacanciesByUser(int id) {
-        List<Vacancy> list = vacancyDao.getVacanciesByUser(id);
+    public List<VacancyDto> getVacanciesByApplicant(int id) {
+        List<Vacancy> list = vacancyDao.getVacanciesByApplicant(id);
+        return list.stream()
+                .map(this::convertListToDto)
+                .toList();
+    }
+
+    public List<VacancyDto> getVacanciesByEmployer(Authentication auth) {
+        List<Vacancy> list = vacancyDao.getVacanciesByEmployer(auth.getName());
         return list.stream()
                 .map(this::convertListToDto)
                 .toList();
@@ -148,7 +156,11 @@ public class VacancyServiceImpl implements VacancyService {
                 .id(vacancy.getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
-                .categoryId(vacancy.getCategoryId())
+                .category(categoryDao.getCategoryById(
+                        vacancy.getCategoryId()).orElseThrow(
+                                () -> new NotFoundException("Cannot find category with ID: " + vacancy.getCategoryId()))
+                        .getName()
+                )
                 .salary(vacancy.getSalary())
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())

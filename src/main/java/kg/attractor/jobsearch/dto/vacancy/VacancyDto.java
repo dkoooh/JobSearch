@@ -11,7 +11,7 @@ public class VacancyDto {
     private Integer id;
     private String name;
     private String description;
-    private Integer categoryId;
+    private String category;
     private Double salary;
     private Integer expFrom;
     private Integer expTo;

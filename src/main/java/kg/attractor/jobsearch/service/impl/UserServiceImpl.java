@@ -90,6 +90,14 @@ public class UserServiceImpl implements UserService {
         return transformToDto(user);
     }
 
+    public UserDto getUserById (int userId) {
+        User user = userDao.getUserById(userId).orElseThrow(() -> new CustomException("Cannot find user with ID: "
+                + userId));
+
+        return transformToDto(user);
+    }
+
+
     public List<UserDto> getUsersByName(String name) {
         List<User> users = userDao.getUsersByName(name);
 
