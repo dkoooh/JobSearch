@@ -61,12 +61,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                             authorize
-                                    .requestMatchers(HttpMethod.POST, "users").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "vacancies", "vacancies/*").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "resumes", "resumes/**").hasAuthority("EMPLOYER")
-                                    .requestMatchers(HttpMethod.GET, "responses/*").hasAuthority("APPLICANT")
-                                    .requestMatchers("vacancies", "vacancies/*", "users/applicants/*", "users/vacancies/*").hasAuthority("EMPLOYER")
-                                    .requestMatchers("resumes", "resumes/*", "users/employers/*").hasAuthority("APPLICANT")
+                                    .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "users/register").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
+                                    .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")
+                                    .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")
+                                    .requestMatchers("api/vacancies", "api/vacancies/*", "api/users/applicants/*", "api/users/vacancies/*").hasAuthority("EMPLOYER")
+                                    .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
                                     .anyRequest().authenticated()
                 );
         return http.build();
