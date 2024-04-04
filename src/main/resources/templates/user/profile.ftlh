@@ -8,7 +8,7 @@
         <div class="col">
             <h3>${user.name} ${user.surname}</h3>
             <p>Возраст: ${user.age}</p>
-            <a href="/редактировать" class="btn btn-success">Редактировать</a>
+            <a href="/users/profile/edit" class="btn btn-success">Редактировать</a>
         </div>
         <div class="col my-auto d-flex flex-row gap-3 gap-md-2 justify-content-center">
             <a class="btn btn-danger d-flex justify-content-center align-items-center"
@@ -24,7 +24,7 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">${resume.name}</h5>
-                        <p class="card-text">Дата обновления: ${resume.updateTime}</p>
+                        <p class="card-text">Дата обновления: <br>${resume.updateTime}</p>
                     </div>
                     <div class="card-footer bg-white border-0 gap-1 mt-auto">
                         <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">Обновить</a>

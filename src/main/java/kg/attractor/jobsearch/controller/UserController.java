@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,19 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("userResumes", userResumes);
         return "/user/profile";
+    }
+
+    @GetMapping("profile/edit")
+    public String editUser (Model model, Authentication authentication) {
+        UserDto user = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("user", user);
+        return "/user/edit";
+    }
+
+    @PostMapping("profile/edit")
+    @ResponseStatus(HttpStatus.SEE_OTHER)
+    public String editUser (UserUpdateDto dto, Authentication auth) {
+        userService.update(auth, dto, userService.getUserByEmail(auth.getName()).getId());
+        return "redirect:/";
     }
 }

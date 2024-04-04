@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Phone number is empty");
         }
 
-//        String avatarFileName = fileUtil.saveUploadedFile(userDto.getAvatar(), "images/users/");
-
         User newUser = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -72,8 +70,6 @@ public class UserServiceImpl implements UserService {
             throw new CustomException("Access denied");
         }
 
-//        String avatarFileName = fileUtil.saveUploadedFile(user.getAvatar(), "images/users/");
-
         User user = User.builder()
                 .id(userId)
                 .name(dto.getName())
@@ -81,7 +77,6 @@ public class UserServiceImpl implements UserService {
                 .age(dto.getAge())
                 .password(new BCryptPasswordEncoder().encode(dto.getPassword()))
                 .phoneNumber(dto.getPhoneNumber())
-//                .avatar(avatarFileName)
                 .build();
 
         userDao.updateUser(user);
