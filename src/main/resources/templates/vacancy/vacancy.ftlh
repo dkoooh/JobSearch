@@ -6,7 +6,7 @@
             <div class="card-body">
                 <h3 class="card-title">${vacancy.name}</h3>
                 <#if vacancy.salary?? && vacancy.salary gt 0>
-                    <h5 class="card-subtitle">- ${vacancy.salary} сом</h5>
+                    <h5 class="card-subtitle">${vacancy.salary} сом</h5>
                 </#if>
                 <h6 class="card-subtitle my-1">- Категория: ${vacancy.category}</h6>
                 <#if vacancy.expFrom??>

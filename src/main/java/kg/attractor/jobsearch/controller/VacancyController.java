@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.controller;
 
 import kg.attractor.jobsearch.dao.VacancyDao;
+import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
@@ -11,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("vacancies")
@@ -25,5 +28,12 @@ public class VacancyController {
         model.addAttribute("vacancy", vacancy);
         model.addAttribute("author", userService.getUserById(vacancy.getAuthorId()));
         return "/vacancy/vacancy";
+    }
+
+    @GetMapping
+    public String getVacancies(Model model) {
+        List<VacancyDto> vacancies = vacancyService.getVacancies();
+        model.addAttribute("vacancies", vacancies);
+        return "vacancy/vacancies";
     }
 }
