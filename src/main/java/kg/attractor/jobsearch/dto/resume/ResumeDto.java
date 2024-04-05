@@ -16,7 +16,7 @@ public class ResumeDto {
     private Integer id;
     private Integer applicantId;
     private String name;
-    private Integer categoryId;
+    private String category;
     private Double salary;
     private Boolean isActive;
     private List<EduInfoDto> educationInfo;

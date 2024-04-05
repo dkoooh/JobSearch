@@ -36,7 +36,9 @@
                 <div class="col-7 col-sm-4 col-md-3 px-auto px-sm-0">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">${resume.name}</h5>
+                            <h5 class="card-title"><a href="/resumes/${resume.id}" class="text-decoration-none text-black">
+                                ${resume.name}
+                                </a></h5>
                             <p class="card-text">Дата обновления: <br>${resume.updateTime}</p>
                         </div>
                         <div class="card-footer bg-white border-0 gap-1 mt-auto">

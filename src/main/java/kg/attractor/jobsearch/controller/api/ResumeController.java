@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController("resumeControllerRest")
 @RequestMapping("api/resumes")
 @RequiredArgsConstructor
 public class ResumeController {

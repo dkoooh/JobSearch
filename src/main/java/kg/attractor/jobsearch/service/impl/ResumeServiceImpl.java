@@ -7,6 +7,7 @@ import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.service.ContactInfoService;
@@ -148,7 +149,10 @@ public class ResumeServiceImpl implements ResumeService {
                 .id(resume.getId())
                 .applicantId(resume.getApplicantId())
                 .name(resume.getName())
-                .categoryId(resume.getCategoryId())
+                .category(categoryDao.getCategoryById(
+                                resume.getCategoryId()).orElseThrow(
+                                () -> new NotFoundException("Cannot find category with ID: " + resume.getCategoryId()))
+                        .getName())
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .educationInfo(eduInfoService.getByResumeId(resume.getId()))
