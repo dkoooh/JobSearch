@@ -79,6 +79,15 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
 
+        UserDto oldUser = getUserByEmail(auth.getName());
+
+        if (dto.getAvatar() != null) {
+            String filename = fileUtil.saveUploadedFile(dto.getAvatar(), "images/users");
+            user.setAvatar(filename);
+        } else {
+            user.setAvatar(oldUser.getAvatar());
+        }
+
         userDao.updateUser(user);
     }
 
@@ -96,7 +105,6 @@ public class UserServiceImpl implements UserService {
 
         return transformToDto(user);
     }
-
 
     public List<UserDto> getUsersByName(String name) {
         List<User> users = userDao.getUsersByName(name);

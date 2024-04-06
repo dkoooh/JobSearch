@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-    <form class="col-6 mx-auto" action="/users/profile/edit" method="POST">
+    <form class="col-6 mx-auto" action="/users/profile/edit" method="POST" enctype="multipart/form-data">
         <h1>Editing</h1>
         <div class="mb-3">
             <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="${user.email}" disabled>
@@ -26,6 +26,10 @@
         <div class="mb-3">
             <label for="password">New password</label>
             <input type="password" id="password" class="form-control" name="password" placeholder="Write new password if you wanna change it">
+        </div>
+        <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+            <input class="form-control" name="avatar" type="file" id="formFileMultiple" multiple>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

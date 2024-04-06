@@ -13,10 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -66,6 +66,13 @@ public class UserController {
     @PostMapping("profile/edit")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String editUser (UserUpdateDto dto, Authentication auth) {
+//        if (result.hasErrors()) {
+//            System.err.println("ERROR FILE");
+//            System.err.println(result.getModel());
+//            return "redirect:/";
+//        }
+//        MultipartFile file = dto.getAvatar();
+//        System.out.println("file = " + file);
         userService.update(auth, dto, userService.getUserByEmail(auth.getName()).getId());
         return "redirect:/";
     }
