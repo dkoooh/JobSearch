@@ -82,7 +82,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .name(dto.getName())
                 .categoryId(dto.getCategoryId())
                 .salary(dto.getSalary())
-                .isActive(dto.getIsActive() != null ? dto.getIsActive() : true)
+                .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .build();
 
         int resumeId = resumeDao.create(resume);
@@ -116,7 +116,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .name(resumeDto.getName())
                 .categoryId(resumeDto.getCategoryId())
                 .salary(resumeDto.getSalary())
-                .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : true)
+                .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : false)
                 .build();
 
         resumeDto.getEducationInfo().forEach(

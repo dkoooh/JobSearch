@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-    <form class="col-md-9 col-lg-8 mx-auto my-3" action="/resumes/create" method="POST" enctype="multipart/form-data">
+    <form class="col-md-9 col-lg-8 mx-auto my-3" action="/resumes/create" method="POST">
         <h1 class="text-center mb-4">Создание резюме:</h1>
 
         <div class="col-sm-9 col-lg-7 col-xl-6 mb-4">
