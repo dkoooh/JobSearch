@@ -2,16 +2,18 @@
 
 <@main.layout>
     <form method="POST" action="/vacancies/${vacancy.id}/edit" class="col-md-9 col-lg-8 mx-auto my-3">
-        <h2 class="text-center">Создание вакансии:</h2>
+        <h2 class="text-center">Редактирование вакансии:</h2>
         <div class="col-sm-9 col-lg-7 col-xl-6 mb-4">
             <div class="mb-2 ">
                 <label for="name">Название вакансии:</label>
-                <input type="text" id="name" class="form-control" name="name" placeholder="Введите название" value="${vacancy.name}" required>
+                <input type="text" id="name" class="form-control" name="name" placeholder="Введите название"
+                       value="${vacancy.name}" required>
             </div>
             <div class="mb-2">
                 <label for="category">Категория:</label>
                 <select class="form-select" aria-label="Choose account type" name="categoryId" id="category" required>
-                    <option selected disabled>Выберите категорию</option>P
+                    <option selected disabled>Выберите категорию</option>
+                    P
                     <#list categories as category>
                         <#if vacancy.category == category.name>
                             <option value="${category.id}" selected>${category.name}</option>
@@ -23,13 +25,21 @@
             </div>
             <div class="mb-4">
                 <label for="salary">Заработная плата:</label>
-                <input type="number" step="0.01" id="salary" class="form-control" name="salary" placeholder="Введите оклад" value="${vacancy.salary}">
+                <input type="number" step="0.01" id="salary" class="form-control" name="salary"
+                       placeholder="Введите оклад" value="${vacancy.salary}">
             </div>
 
             <div class="form-floating mb-3">
-                <textarea class="form-control" placeholder="Описание вакансии:" id="floatingTextarea2" style="height: 200px">
-                    ${vacancy.description}
-                </textarea>
+
+                <#if vacancy.description??>
+                    <textarea class="form-control" placeholder="Описание вакансии:" name="description" id="floatingTextarea2"
+                              style="height: 200px">
+                        ${vacancy.description}
+                    </textarea>
+                <#else>
+                    <textarea class="form-control" placeholder="Описание вакансии:" name="description" id="floatingTextarea2"
+                              style="height: 200px"></textarea>
+                </#if>
                 <label for="floatingTextarea2">Описание вакансии:</label>
             </div>
 
@@ -40,7 +50,8 @@
                         <div class="input-group-text">
                             <label for="expFrom">От</label>
                         </div>
-                        <input type="number" id="expFrom" class="form-control" name="expFrom" value="${vacancy.expFrom}">
+                        <input type="number" id="expFrom" class="form-control" name="expFrom"
+                               value="${vacancy.expFrom}">
                     </div>
                 </div>
                 <div class="col-auto">
@@ -56,9 +67,9 @@
 
         <div class="form-check mb-3 mt-4">
             <#if vacancy.isActive>
-                <input class="form-check-input"  type="checkbox" value="true" name="isActive" id="isActive" checked>
+                <input class="form-check-input" type="checkbox" value="true" name="isActive" id="isActive" checked>
             <#else>
-                <input class="form-check-input"  type="checkbox" value="true" name="isActive" id="isActive">
+                <input class="form-check-input" type="checkbox" value="true" name="isActive" id="isActive">
             </#if>
             <label class="form-check-label" for="isActive">
                 Активно

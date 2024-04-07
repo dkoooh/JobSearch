@@ -23,7 +23,7 @@
             </div>
 
             <div class="form-floating mb-3">
-                <textarea class="form-control" placeholder="Описание вакансии:" id="floatingTextarea2" style="height: 200px"></textarea>
+                <textarea class="form-control" placeholder="Описание вакансии:" name="description" id="floatingTextarea2" style="height: 200px"></textarea>
                 <label for="floatingTextarea2">Описание вакансии:</label>
             </div>
 

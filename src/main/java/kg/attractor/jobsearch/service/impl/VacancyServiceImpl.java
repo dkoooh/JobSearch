@@ -102,7 +102,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .salary(vacancyDto.getSalary())
                 .expFrom(vacancyDto.getExpFrom())
                 .expTo(vacancyDto.getExpTo())
-                .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : true)
+                .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : false)
                 .authorId(userDao.getUserByEmail(
                         auth.getName()).get().getId()
                 )
@@ -135,7 +135,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .salary(vacancyDto.getSalary())
                 .expFrom(vacancyDto.getExpFrom())
                 .expTo(vacancyDto.getExpTo())
-                .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : true)
+                .isActive(vacancyDto.getIsActive() != null ? vacancyDto.getIsActive() : false)
                 .build();
 
         vacancyDao.updateVacancy(vacancy);
