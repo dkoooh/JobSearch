@@ -19,7 +19,7 @@
             </div>
             <div class="mb-4">
                 <label for="salary">Заработная плата:</label>
-                <input type="number" id="salary" class="form-control" name="salary" placeholder="Введите оклад">
+                <input type="number" id="salary" step="0.01" class="form-control" name="salary" placeholder="Введите оклад">
             </div>
 
             <div class="form-floating mb-3">

@@ -20,7 +20,7 @@
             </div>
             <div class="mb-2">
                 <label for="salary">Ожидаемый уровень оклада:</label>
-                <input type="number" id="salary" class="form-control" name="salary">
+                <input type="number" id="salary" class="form-control" step="0.01" name="salary">
             </div>
         </div>
 
