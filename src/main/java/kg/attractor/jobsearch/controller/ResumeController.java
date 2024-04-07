@@ -40,7 +40,7 @@ public class ResumeController {
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String create(ResumeCreateDto resumeCreateDto, Authentication authentication) {
         resumeService.create(resumeCreateDto, authentication);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
     @GetMapping("{id}/edit")
@@ -54,7 +54,7 @@ public class ResumeController {
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String edit(ResumeUpdateDto dto, Authentication auth) {
         resumeService.update(dto, auth);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
 }

@@ -37,7 +37,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String createUser (UserCreationDto dto) {
         userService.create(dto);
-        return "redirect:/";
+        return "redirect:/users";
     }
 
     @GetMapping
@@ -74,6 +74,6 @@ public class UserController {
 //        MultipartFile file = dto.getAvatar();
 //        System.out.println("file = " + file);
         userService.update(auth, dto, userService.getUserByEmail(auth.getName()).getId());
-        return "redirect:/";
+        return "redirect:/users";
     }
 }
