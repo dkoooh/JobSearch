@@ -27,4 +27,18 @@ public class ResumeCreateDto {
     private List<EduInfoCreateDto> educationInfo;
     @Valid @NotNull
     private List<ContactInfoCreateDto> contacts;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ResumeCreateDto{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", categoryId=").append(categoryId);
+        sb.append(", Salary=").append(Salary);
+        sb.append(", isActive=").append(isActive);
+        sb.append(", workExperienceInfo=").append(workExperienceInfo);
+        sb.append(", educationInfo=").append(educationInfo);
+        sb.append(", contacts=").append(contacts);
+        sb.append('}');
+        return sb.toString();
+    }
 }
