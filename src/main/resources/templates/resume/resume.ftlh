@@ -1,5 +1,7 @@
 <#import "../layout.ftlh" as main>
 
+
+<#--    TODO исправить контакты-->
 <@main.layout>
     <div class="row row-cols-1 row-cols-md-2 justify-content-md-evenly align-items-start">
         <div class="col-12 col-md-8">

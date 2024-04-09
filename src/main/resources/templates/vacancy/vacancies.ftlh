@@ -3,6 +3,8 @@
 <@main.layout>
     <h2>Вакансии:</h2>
 
+<#--    TODO добавить название орг-ции-->
+
     <form class="my-3 col-12 col-sm-8 col-md-6" method="GET" action="http://localhost:1234/vacancies/categories">
         <select class="form-select" name="categoryId" aria-label="Default select example">
             <option selected disabled>Выберите категорию</option>

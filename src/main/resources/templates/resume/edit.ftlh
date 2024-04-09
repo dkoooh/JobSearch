@@ -214,6 +214,8 @@
                     </div>
                 </#if>
             </#list>
+
+<#--            TODO сделать другим спобосом контакты-->
         </div>
 
         <div class="form-check mb-3 mt-4">
