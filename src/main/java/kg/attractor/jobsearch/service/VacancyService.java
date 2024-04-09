@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.service;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface VacancyService {
     List<VacancyDto> getVacancies ();
 
-    List<VacancyDto> getActiveVacancies ();
+    Page<VacancyDto> getActiveVacancies(int page);
 
     VacancyDto getVacancyById (int vacancyId);
 

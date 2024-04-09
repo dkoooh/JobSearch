@@ -3,7 +3,7 @@
 <@main.layout>
     <h2>Все вакансии:</h2>
     <div class="row row-cols-1 row-gap-2">
-        <#list vacancies as vacancy>
+        <#list vacancies.content as vacancy>
             <div class="col-9">
                 <div class="card">
                     <div class="card-body">
@@ -26,4 +26,38 @@
             </div>
         </#list>
     </div>
+
+    <nav class="my-4">
+        <ul class="pagination">
+            <li class="page-item">
+                <#if page == 1>
+                    <a class="page-link disabled" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                <#else>
+                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </#if>
+            </li>
+            <#list 1..vacancies.getTotalPages() as p>
+                <#if p == vacancies.getNumber() + 1>
+                    <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
+                <#else>
+                    <li class="page-item"><a class="page-link" href="/vacancies?page=${p}">${p}</a></li>
+                </#if>
+            </#list>
+            <li class="page-item">
+                <#if page == vacancies.getTotalPages()>
+                    <a class="page-link disabled" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                <#else>
+                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </#if>
+            </li>
+        </ul>
+    </nav>
 </@main.layout>

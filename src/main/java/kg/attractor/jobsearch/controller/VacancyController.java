@@ -3,17 +3,16 @@ package kg.attractor.jobsearch.controller;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
+import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,9 +33,13 @@ public class VacancyController {
     }
 
     @GetMapping
-    public String getVacancies(Model model) {
-        List<VacancyDto> vacancies = vacancyService.getVacancies();
+    public String getVacancies(Model model, @RequestParam(name = "page", defaultValue = "1") Integer page) {
+        Page<VacancyDto> vacancies = vacancyService.getActiveVacancies(page - 1);
+        List<Category> categories = categoryService.getCategories();
+
+        model.addAttribute("page", page);
         model.addAttribute("vacancies", vacancies);
+        model.addAttribute("categories", categories);
         return "vacancy/vacancies";
     }
 

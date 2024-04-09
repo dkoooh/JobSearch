@@ -14,6 +14,10 @@ import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -38,12 +42,14 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getActiveVacancies() {
+    public Page<VacancyDto> getActiveVacancies(int page) {
         List<Vacancy> list = vacancyDao.getActiveVacancies();
 
-        return list.stream()
+        List<VacancyDto> activeVacancies = list.stream()
                 .map(this::convertListToDto)
                 .toList();
+
+        return toPage(activeVacancies, PageRequest.of(page, 5));
     }
 
     @SneakyThrows
@@ -149,6 +155,17 @@ public class VacancyServiceImpl implements VacancyService {
             throw new CustomException("You cannot delete the vacancy of another employer");
         }
         vacancyDao.deleteVacancy(vacancyId);
+    }
+
+    private Page<VacancyDto> toPage(List<VacancyDto> vacancies, Pageable pageable){
+        if (pageable.getOffset() >= vacancies.size()){
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize() > vacancies.size() ?
+                vacancies.size() : pageable.getOffset() + pageable.getPageSize()));
+        List<VacancyDto> subList = vacancies.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, vacancies.size());
     }
 
     private VacancyDto convertListToDto(Vacancy vacancy) {
