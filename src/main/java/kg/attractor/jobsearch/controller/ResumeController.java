@@ -3,15 +3,19 @@ package kg.attractor.jobsearch.controller;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
+import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("resumes")
@@ -55,6 +59,18 @@ public class ResumeController {
     public String edit(ResumeUpdateDto dto, Authentication auth) {
         resumeService.update(dto, auth);
         return "redirect:/users";
+    }
+
+    @GetMapping
+    public String getActiveResumes (@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
+        List<Category> categories = categoryService.getCategories();
+        Page<ResumeDto> resumes = resumeService.getActiveResumes(page - 1);
+
+        model.addAttribute("page", page);
+        model.addAttribute("categories", categories);
+        model.addAttribute("resumes", resumes);
+
+        return "resume/resumes";
     }
 
 }

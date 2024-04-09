@@ -43,7 +43,7 @@
                         </div>
                         <div class="card-footer bg-white border-0 gap-1 mt-auto">
                             <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">Обновить</a>
-                            <a href="#" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
+                            <a href="/resumes/${resume.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
                         </div>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="card-footer bg-white border-0 gap-1 mt-auto">
                             <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">Обновить</a>
-                            <a href="#" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
+                            <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
                         </div>
                     </div>
                 </div>

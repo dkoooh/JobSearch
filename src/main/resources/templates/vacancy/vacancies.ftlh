@@ -1,7 +1,17 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-    <h2>Все вакансии:</h2>
+    <h2>Вакансии:</h2>
+
+    <form class="my-3 col-12 col-sm-8 col-md-6" method="GET" action="http://localhost:1234/vacancies/categories">
+        <select class="form-select" name="categoryId" aria-label="Default select example">
+            <option selected disabled>Выберите категорию</option>
+            <#list categories as category>
+                <option value="${category.id}">${category.name}</option>
+            </#list>
+        </select>
+        <button type="submit" class="btn btn-primary my-2">Поиск</button>
+    </form>
     <div class="row row-cols-1 row-gap-2">
         <#list vacancies.content as vacancy>
             <div class="col-9">

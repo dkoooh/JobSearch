@@ -6,6 +6,7 @@ import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
+import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Category;
@@ -18,6 +19,10 @@ import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +47,27 @@ public class ResumeServiceImpl implements ResumeService {
                 .map(this::convertToDto)
                 .toList();
     }
+
+    @Override
+    public Page<ResumeDto> getActiveResumes (int page) {
+        List<ResumeDto> resumes = resumeDao.getResumes().stream()
+                .map(this::convertToDto)
+                .toList();
+
+        return toPage(resumes, PageRequest.of(page, 5));
+    }
+
+    private Page<ResumeDto> toPage(List<ResumeDto> resumes, Pageable pageable){
+        if (pageable.getOffset() >= resumes.size()){
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize() > resumes.size() ?
+                resumes.size() : pageable.getOffset() + pageable.getPageSize()));
+        List<ResumeDto> subList = resumes.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, resumes.size());
+    }
+
 
     @SneakyThrows
     @Override

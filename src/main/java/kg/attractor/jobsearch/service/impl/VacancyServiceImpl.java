@@ -93,6 +93,23 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
+    public Page<VacancyDto> getVacanciesByCategory(Integer categoryId, int page) {
+        if (categoryId == null || !categoryDao.getCategories().stream()
+                .map(Category::getId)
+                .toList()
+                .contains(categoryId)) {
+            throw new CustomException("Invalid category ID");
+        }
+
+        List<Vacancy> list = vacancyDao.getVacanciesByCategory(categoryId);
+        List<VacancyDto> vacancies = list.stream()
+                .map(this::convertListToDto)
+                .toList();
+
+        return toPage(vacancies, PageRequest.of(page, 5));
+    }
+
+    @Override
     public void createVacancy(VacancyCreateDto vacancyDto, Authentication auth){
         if (!categoryDao.getCategories().stream()
                 .map(Category::getId)

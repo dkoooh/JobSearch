@@ -3,13 +3,15 @@ package kg.attractor.jobsearch.service;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
 public interface ResumeService {
     List<ResumeDto> getResumes (String employerEmail);
+
+    Page<ResumeDto> getActiveResumes (int page);
 
     ResumeDto getResumeById(int resumeId);
 
