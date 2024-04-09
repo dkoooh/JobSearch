@@ -1,22 +1,24 @@
+
+-- Везде пароли 123
 insert into USERS (name, surname, age, email, password, phone_number, account_type, enabled)
 values ('Alice', 'Johnson', 28, 'alice.johnson@example.com',
-        '$2a$12$N7/Z5b0oWysJ0iW2Nj/Ee.mwvTJuMlStjmo9j3c6ZazQWCSdGcrQ6', '0711111111', 'applicant', true),
-       ('Bob', 'Smith', 35, 'bob.smith@example.com', '$2a$12$JFX2M0eqO4iqJsKYLkCwQex5MvivT3BfiSPhvj3j2Kftt9hG06eDm',
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0711111111', 'applicant', true),
+       ('Bob', 'Smith', 35, 'bob.smith@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
         '0722222222', 'employer', true),
-       ('Emma', 'Brown', 40, 'emma.brown@example.com', '$2a$12$CwXf/uZaA3Tc.7D9IitvHulqPysoeAlQzNsfn7A8CYFnFGNV8ylHW',
+       ('Emma', 'Brown', 40, 'emma.brown@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
         '0733333333', 'employer', true),
        ('Grace', 'Wilson', 32, 'grace.wilson@example.com',
-        '$2a$12$ZRrMoSJ4AZ12BBl8yIPFJehLz2uVLsUX3ANcc8rDcn27AbXNwu2Zu', '0744444444', 'applicant', true),
-       ('David', 'Lee', 50, 'david.lee@example.com', '$2a$12$27mbpAsiRVH.n2bHOpMqUe4pHUuYYJUHhe3Ufgsoj/TZqJfMoye0S',
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0744444444', 'applicant', true),
+       ('David', 'Lee', 50, 'david.lee@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
         '0755555555', 'applicant', true),
        ('Emily', 'Johnson', 30, 'emily.johnson@example.com',
-        '$2a$12$z7Y9j.Ve.Gq0vHdF7BdyGupj.wRnRpsTXue1/VuX4W5lBybVq0Nvy', '0777777777', 'employer', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0777777777', 'employer', true),
        ('Michael', 'Williams', 38, 'michael.williams@example.com',
-        '$2a$12$R/PPIJG0QMcSsbvhGqLk9Ohz9uXc8PM5MF6ZvFJ0Hxh5C3obWw9g6', '0788888888', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0788888888', 'applicant', true),
        ('Sophia', 'Brown', 25, 'sophia.brown@example.com',
-        '$2a$12$uLrxrN3jfrU6S02L6O6X9Ond4NR1HmLzbDqIvV/VtJ7LRNrFtGhzC', '0799999999', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0799999999', 'applicant', true),
        ('Matthew', 'Jones', 33, 'matthew.jones@example.com',
-        '$2a$12$.5LcrFkCEf94MfKIs8IqWuW20R2NLKyRJbGK4HLxSMNr2jyX7.PXa', '0800000000', 'employer', true);
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0800000000', 'employer', true);
 
 insert into USER_AUTHORITY (user_id, authority_id)
 values ((select id from users where email = 'alice.johnson@example.com'),
