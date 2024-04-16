@@ -7,6 +7,7 @@
                 <img src="api/users/user/image" class="img w-100 my-auto" alt="avatar">
             <#else>
                 <img src="#дефолт_аватар" class="img w-100 my-auto" alt = avatar>
+<#--                TODO добавить дефолт аватар-->
             </#if>
         </div>
         <div class="col">
@@ -17,14 +18,13 @@
             <a href="/users/profile/edit" class="btn btn-success">Редактировать</a>
         </div>
         <div class="col my-auto d-flex flex-row gap-3 gap-md-2 justify-content-center">
-            <a class="btn btn-danger d-flex justify-content-center align-items-center"
-               style="height: 100px; width: 100px; text-align: center">
-                <#if user.accountType = "applicant">
-                    +<br>Создать<br>резюме
-                <#else>
-                    +<br>Создать<br>вакансию
-                </#if>
-            </a>
+            <#if user.accountType = "applicant">
+                <a href="/resumes/create" class="btn btn-danger d-flex justify-content-center align-items-center"
+                    style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
+            <#else>
+                <a href="/vacancies/create" class="btn btn-danger d-flex justify-content-center align-items-center"
+                   style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
+            </#if>
             <a class="btn btn-light d-flex border border-1 justify-content-center align-items-center"
                style="height: 100px; width: 100px; text-align: center">Отклики</a>
         </div>

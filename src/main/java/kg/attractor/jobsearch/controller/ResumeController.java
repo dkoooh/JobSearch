@@ -43,6 +43,7 @@ public class ResumeController {
     @PostMapping("create")
     @ResponseStatus(HttpStatus.SEE_OTHER)
     public String create(ResumeCreateDto resumeCreateDto, Authentication authentication) {
+        System.out.println(resumeCreateDto);
         resumeService.create(resumeCreateDto, authentication);
         return "redirect:/users";
     }

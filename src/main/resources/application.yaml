@@ -2,6 +2,8 @@ server:
   port: 1234
 
 spring:
+  mvc:
+    static-path-pattern: static/**
   datasource:
     url: jdbc:h2:./db/job_search;AUTO_SERVER=TRUE
     username: root
