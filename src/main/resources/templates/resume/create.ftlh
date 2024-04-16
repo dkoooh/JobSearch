@@ -27,7 +27,7 @@
         <p class="py-0 mb-1">О себе:</p>
         <div class="row row-cols-1 row-gap-4 mb-3">
             <div class="col row row-cols-1 row-gap-2">
-                <div id="eduInfo" class="col-12 col-sm-10 col-lg-8 col-xl-7">
+                <div id="workExpInfo" class="col-12 col-sm-10 col-lg-8 col-xl-7">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Опыт работы: </h5>
@@ -67,12 +67,12 @@
                     </div>
                 </div>
                 <div class="col-1 align-items-center justify-start">
-                    <button id="add-work-exp" class="btn btn-danger d-flex border border-1 justify-content-center align-items-center fs-2"
+                    <button id="add-work-exp" onclick="addWorkExp(event)" class="btn btn-danger d-flex border border-1 justify-content-center align-items-center fs-2"
                        style="height: 100px; width: 100px; text-align: center">+</button>
                 </div>
             </div>
             <div class="col row row-cols-1 row-gap-2">
-                <div class="col-12 col-sm-10 col-lg-8 col-xl-7">
+                <div id="eduInfo" class="col-12 col-sm-10 col-lg-8 col-xl-7 row-gap-2">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Образование:</h5>
@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <div class="col-1 align-items-center justify-start">
-                    <button id="add-education" class="btn btn-danger d-flex border border-1 justify-content-center align-items-center fs-2"
+                    <button onclick="addEdu(event)" id="add-edu" class="btn btn-danger d-flex border border-1 justify-content-center align-items-center fs-2"
                        style="height: 100px; width: 100px; text-align: center">+</button>
                 </div>
             </div>
