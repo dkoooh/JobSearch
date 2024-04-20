@@ -4,9 +4,11 @@ import kg.attractor.jobsearch.service.mapper.UserMapper;
 import kg.attractor.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -133,5 +135,17 @@ public class UserDao {
 
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(template.query(sql, new UserMapper(), userId)));
+    }
+
+    public Boolean isCredentialsValid (User user) {
+        String sql = """
+                select * from USERS
+                where email = ?
+                and PASSWORD = ?
+                """;
+
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), user.getEmail(), user.getPassword()))
+        ).isPresent();
     }
 }

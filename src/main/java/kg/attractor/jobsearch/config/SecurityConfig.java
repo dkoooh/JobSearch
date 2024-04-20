@@ -69,6 +69,7 @@ public class SecurityConfig {
                                     .requestMatchers("api/vacancies", "api/vacancies/*", "api/users/applicants/*", "api/users/vacancies/*").hasAuthority("EMPLOYER")
                                     .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
                                     .requestMatchers("data/**").permitAll()
+                                    .requestMatchers("users/login").anonymous()
                                     .anyRequest().authenticated()
 //                                    .anyRequest().permitAll()
                 );

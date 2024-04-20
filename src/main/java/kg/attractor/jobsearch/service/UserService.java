@@ -2,6 +2,7 @@ package kg.attractor.jobsearch.service;
 
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import org.springframework.http.ResponseEntity;
@@ -35,4 +36,6 @@ public interface UserService {
     ResponseEntity<?> downloadUserAvatar(String userEmail);
 
     void uploadUserAvatar(String userEmail, MultipartFile userImage);
+
+    void login(UserLoginDto user);
 }

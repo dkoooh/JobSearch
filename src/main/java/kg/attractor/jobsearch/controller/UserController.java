@@ -1,8 +1,10 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.service.ResumeService;
@@ -26,13 +28,13 @@ public class UserController {
     private final VacancyService vacancyService;
 
     @GetMapping("register")
-    public String createUser () {
+    public String create() {
         return "user/register";
     }
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String createUser (UserCreationDto dto) {
+    public String create(UserCreationDto dto) {
         userService.create(dto);
         return "redirect:/users";
     }
@@ -54,7 +56,7 @@ public class UserController {
     }
 
     @GetMapping("profile/edit")
-    public String editUser (Model model, Authentication authentication) {
+    public String edit(Model model, Authentication authentication) {
         UserDto user = userService.getUserByEmail(authentication.getName());
         model.addAttribute("user", user);
         return "/user/edit";
@@ -62,7 +64,7 @@ public class UserController {
 
     @PostMapping("profile/edit")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String editUser (UserUpdateDto dto, Authentication auth) {
+    public String edit(UserUpdateDto dto, Authentication auth) {
 //        if (result.hasErrors()) {
 //            System.err.println("ERROR FILE");
 //            System.err.println(result.getModel());
@@ -77,5 +79,12 @@ public class UserController {
     @GetMapping("login")
     public String login() {
         return "/user/login";
+    }
+
+    @PostMapping("login")
+    public String login(@RequestBody UserLoginDto user) {
+        userService.login(user);
+
+        return "redirect:/users";
     }
 }

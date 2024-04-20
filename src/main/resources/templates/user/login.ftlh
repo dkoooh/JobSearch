@@ -8,10 +8,10 @@
                     <div class="card bg-white text-black" style="border-radius: 1rem;">
                         <div class="card-body p-5 text-center">
 
-                            <div class="mt-md-4 pb-5">
+                            <form id="login" class="mt-md-4 pb-5">
 
                                 <h2 class="fw-bold mb-2 text-uppercase">Вход</h2>
-                                <p class="text-black-50 mb-5">Введите логин и пароль</p>
+                                <p id="login-text" class="text-black-50 mb-5">Введите email и пароль</p>
 
                                 <div data-mdb-input-init class="form-outline form-black mb-4">
                                     <input type="email" id="typeEmailX" class="form-control form-control-lg"
@@ -21,14 +21,14 @@
 
                                 <div data-mdb-input-init class="form-outline form-black mb-4">
                                     <input type="password" id="typePasswordX" class="form-control form-control-lg"
-                                           name="password"/>
+                                           name="userPassword"/>
                                     <label class="form-label" for="typePasswordX">Пароль</label>
                                 </div>
 
                                 <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary btn-lg
                                 px-5" type="submit">Войти</button>
 
-                            </div>
+                            </form>
 
                             <div>
                                 <p class="mb-0">Нет учетной записи? <a href="/users/register" class="text-primary-50
@@ -42,4 +42,8 @@
             </div>
         </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script src="/static/js/user/login.js"></script>
 </@main.layout>

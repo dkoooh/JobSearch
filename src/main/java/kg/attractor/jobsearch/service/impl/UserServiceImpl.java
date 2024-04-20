@@ -4,8 +4,10 @@ import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.UserService;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -164,6 +167,19 @@ public class UserServiceImpl implements UserService {
 
         String fileName = fileUtil.saveUploadedFile(userImage, "images/users/");
         userDao.uploadUserAvatar(userEmail, fileName);
+    }
+
+    @Override
+    public void login(UserLoginDto userDto) {
+        Optional<User> foundUser = userDao.getUserByEmail(userDto.getEmail());
+
+        if (foundUser.isEmpty()) {
+            throw new NotFoundException("Bad Credentials");
+        }
+
+        if (!new BCryptPasswordEncoder().matches(userDto.getUserPassword(), foundUser.get().getPassword())) {
+            throw new NotFoundException("Bad Credentials");
+        }
     }
 
     @Override
