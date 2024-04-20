@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -75,5 +72,10 @@ public class UserController {
 //        System.out.println("file = " + file);
         userService.update(auth, dto, userService.getUserByEmail(auth.getName()).getId());
         return "redirect:/users";
+    }
+
+    @GetMapping("login")
+    public String login() {
+        return "/user/login";
     }
 }

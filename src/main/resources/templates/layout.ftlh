@@ -21,13 +21,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/vacancies">Vacancies</a>
+                            <a class="nav-link" aria-current="page" href="/vacancies">Все вакансии</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/users">Profile</a>
+                            <a class="nav-link" aria-current="page" href="/users">Профиль</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/users/register">Register</a>
+                            <a class="nav-link" aria-current="page" href="/users/register">Регистрация</a>
                         </li>
                     </ul>
                 </div>
@@ -39,5 +39,6 @@
         </main>
     </body>
     </html>
+    
 </#macro>
 
