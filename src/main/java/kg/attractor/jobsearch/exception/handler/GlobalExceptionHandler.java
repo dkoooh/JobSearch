@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.exception.handler;
 
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NoAccessException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponse;
@@ -18,5 +19,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ErrorResponse NotFoundExceptionHandler(NotFoundException e) {
         return ErrorResponse.builder(e, HttpStatus.NOT_FOUND, e.getMessage()).build();
+    }
+
+    @ExceptionHandler(NoAccessException.class)
+    public ErrorResponse NoAccessExceptionHandler(NoAccessException e) {
+        return ErrorResponse.builder(e, HttpStatus.FORBIDDEN, e.getMessage()).build();
     }
 }

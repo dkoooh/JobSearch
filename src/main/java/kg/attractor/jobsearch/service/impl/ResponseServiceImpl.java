@@ -4,13 +4,22 @@ import kg.attractor.jobsearch.dao.ResponseDao;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.ResponseDto;
+import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.RespondedApplicant;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.ResponseService;
+import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -18,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class ResponseServiceImpl implements ResponseService {
     private final ResponseDao responseDao;
     private final UserDao userDao;
+    private final UserService userService;
     private final VacancyDao vacancyDao;
 
     public ResponseDto getResponseByVacancy(Integer vacancyId, String email){
@@ -43,5 +53,31 @@ public class ResponseServiceImpl implements ResponseService {
                 .vacancyId(respondedApplicant.getVacancyId())
                 .isConfirmed(respondedApplicant.getIsConfirmed())
                 .build();
+    }
+
+    @Override
+    public ResponseDto getById(Integer id) {
+
+        RespondedApplicant response = responseDao.getById(id).orElseThrow(
+                () -> new NotFoundException("Cannot find response with ID: " + id)
+        );
+
+        return ResponseDto.builder()
+                .id(response.getId())
+                .vacancyId(response.getVacancyId())
+                .resumeId(response.getResumeId())
+                .isConfirmed(response.getIsConfirmed())
+                .build();
+    }
+
+//   public List<Map<String, Object>> fetchAll (String myId) {
+//       List<Map<String, Object>> getAllUsers = template.queryForList("select * from users where id!=?", myId);
+//
+//       return getAllUsers;
+//   }
+
+    public List<Map<String, Object>> fetchAllGroups () {
+        UserDto user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return responseDao.fetchAllGroups(user.getId());
     }
 }

@@ -23,4 +23,6 @@ public class ResponseController {
     public ResponseEntity<?> getResponseByVacancy(@PathVariable Integer vacancyId, Authentication auth) {
         return ResponseEntity.ok(responseService.getResponseByVacancy(vacancyId, auth.getName()));
     }
+
+
 }

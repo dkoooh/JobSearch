@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      author: dkoooh
+      id: delete messages
+      changes:
+        - dropTable:
+            tableName: messages
+
+  - changeSet:
+        id: recreate table for messages
+        author: dkoooh
+        changes:
+          - createTable:
+              tableName: messages
+              columns:
+                - column:
+                    name: id
+                    type: int
+                    autoIncrement: true
+                    constraints:
+                      nullable: false
+                      primaryKey: true
+                - column:
+                    name: responded_applicant_id
+                    type: int
+                    constraints:
+                      nullable: false
+                      foreignKeyName: fk_responded_applicant_id
+                      references: responded_applicants(id)
+                      deleteCascade: true
+                - column:
+                    name: sender_id
+                    type: int
+                    constraints:
+                      nullable: false
+                - column:
+                    name: content
+                    type: text
+                - column:
+                    name: timestamp
+                    type: timestamp
+
