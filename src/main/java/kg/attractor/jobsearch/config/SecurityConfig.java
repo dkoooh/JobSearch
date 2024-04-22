@@ -53,24 +53,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+//                .httpBasic(Customizer.withDefaults())
+                .formLogin(httpSecurityFormLoginConfigurer -> {
+                    httpSecurityFormLoginConfigurer
+                            .loginPage("/users/login")
+//                            .failureForwardUrl("users/login?error")
+                            .permitAll();
+                })
+//                .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorize ->
-                            authorize
-                                    .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "users/register").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
-                                    .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")
-                                    .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")
-                                    .requestMatchers("api/vacancies", "api/vacancies/*", "api/users/applicants/*", "api/users/vacancies/*").hasAuthority("EMPLOYER")
-                                    .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
-                                    .requestMatchers("data/**").permitAll()
-                                    .requestMatchers("users/login").anonymous()
-                                    .anyRequest().authenticated()
+                                authorize
+                                        .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
+                                        .requestMatchers("users/login").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "users/register").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")
+                                        .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")
+                                        .requestMatchers("api/vacancies", "api/vacancies/*", "api/users/applicants/*", "api/users/vacancies/*").hasAuthority("EMPLOYER")
+                                        .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
+                                        .requestMatchers("data/**").permitAll()
+                                        .anyRequest().authenticated()
 //                                    .anyRequest().permitAll()
                 );
         return http.build();
