@@ -47,7 +47,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
             integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script>
+    <script <#--src="/static/js/user/login.js"-->>
         let params = new URLSearchParams(window.location.search);
         if (params.has("error")) {
             window.onload = () => {
@@ -56,6 +56,25 @@
                 $(msg).text('Неверный email или пароль...')
                 $(msg).addClass('text-danger');
                 $(msg).removeClass('text-black-50');
+            }
+        }
+
+        let form = document.getElementById('login')
+        form.addEventListener('submit', onSubmitAddToLocalStorage)
+
+        async function onSubmitAddToLocalStorage (event) {
+            let data = new FormData(event.target);
+            let user = Object.fromEntries(data);
+
+            try {
+                let request = await fetch("http://localhost:1234/users/login")
+
+                if (request.ok) {
+                    localStorage.setItem("user", JSON.stringify(user));
+                }
+
+            } catch (e) {
+                console.log(e)
             }
         }
     </script>

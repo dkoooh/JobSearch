@@ -31,9 +31,9 @@
                 Employer
             </div>
             <div class="card-body">
-                <h3 class="card-title">${author.name}</h3>
-                <h6 class="card-subtitle">${author.email}</h6>
-                <p class="card-text mt-2">Тел: ${author.phoneNumber}</p>
+                <h3 class="card-title">${vacancy.author.name} ${vacancy.author.name}</h3>
+                <h6 class="card-subtitle">${vacancy.author.email}</h6>
+                <p class="card-text mt-2">Тел: ${vacancy.author.phoneNumber}</p>
             </div>
         </div>
     </div>

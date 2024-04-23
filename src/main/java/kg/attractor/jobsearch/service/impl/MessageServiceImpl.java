@@ -6,8 +6,6 @@ import kg.attractor.jobsearch.service.MessageService;
 import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 

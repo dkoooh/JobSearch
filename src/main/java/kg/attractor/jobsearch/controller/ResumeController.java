@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
@@ -57,7 +58,7 @@ public class ResumeController {
 
     @PostMapping("{id}/edit")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(ResumeUpdateDto dto, Authentication auth) {
+    public String edit(@Valid ResumeUpdateDto dto, Authentication auth) {
         resumeService.update(dto, auth);
         return "redirect:/users";
     }

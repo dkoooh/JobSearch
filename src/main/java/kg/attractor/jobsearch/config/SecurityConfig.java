@@ -54,21 +54,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-//                .httpBasic(Customizer.withDefaults())
                 .formLogin(httpSecurityFormLoginConfigurer -> {
                     httpSecurityFormLoginConfigurer
                             .loginPage("/users/login")
-//                            .failureForwardUrl("users/login?error")
                             .permitAll();
                 })
-//                .logout(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
-                                        .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
-                                        .requestMatchers("users/login").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/", "/vacancies", "vacancies/*").permitAll()
                                         .requestMatchers(HttpMethod.GET, "users/register").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/vacancies", "/vacancies/*").hasAuthority("EMPLOYER")
+                                        .requestMatchers(HttpMethod.POST, "resumes", "resumes/*").hasAuthority("APPLICANT")
+                                        .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")
                                         .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")

@@ -11,6 +11,7 @@
                 <p>Возраст: ${user.age}</p>
             </#if>
             <a href="/users/profile/edit" class="btn btn-success">Редактировать</a>
+            <a href="/logout" class="btn btn-danger">Выйти</a>
         </div>
         <div class="col my-auto d-flex flex-row gap-3 gap-md-2 justify-content-center">
             <#if user.accountType = "APPLICANT">
@@ -20,7 +21,7 @@
                 <a href="/vacancies/create" class="btn btn-danger d-flex justify-content-center align-items-center"
                    style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
             </#if>
-            <a class="btn btn-light d-flex border border-1 justify-content-center align-items-center"
+            <a href="/responses" class="btn btn-light d-flex border border-1 justify-content-center align-items-center"
                style="height: 100px; width: 100px; text-align: center">Отклики</a>
         </div>
     </div>

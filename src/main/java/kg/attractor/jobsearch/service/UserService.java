@@ -33,7 +33,7 @@ public interface UserService {
 
     void update(Authentication auth, UserUpdateDto dto, Integer userId);
 
-//    void login(Authentication auth, UserLoginDto userLoginDto);
+    void login(Authentication auth, UserLoginDto userLoginDto);
 
     ResponseEntity<?> downloadUserAvatar(String userEmail);
 

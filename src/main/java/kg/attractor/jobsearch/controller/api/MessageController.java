@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@RestController()
+@RequestMapping("api/chats")
 @RequiredArgsConstructor
 @CrossOrigin
 public class MessageController {
@@ -26,12 +27,12 @@ public class MessageController {
 //        return messageService.getListMessage(from, to);
 //    }
 
-    @PostMapping("/chat/group/{groupId}")
+    @PostMapping("/{groupId}")
     public void sendMessageToGroup (@PathVariable(name = "groupId") Integer to, @RequestBody MessageDto messageDto) {
         messageService.sendMessageGroup(to, messageDto);
     }
 
-    @GetMapping("listmessage/group/{groupId}")
+    @GetMapping("/{groupId}")
     public List<Map<String, Object>> getListMessageGroupChat(@PathVariable Integer groupId) {
         return messageService.getListMessagesGroups(groupId);
     }
@@ -41,7 +42,7 @@ public class MessageController {
 //        return userAndGroupService.fetchAll(myId);
 //    }
 
-    @GetMapping("/fetchAllGroups")
+    @GetMapping("/")
     public List<Map<String, Object>> fetchAllGroups() {
         return responseService.fetchAllGroups();
     }
