@@ -6,11 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -46,20 +44,25 @@ public class UserController {
         return userService.downloadUserAvatar(auth.getName());
     }
 
+    @GetMapping("user/image/{email}")
+    public ResponseEntity<?> downloadUserAvatar(@PathVariable String email) {
+        return userService.downloadUserAvatar(email);
+    }
+
     @PostMapping("user/image")
     public ResponseEntity<?> uploadUserAvatar(@NotNull MultipartFile file, Authentication auth) {
         userService.uploadUserAvatar(auth.getName(), file);
         return ResponseEntity.ok("User avatar was uploaded");
     }
 
-    @GetMapping("employers/{employerEmail}")
-    public ResponseEntity<?> getEmployer(@PathVariable @NotBlank @Email String employerEmail, Authentication auth) {
-        return ResponseEntity.ok(userService.getEmployer(employerEmail, auth.getName()));
+    @GetMapping("employers/{employerId}")
+    public ResponseEntity<?> getEmployer(@PathVariable @NotNull Integer employerId) {
+        return ResponseEntity.ok(userService.getEmployer(employerId));
     }
 
-    @GetMapping("applicants/{applicantEmail}")
-    public ResponseEntity<?> getApplicant(Authentication auth, @PathVariable @NotBlank @Email String applicantEmail) {
-        return ResponseEntity.ok(userService.getApplicant(auth.getName(), applicantEmail));
+    @GetMapping("applicants/{applicantId}")
+    public ResponseEntity<?> getApplicant(@PathVariable @NotNull Integer applicantId) {
+        return ResponseEntity.ok(userService.getApplicant(applicantId));
     }
 
     @GetMapping("vacancies/{vacancyId}")

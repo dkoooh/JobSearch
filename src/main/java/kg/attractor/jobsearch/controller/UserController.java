@@ -81,10 +81,10 @@ public class UserController {
         return "/user/login";
     }
 
-    @PostMapping("login")
-    public String login(@RequestBody UserLoginDto user) {
-        userService.login(user);
-
-        return "redirect:/users";
-    }
+//    @PostMapping("login")
+//    public String login(Authentication auth, @Valid UserLoginDto userLoginDto) {
+//        userService.login(auth, userLoginDto);
+//
+//        return "redirect:/users";
+//    }
 }

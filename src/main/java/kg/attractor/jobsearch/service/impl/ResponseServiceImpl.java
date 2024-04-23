@@ -6,6 +6,7 @@ import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.ResponseDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NoAccessException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.RespondedApplicant;
 import kg.attractor.jobsearch.model.Vacancy;
@@ -62,12 +63,23 @@ public class ResponseServiceImpl implements ResponseService {
                 () -> new NotFoundException("Cannot find response with ID: " + id)
         );
 
-        return ResponseDto.builder()
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+
+
+        ResponseDto responseDto = ResponseDto.builder()
                 .id(response.getId())
                 .vacancyId(response.getVacancyId())
                 .resumeId(response.getResumeId())
                 .isConfirmed(response.getIsConfirmed())
                 .build();
+
+        if (!userService.getUserByEmail(userEmail).getId().equals(responseDto.getVacancyId()) &&
+                !userService.getUserByEmail(userEmail).getId().equals(responseDto.getResumeId())) {
+            throw new NoAccessException("Cannot get info of the response you're not a member of");
+        }
+
+        return responseDto;
     }
 
 //   public List<Map<String, Object>> fetchAll (String myId) {

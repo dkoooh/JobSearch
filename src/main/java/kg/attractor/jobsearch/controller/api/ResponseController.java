@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResponseController {
     private final ResponseService responseService;
 
-    @GetMapping("{vacancyId}")
+    @GetMapping("vacancy/{vacancyId}")
     public ResponseEntity<?> getResponseByVacancy(@PathVariable Integer vacancyId, Authentication auth) {
         return ResponseEntity.ok(responseService.getResponseByVacancy(vacancyId, auth.getName()));
     }
 
-
+    @GetMapping("{id}")
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(responseService.getById(id));
+    }
 }

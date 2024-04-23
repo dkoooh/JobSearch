@@ -23,9 +23,9 @@ public interface UserService {
 
     List<UserDto> getApplicantsByVacancy (Integer vacancyId, String email);
 
-    UserDto getEmployer (String employerEmail, String applicantEmail);
+    UserDto getEmployer (Integer employerEmail);
 
-    UserDto getApplicant (String employerEmail, String applicantEmail);
+    UserDto getApplicant (Integer applicantEmail);
 
     Boolean isUserExists (String email);
 
@@ -33,9 +33,9 @@ public interface UserService {
 
     void update(Authentication auth, UserUpdateDto dto, Integer userId);
 
+//    void login(Authentication auth, UserLoginDto userLoginDto);
+
     ResponseEntity<?> downloadUserAvatar(String userEmail);
 
     void uploadUserAvatar(String userEmail, MultipartFile userImage);
-
-    void login(UserLoginDto user);
 }

@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .password(new BCryptPasswordEncoder().encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
-//                .avatar(avatarFileName)
+                .avatar("default_avatar.png")
                 .accountType(userDto.getAccountType())
                 .build();
 
@@ -84,7 +85,9 @@ public class UserServiceImpl implements UserService {
 
         UserDto oldUser = getUserByEmail(auth.getName());
 
-        if (dto.getAvatar() != null) {
+        var avatar = oldUser.getAvatar();
+
+        if (!dto.getAvatar().isEmpty()) {
             String filename = fileUtil.saveUploadedFile(dto.getAvatar(), "images/users");
             user.setAvatar(filename);
         } else {
@@ -147,14 +150,12 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
-    public UserDto getEmployer(String employerEmail, String applicantEmail) {
-        validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
-        return getUserByEmail(employerEmail);
+    public UserDto getEmployer(Integer employerId) {
+        return getUserById(employerId);
     }
 
-    public UserDto getApplicant(String employerEmail, String applicantEmail) {
-        validateApplicantAndEmployerEmail(employerEmail, applicantEmail);
-        return getUserByEmail(applicantEmail);
+    public UserDto getApplicant(Integer applicantId) {
+        return getUserById(applicantId);
     }
 
     public Boolean isUserExists(String email) {
@@ -169,18 +170,21 @@ public class UserServiceImpl implements UserService {
         userDao.uploadUserAvatar(userEmail, fileName);
     }
 
-    @Override
-    public void login(UserLoginDto userDto) {
-        Optional<User> foundUser = userDao.getUserByEmail(userDto.getEmail());
-
-        if (foundUser.isEmpty()) {
-            throw new NotFoundException("Bad Credentials");
-        }
-
-        if (!new BCryptPasswordEncoder().matches(userDto.getUserPassword(), foundUser.get().getPassword())) {
-            throw new NotFoundException("Bad Credentials");
-        }
-    }
+//    @Override
+//    public void login(Authentication auth, UserLoginDto userDto) {
+//        Optional<User> foundUser = userDao.getUserByEmail(userDto.getEmail());
+//
+//        org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
+//        System.out.println("Password: " + userDetails.getPassword());
+//
+//        if (foundUser.isEmpty()) {
+//            throw new NotFoundException("Bad Credentials");
+//        }
+//
+//        if (!new BCryptPasswordEncoder().matches(userDto.getUserPassword(), foundUser.get().getPassword())) {
+//            throw new NotFoundException("Bad Credentials");
+//        }
+//    }
 
     @Override
     public ResponseEntity<?> downloadUserAvatar(String userEmail) {
@@ -199,16 +203,5 @@ public class UserServiceImpl implements UserService {
                 .avatar(user.getAvatar())
                 .accountType(user.getAccountType())
                 .build();
-    }
-
-    private void validateApplicantAndEmployerEmail(String employerEmail, String applicantEmail) {
-        if (applicantEmail == null || !isUserExists(applicantEmail) ||
-                !"applicant".equalsIgnoreCase(userDao.getUserByEmail(applicantEmail).get().getAccountType())) {
-            throw new CustomException("Access denied");
-        }
-
-        Utils.verifyUser(applicantEmail, "applicant", userDao);
-
-        Utils.verifyUser(employerEmail, "employer", userDao);
     }
 }
