@@ -12,4 +12,6 @@ public interface ResponseService {
     ResponseDto getById(Integer id);
 
     List<Map<String, Object>> fetchAllGroups ();
+
+    void create(Integer vacancyId, Integer resumeId);
 }

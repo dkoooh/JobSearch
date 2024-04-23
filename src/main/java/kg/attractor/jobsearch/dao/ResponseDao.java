@@ -47,4 +47,12 @@ public class ResponseDao {
 
         return template.queryForList(sql, userId, userId);
     }
+
+    public void create(Integer vacancyId, Integer resumeId) {
+        String sql = """
+                insert into RESPONDED_APPLICANTS (RESUME_ID, VACANCY_ID) values (?, ?);
+                """;
+        
+        template.update(sql, resumeId, vacancyId);
+    }
 }

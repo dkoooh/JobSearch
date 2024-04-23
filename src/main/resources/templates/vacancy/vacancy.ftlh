@@ -22,7 +22,7 @@
                 </#if>
             </div>
             <div class="card-footer bg-white border-0">
-                <a href="#" class="btn btn-success mb-2">Откликнуться</a>
+                <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success mb-2">Откликнуться</a>
             </div>
 
         </div>

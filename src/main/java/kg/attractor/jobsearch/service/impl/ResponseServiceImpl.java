@@ -103,4 +103,9 @@ public class ResponseServiceImpl implements ResponseService {
 
         return responses;
     }
+
+    @Override
+    public void create(Integer vacancyId, Integer resumeId) {
+        responseDao.create(vacancyId, resumeId);
+    }
 }

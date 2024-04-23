@@ -172,7 +172,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void login(Authentication auth, UserLoginDto userDto) {
-        Optional<User> foundUser = userDao.getUserByEmail(userDto.getEmail());
+        Optional<User> foundUser = userDao.getUserByEmail(userDto.getUsername());
 
         org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
         System.out.println("Password: " + userDetails.getPassword());
@@ -181,7 +181,7 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("Bad Credentials");
         }
 
-        if (!new BCryptPasswordEncoder().matches(userDto.getUserPassword(), foundUser.get().getPassword())) {
+        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), foundUser.get().getPassword())) {
             throw new NotFoundException("Bad Credentials");
         }
     }

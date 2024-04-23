@@ -32,7 +32,7 @@
                                 <p class="card-text">Опыт от ${vacancy.expFrom} лет</p>
                             </#if>
                         </#if>
-                        <a href="#" class="btn btn-success">Откликнуться</a>
+                        <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success">Откликнуться ${vacancy.id}</a>
                     </div>
                 </div>
             </div>
