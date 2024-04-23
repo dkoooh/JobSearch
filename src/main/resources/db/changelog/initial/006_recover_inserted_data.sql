@@ -1,6 +1,6 @@
 insert into USERS (name, surname, age, email, password, phone_number, account_type, enabled)
-values ('John', 'Doe', 30, 'jonhdoe@gmail.com', '$2a$12$iYbYIZq7wpNHq5jsx8qrx.2HsXKp4KseRD3FLIxE4Is/3gEbcU2RC', '0700707700', 'applicant', true),
-       ('Bill', 'Milner', 45, 'bill.milner@gmail.com', '$2a$12$hlp10BiYwRTgS/Wvwz8nuuHAQfP7PmMRlZ7qxX7Gm0as1CkZ1D/56', '0505500500', 'employer', true);
+values ('John', 'Doe', 30, 'jonhdoe@gmail.com', '$2a$12$iYbYIZq7wpNHq5jsx8qrx.2HsXKp4KseRD3FLIxE4Is/3gEbcU2RC', '0700707700', 'APPLICANT', true),
+       ('Bill', 'Milner', 45, 'bill.milner@gmail.com', '$2a$12$hlp10BiYwRTgS/Wvwz8nuuHAQfP7PmMRlZ7qxX7Gm0as1CkZ1D/56', '0505500500', 'EMPLOYER', true);
 
 insert into AUTHORITIES (authority)
 values ('APPLICANT'),

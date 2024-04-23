@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 .email(userDto.getEmail())
                 .password(new BCryptPasswordEncoder().encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
-                .avatar("default_avatar.png")
+                .avatar("_default_avatar.png")
                 .accountType(userDto.getAccountType())
                 .build();
 

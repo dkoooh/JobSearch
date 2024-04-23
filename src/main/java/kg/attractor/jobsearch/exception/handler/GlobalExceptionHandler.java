@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.exception.NoAccessException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,5 +25,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoAccessException.class)
     public ErrorResponse NoAccessExceptionHandler(NoAccessException e) {
         return ErrorResponse.builder(e, HttpStatus.FORBIDDEN, e.getMessage()).build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorResponse MethodArgumentNotValidExceptionHandler (MethodArgumentNotValidException e) {
+        return ErrorResponse.builder(e, HttpStatus.BAD_REQUEST, e.getMessage()).build();
     }
 }

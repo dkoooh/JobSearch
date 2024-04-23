@@ -2,21 +2,21 @@
 -- Везде пароли 123
 insert into USERS (name, surname, age, email, password, phone_number, account_type, enabled)
 values ('Alice', 'Johnson', 28, 'alice.johnson@example.com',
-        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0711111111', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0711111111', 'APPLICANT', true),
        ('Bob', 'Smith', 35, 'bob.smith@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
         '0722222222', 'employer', true),
        ('Emma', 'Brown', 40, 'emma.brown@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
         '0733333333', 'employer', true),
        ('Grace', 'Wilson', 32, 'grace.wilson@example.com',
-        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0744444444', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0744444444', 'APPLICANT', true),
        ('David', 'Lee', 50, 'david.lee@example.com', '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG',
-        '0755555555', 'applicant', true),
+        '0755555555', 'APPLICANT', true),
        ('Emily', 'Johnson', 30, 'emily.johnson@example.com',
         '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0777777777', 'employer', true),
        ('Michael', 'Williams', 38, 'michael.williams@example.com',
-        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0788888888', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0788888888', 'APPLICANT', true),
        ('Sophia', 'Brown', 25, 'sophia.brown@example.com',
-        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0799999999', 'applicant', true),
+        '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0799999999', 'APPLICANT', true),
        ('Matthew', 'Jones', 33, 'matthew.jones@example.com',
         '$2a$12$jpgeMqd44NeJ3iATQXpsyeOm4Xw.toRc8pVl.yKDhh4sntEfnpQAG', '0800000000', 'employer', true);
 

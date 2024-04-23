@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String create(UserCreationDto dto) {
+    public String create(@Valid UserCreationDto dto) {
         userService.create(dto);
         return "redirect:/users";
     }
@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("profile/edit")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(UserUpdateDto dto, Authentication auth) {
+    public String edit(@Valid UserUpdateDto dto, Authentication auth) {
 //        if (result.hasErrors()) {
 //            System.err.println("ERROR FILE");
 //            System.err.println(result.getModel());

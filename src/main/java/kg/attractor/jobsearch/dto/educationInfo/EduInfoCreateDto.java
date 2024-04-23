@@ -19,6 +19,7 @@ public class EduInfoCreateDto {
     private String institution;
     @NotBlank
     private String program;
+
     @NotNull
     @Past
     private LocalDate startDate;

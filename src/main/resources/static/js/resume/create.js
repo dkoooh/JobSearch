@@ -6,7 +6,8 @@ let workExpInfos = 0;
 function addWorkExp(event) {
     event.preventDefault();
     workExpInfos++;
-    $('#workExpInfo').append('<div class="card">\n' +
+    $('#workExpInfo').append('<div class="col-12 col-sm-10 col-lg-8 col-xl-7">' +
+        '<div class="card">\n' +
         '                        <div class="card-body">\n' +
         '                            <h5 class="card-title">Опыт работы: </h5>\n' +
         '                            <div class="card-text row my-1">\n' +
@@ -42,7 +43,8 @@ function addWorkExp(event) {
         '                                </div>\n' +
         '                            </div>\n' +
         '                        </div>\n' +
-        '                    </div>');
+        '                    </div>' +
+        '</div> ');
 }
 
 let eduInfos = 0;
@@ -50,7 +52,8 @@ let eduInfos = 0;
 function addEdu (event) {
     event.preventDefault();
     eduInfos++;
-    $('#eduInfo').append('<div class="card">\n' +
+    $('#eduInfo').append('<div class="col-12 col-sm-10 col-lg-8 col-xl-7"> ' +
+        '<div class="card">\n' +
         '                        <div class="card-body">\n' +
         '                            <h5 class="card-title">Образование:</h5>\n' +
         '                            <div class="card-text row my-1">\n' +
@@ -94,5 +97,6 @@ function addEdu (event) {
         '                                </div>\n' +
         '                            </div>\n' +
         '                        </div>\n' +
-        '                    </div>')
+        '                    </div>' +
+        '</div> ')
 }

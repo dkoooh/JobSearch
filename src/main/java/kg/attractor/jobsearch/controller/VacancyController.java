@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
@@ -65,7 +66,7 @@ public class VacancyController {
     }
 
     @PostMapping("create")
-    public String create(VacancyCreateDto dto, Authentication auth) {
+    public String create(@Valid VacancyCreateDto dto, Authentication auth) {
         vacancyService.createVacancy(dto, auth);
         return "redirect:/users";
     }
@@ -78,7 +79,7 @@ public class VacancyController {
     }
 
     @PostMapping("{id}/edit")
-    public String edit(VacancyUpdateDto dto, Authentication auth) {
+    public String edit(@Valid VacancyUpdateDto dto, Authentication auth) {
         vacancyService.updateVacancy(dto, auth);
         return "redirect:/users";
     }

@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-    <form class="col-6 mx-auto" action="/users/register" method="POST">
+    <form id="registerForm" class="col-6 mx-auto" action="/users/register" method="POST">
         <h1>Registration</h1>
         <div class="mb-3">
             <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="Email" required>
@@ -31,4 +31,12 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+
+    <script>
+        let form = document.getElementById('registerForm');
+        form.addEventListener('submit', async () => {
+            await fetch('http://localhost:1234/logout')
+            window.location.href = 'http://localhost:1234/users/login'
+        })
+    </script>
 </@main.layout>

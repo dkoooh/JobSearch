@@ -24,7 +24,6 @@ public class UserCreationDto {
     private String password;
     @NotBlank
     private String phoneNumber;
-//    private MultipartFile avatar;
     @NotBlank
     private String accountType;
 }
