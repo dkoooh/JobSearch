@@ -1,5 +1,7 @@
 package kg.attractor.jobsearch.dto.vacancy;
 
+import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.model.User;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,7 +18,7 @@ public class VacancyDto {
     private Integer expFrom;
     private Integer expTo;
     private Boolean isActive;
-    private Integer authorId;
-    private LocalDateTime createdDate;
-    private LocalDateTime updateTime;
+    private UserDto author;
+    private String createdDate;
+    private String updateTime;
 }

@@ -30,7 +30,6 @@ public class VacancyController {
     public String getVacancyById(@PathVariable int id, Model model) {
         VacancyDto vacancy = vacancyService.getVacancyById(id);
         model.addAttribute("vacancy", vacancy);
-        model.addAttribute("author", userService.getUserById(vacancy.getAuthorId()));
         return "/vacancy/vacancy";
     }
 

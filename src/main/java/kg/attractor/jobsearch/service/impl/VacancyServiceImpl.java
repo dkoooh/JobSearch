@@ -10,10 +10,12 @@ import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
+import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.webmvc.core.fn.SpringdocRouteBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +32,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;
+    private final UserService userService;
     private final UserDao userDao;
     private final CategoryDao categoryDao;
 
@@ -199,9 +203,9 @@ public class VacancyServiceImpl implements VacancyService {
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .isActive(vacancy.getIsActive())
-                .authorId(vacancy.getAuthorId())
-                .createdDate(vacancy.getCreatedDate())
-                .updateTime(vacancy.getUpdateTime())
+                .author(userService.getUserById(vacancy.getAuthorId()))
+                .createdDate(vacancy.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .updateTime(vacancy.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 }

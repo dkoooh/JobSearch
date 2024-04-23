@@ -5,6 +5,7 @@ import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.ResponseDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
+import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NoAccessException;
 import kg.attractor.jobsearch.exception.NotFoundException;
@@ -12,6 +13,7 @@ import kg.attractor.jobsearch.model.RespondedApplicant;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.UserService;
+import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +32,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final UserDao userDao;
     private final UserService userService;
     private final VacancyDao vacancyDao;
+    private final VacancyService vacancyService;
 
     public ResponseDto getResponseByVacancy(Integer vacancyId, String email){
         if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
@@ -90,6 +93,14 @@ public class ResponseServiceImpl implements ResponseService {
 
     public List<Map<String, Object>> fetchAllGroups () {
         UserDto user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        return responseDao.fetchAllGroups(user.getId());
+        List<Map<String, Object>> responses = responseDao.fetchAllGroups(user.getId());
+
+        responses.forEach(stringObjectMap -> {
+            VacancyDto vacancy = vacancyService.getVacancyById((Integer)stringObjectMap.get("VACANCY_ID"));
+            stringObjectMap.remove("VACANCY_ID");
+            stringObjectMap.put("VACANCY", vacancy);
+        });
+
+        return responses;
     }
 }

@@ -11,5 +11,5 @@ public interface ResponseService {
 
     ResponseDto getById(Integer id);
 
-    public List<Map<String, Object>> fetchAllGroups ();
+    List<Map<String, Object>> fetchAllGroups ();
 }
