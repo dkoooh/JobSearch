@@ -14,16 +14,16 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
     <body>
-        <h1><#assign
-            known=Session.SPRING_SECURITY_CONTEXT??>
-            <#if known>
-                <#assign
-                user = Session.SPRING_SECURITY_CONTEXT.authentication.principal
-                isDenisName = user.getUsername()>
-            <#else>
-                <#assign
-                isDenisName="kjjkg">
-            </#if></h1>
+<#--        <h1><#assign-->
+<#--            known=Session.SPRING_SECURITY_CONTEXT??>-->
+<#--            <#if known>-->
+<#--                <#assign-->
+<#--                user = Session.SPRING_SECURITY_CONTEXT.authentication.principal-->
+<#--                isDenisName = user.getUsername()>-->
+<#--            <#else>-->
+<#--                <#assign-->
+<#--                isDenisName="kjjkg">-->
+<#--            </#if></h1>-->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container">
                 <a class="navbar-brand" href="/">JobSearch</a>
