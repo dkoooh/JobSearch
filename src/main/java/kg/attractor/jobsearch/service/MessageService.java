@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface MessageService {
-    List<Map<String, Object>> getListMessagesGroups(Integer respondedApplicantId);
+    List<MessageDto> getListMessagesGroups(Integer respondedApplicantId);
 
-    public void sendMessageGroup(Integer to, MessageDto msg);
+    void sendMessageGroup(Integer to, MessageDto msg, String userEmail);
 
 
 }

@@ -1,129 +1,91 @@
-let urlSegments = window.location.href.split("/")
-let responseId = urlSegments[urlSegments.length - 1];
-console.log(responseId)
+'use strict';
 
-let urlParams = new URLSearchParams(window.location.search);
+const path = window.location.pathname;
+const segments = path.split('/');
+const responseId = segments[segments.length - 1];
+const currentUser = Number(new URLSearchParams(window.location.search).get("currentUser"));
 
-window.addEventListener('load', onLoadMessages)
-window.addEventListener('load', onLoadChatDetails)
 
-async function onLoadMessages(event) {
+window.addEventListener('load', restoreMessages)
+window.addEventListener('load', connect)
+
+const socket = new SockJS("/ws");
+let stompClient = Stomp.over(socket);
+
+async function restoreMessages () {
     try {
-        let messagesRequest = await makeRequest (`http://localhost:1234/api/chats/${responseId}`);
-        if (messagesRequest.ok) {
-            let messagesJson = await messagesRequest.json()
+        let requestMessages = await fetch(`http://localhost:1234/api/chats/${responseId}`)
+        if (requestMessages.ok) {
+            let messages = await requestMessages.json();
+            for (let message of messages) {
+                addHtmlMessage(message)
+                console.log(message);
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
 
-            for (message of messagesJson) {
-                let sender = await getSender(message['SENDER_ID']);
+function connect(event) {
+    event.preventDefault();
+    stompClient.connect({}, onConnected, onError);
+}
 
-                console.log(message['TIMESTAMP'])
+function onConnected() {
+    stompClient.subscribe('/response/test', onMessageReceived)
+    stompClient.subscribe(`/response/${responseId}/queue/messages`, onMessageReceived)
+}
 
-                let card = document.createElement('div');
-                card.classList.add('card', 'border-start-0', 'border-end-0', 'border-bottom-0', 'rounded-0');
-                card.innerHTML = `<div class="card-body">
-                        <h5 class="card-title">${sender['name']} (${sender['email']})</h5>
-                        <p class="card-subtitle text-body-secondary">${new Date(message['TIMESTAMP']).toLocaleString()}</p>
-                        <p style="white-space: pre-line" class="card-text my-2">${message['CONTENT']}</p>
+function onMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    addHtmlMessage(message);
+}
+
+function addHtmlMessage (message) {
+    let htmlMessage = document.createElement('div');
+    htmlMessage.classList.add('col-11', 'col-md-9');
+    if (currentUser !== message.senderId) {
+        htmlMessage.classList.add('ms-auto');
+        htmlMessage.innerHTML = `<div id="msg" class="card border-0 rounded-3">
+                        <div class="card-body">
+                            <p class="card-text my-0" style="white-space: pre-line;">${message.content}
+                            </p>
+                            <div class="text-body-secondary" style="text-align: right;">${message.timeStamp}</div>
+                        </div>
                     </div>`;
+    } else {
+        htmlMessage.innerHTML = `<div id="msg" class="card bg-warning-subtle border-0 rounded-3">
+                        <div class="card-body">
+                            <p class="card-text my-0" style="white-space: pre-line;">${message.content}
+                            </p>
+                            <div class="text-body-secondary" style="text-align: right;">${message.timeStamp}</div>
+                        </div>
+                    </div>`;
+    }
 
-                console.log(card)
-                document.getElementById('messages').append(card)
-            }
+    document.getElementById("messages").appendChild(htmlMessage);
 
-        } else {
-            throw new Error();
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight
+}
+
+function onMessageSend(event) {
+    event.preventDefault();
+    let messageText = document.getElementById('messageForm').value;
+    stompClient.send(`/app/${responseId}`, {}, JSON.stringify(
+        {
+            content: messageText,
+            responseId: responseId,
+            timeStamp: new Date(Date.now()).toLocaleString()
         }
-
-    } catch (e) {
-        console.log(e);
-    }
-
+    ));
+    document.getElementById('messageForm').value = ''
+    console.log(document.getElementById('messageForm').value);
 }
 
-async function onLoadChatDetails(event) {
-    try {
-        let requestChatInfo = await makeRequest(`http://localhost:1234/api/responses/${responseId}`)
-
-        if (requestChatInfo.ok) {
-            let infoJson = await requestChatInfo.json();
-            // let sender = await getSender(infoJson['VACANCY_ID'])
-
-            console.log(infoJson)
-
-
-
-            $('#receiverEmail').text(sender['email'])
-            $('#receiverAvatar').attr('src', `api/users/user/image/${sender['email']}`)
-            if (sender['surname'] != null) {
-                $('#receiverName').text(sender['name'], " ", sender['surname']);
-            } else {
-                $('#receiverName').text(sender['name']);
-            }
-        } else {
-            throw new Error()
-        }
-
-    } catch (e) {
-        console.log(e)
-    }
-
-
+function onError(e) {
+    console.log(e);
 }
 
-async function getSender (senderId){ // TODO переименовать
-    try {
-        let request = await makeRequest (`http://localhost:1234/api/users/employers/${senderId}`)
-        if (request.ok) {
-            return await request.json();
-        } else if (request.status === 403) {
-            let anotherRequest = await makeRequest (`http://localhost:1234/api/users/employers/${senderId}`)
 
-            if (anotherRequest.ok) {
-                return await anotherRequest.json();
-            } else {
-                throw new Error();
-            }
-        } else {
-            throw new Error ();
-        }
-    } catch (e) {
-        console.log(e);
-    }
-}
 
-function makeHeaders (){
-    let user = restoreUser()
-    let headers = new Headers()
-    headers.set('Content-Type','application/json')
-    if(user){
-        headers.set(  'Authorization', 'Basic ' + btoa(user.username + ':' + user.password))
-    }
-    return headers
-}
-
-const requestSettings = {
-    method: 'GET',
-    headers: makeHeaders()
-}
-
-async function makeRequest(url, options) {
-    let userValidation = await fetch ('http://localhost:1234/users/login')
-    if (userValidation.ok) {
-        let settings = options || requestSettings
-        let response = await fetch(url, settings)
-
-        if (response.ok) {
-            return await response.json()
-        } else {
-            let error = new Error(response.statusText);
-            error.response = response;
-            throw error;
-        }
-    }
-
-}
-
-function restoreUser() {
-    let userAsJSON = localStorage.getItem('user');
-    return JSON.parse(userAsJSON);
-}

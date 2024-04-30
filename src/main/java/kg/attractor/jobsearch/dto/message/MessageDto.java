@@ -11,5 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MessageDto {
     private String content;
-    private Integer respondedApplicantId;
+    private Integer responseId;
+    private Integer senderId;
+    private String timeStamp;
 }

@@ -9,6 +9,8 @@ import java.util.Map;
 public interface ResponseService {
     ResponseDto getResponseByVacancy(Integer vacancyId, String email);
 
+    ResponseDto getById(Integer id, String userEmail);
+
     ResponseDto getById(Integer id);
 
     List<Map<String, Object>> fetchAllGroups ();

@@ -5,8 +5,8 @@ import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,14 @@ public class ResponseController {
     private final UserService userService;
 
     @GetMapping
-    public String getResponses(Model model) {
+    public String getResponses(Model model, Authentication auth) {
         List<Map<String, Object>> responses = responseService.fetchAllGroups();
         model.addAttribute("responses", responses);
-        return "response/response";
+        if (auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("APPLICANT")) {
+            return "response/applicant/responses";
+        } else {
+            return "response/employer/responses";
+        }
     }
 
     @GetMapping("chooseResume")
@@ -37,7 +41,7 @@ public class ResponseController {
         model.addAttribute("resumes", resumes);
         model.addAttribute("vacancyId", vacancyId);
 
-        return "response/resumes";
+        return "response/applicant/resumes";
     }
 
     @GetMapping("respond")

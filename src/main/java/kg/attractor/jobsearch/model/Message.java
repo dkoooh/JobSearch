@@ -15,5 +15,6 @@ public class Message {
     private Integer id;
     private Integer respondedApplicantId;
     private String content;
+    private Integer senderId;
     private LocalDateTime timeStamp;
 }

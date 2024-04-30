@@ -1,5 +1,7 @@
 package kg.attractor.jobsearch.dto;
 
+import kg.attractor.jobsearch.dto.resume.ResumeDto;
+import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,7 +9,7 @@ import lombok.Data;
 @Builder
 public class ResponseDto {
     private Integer id;
-    private Integer resumeId;
-    private Integer vacancyId;
+    private ResumeDto resume;
+    private VacancyDto vacancy;
     private Boolean isConfirmed;
 }
