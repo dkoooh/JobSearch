@@ -7,7 +7,6 @@ import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.service.CategoryService;
-import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyController {
     private final VacancyService vacancyService;
-    private final UserService userService;
     private final CategoryService categoryService;
 
     @GetMapping("{id}")

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,6 @@ public class ResumeController {
         ResumeDto resume = resumeService.getResumeById(id);
 
         model.addAttribute("resume", resume);
-        model.addAttribute("author", userService.getUserById(resume.getApplicantId()));
         return "/resume/resume";
     }
 

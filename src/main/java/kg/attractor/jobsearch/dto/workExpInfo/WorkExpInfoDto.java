@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class WorkExpInfoDto {
     private Integer id;
-    private Integer resumeId;
     private Integer years;
     private String companyName;
     private String position;

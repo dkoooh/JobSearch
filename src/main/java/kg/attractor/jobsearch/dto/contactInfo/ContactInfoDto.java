@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ContactInfoDto {
-    private Integer typeId;
+    private String type;
     private String value;
 }

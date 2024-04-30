@@ -7,13 +7,17 @@ import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoUpdateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoUpdateDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResumeUpdateDto {
     @NotNull
     private Integer id;

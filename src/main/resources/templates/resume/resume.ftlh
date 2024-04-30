@@ -44,11 +44,17 @@
                     Applicant
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">${author.name}</h3>
-                    <h6 class="card-subtitle">${author.email}</h6>
-                    <#list resume.contactInfos as contact>
-                        <p>${contact.typeId}: ${contact.value}</p>
-                    </#list>
+                    <h3 class="card-title">${resume.applicant.name}</h3>
+                    <h6 class="card-subtitle">
+                        <i class="bi bi-envelope"></i>
+                        <a href="mailto:${resume.applicant.email}" style="text-decoration: none; color:black;">${resume.applicant.email}</a>
+                    </h6>
+                    <div class="my-2">
+
+                        <#list resume.contactInfos as contact>
+                            <p class="my-1">${contact.type}: ${contact.value}</p>
+                        </#list>
+                    </div>
                 </div>
             </div>
         </div>

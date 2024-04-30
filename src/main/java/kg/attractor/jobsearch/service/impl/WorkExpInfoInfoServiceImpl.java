@@ -56,7 +56,6 @@ public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
 
         return WorkExpInfoDto.builder()
                 .id(info.getId())
-                .resumeId(info.getResumeId())
                 .years(info.getYears())
                 .companyName(info.getCompanyName())
                 .position(info.getPosition())
@@ -70,7 +69,6 @@ public class WorkExpInfoInfoServiceImpl implements WorkExpInfoService {
         return info.stream()
                 .map(workExperienceInfo -> WorkExpInfoDto.builder()
                         .id(workExperienceInfo.getId())
-                        .resumeId(workExperienceInfo.getResumeId())
                         .years(workExperienceInfo.getYears())
                         .companyName(workExperienceInfo.getCompanyName())
                         .position(workExperienceInfo.getPosition())

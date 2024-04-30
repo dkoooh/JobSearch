@@ -8,6 +8,7 @@ import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.model.ContactInfo;
 import kg.attractor.jobsearch.service.ContactInfoService;
+import kg.attractor.jobsearch.service.ContactTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ContactInfoServiceImpl implements ContactInfoService {
     private final ContactInfoDao contactInfoDao;
     private final ContactTypeDao contactTypeDao;
+    private final ContactTypeService contactTypeService;
 
     @Override
     public void create(ContactInfoCreateDto contactInfoCreateDto, int resumeId) {
@@ -39,7 +41,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
         return list.stream()
                 .map(contactInfo -> ContactInfoDto.builder()
-                        .typeId(contactInfo.getTypeId())
+                        .type(contactTypeService.getById(contactInfo.getTypeId()))
                         .value(contactInfo.getContactValue())
                         .build())
                 .toList();

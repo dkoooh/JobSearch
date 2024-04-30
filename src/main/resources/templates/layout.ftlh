@@ -1,5 +1,3 @@
-<#import "spring.ftl" as spring>
-
 <#macro layout>
     <!doctype html>
     <html lang="en">
@@ -11,19 +9,8 @@
         <title>JobSearch</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </head>
     <body>
-<#--        <h1><#assign-->
-<#--            known=Session.SPRING_SECURITY_CONTEXT??>-->
-<#--            <#if known>-->
-<#--                <#assign-->
-<#--                user = Session.SPRING_SECURITY_CONTEXT.authentication.principal-->
-<#--                isDenisName = user.getUsername()>-->
-<#--            <#else>-->
-<#--                <#assign-->
-<#--                isDenisName="kjjkg">-->
-<#--            </#if></h1>-->
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container">
                 <a class="navbar-brand" href="/">JobSearch</a>
@@ -35,24 +22,34 @@
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="/vacancies">Все вакансии</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/users">Профиль</a>
-                        </li>
-                        <li class="nav-item ms-auto">
-                            <a class="nav-link" aria-current="page" href="/users/register">Регистрация</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/users/login">Войти</a>
-                        </li>
+                        <#if authorizedUser??>
+                            <li class="nav-item ms-lg-auto">
+                                <a class="btn btn-outline-primary me-2" aria-current="page" href="/users">${authorizedUser.getUsername()}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-danger" aria-current="page" href="/logout">Выйти</a>
+                            </li>
+                        <#else>
+                            <li class="nav-item ms-lg-auto">
+                                <a class="nav-link" aria-current="page" href="/users/register">Регистрация</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="/users/login">Войти</a>
+                            </li>
+                        </#if>
                     </ul>
 
                 </div>
             </div>
         </nav>
 
-        <main class="container mt-4">
+        <main class="container my-4">
             <#nested >
         </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     </body>
     </html>
     

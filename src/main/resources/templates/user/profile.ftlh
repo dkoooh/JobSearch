@@ -11,7 +11,6 @@
                 <p>Возраст: ${user.age}</p>
             </#if>
             <a href="/users/profile/edit" class="btn btn-success">Редактировать</a>
-            <a href="/logout" class="btn btn-danger">Выйти</a>
         </div>
         <div class="col my-auto d-flex flex-row gap-3 gap-md-2 justify-content-center">
             <#if user.accountType = "APPLICANT">

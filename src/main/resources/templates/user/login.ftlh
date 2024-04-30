@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-   <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<#--   <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">-->
 
     <section class="vh-100 gradient-custom">
         <div class="container py-2 ">
@@ -10,7 +10,7 @@
                     <div class="card bg-white text-black" style="border-radius: 1rem;">
                         <div class="card-body p-5 text-center">
 
-                            <form id="login" class="mt-md-4 pb-5" method="POST" th:action="/login">
+                            <form id="login" class="mt-md-4 pb-5" method="POST" action="/login">
 
                                 <h2 class="fw-bold mb-2 text-uppercase">Вход</h2>
                                 <p id="login-text" class="text-black-50 mb-5">Введите email и пароль</p>

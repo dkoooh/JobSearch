@@ -11,10 +11,8 @@ import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.service.ContactInfoService;
-import kg.attractor.jobsearch.service.EduInfoService;
-import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.WorkExpInfoService;
+import kg.attractor.jobsearch.model.User;
+import kg.attractor.jobsearch.service.*;
 import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -38,6 +37,7 @@ public class ResumeServiceImpl implements ResumeService {
     private final WorkExpInfoService workExpInfoService;
     private final EduInfoService eduInfoService;
     private final ContactInfoService contactInfoService;
+    private final UserService userService;
 
     @Override
     public List<ResumeDto> getResumes(String employerEmail){
@@ -173,7 +173,7 @@ public class ResumeServiceImpl implements ResumeService {
     private ResumeDto convertToDto(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
-                .applicantId(resume.getApplicantId())
+                .applicant(userService.getUserById(resume.getApplicantId()))
                 .name(resume.getName())
                 .category(categoryDao.getCategoryById(
                                 resume.getCategoryId()).orElseThrow(
@@ -184,8 +184,8 @@ public class ResumeServiceImpl implements ResumeService {
                 .educationInfo(eduInfoService.getByResumeId(resume.getId()))
                 .workExperienceInfo(workExpInfoService.getByResumeId(resume.getId()))
                 .contactInfos(contactInfoService.getByResumeId(resume.getId()))
-                .createdDate(resume.getCreatedDate())
-                .updateTime(resume.getUpdateTime())
+                .createdDate(resume.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .updateTime(resume.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 }
