@@ -1,5 +1,4 @@
 <#import "../layout.ftlh" as main>
-<link rel="stylesheet" href="/static/css/chat/chat.css">
 
 <@main.layout>
     <#assign known = SPRING_SECURITY_CONTEXT??>

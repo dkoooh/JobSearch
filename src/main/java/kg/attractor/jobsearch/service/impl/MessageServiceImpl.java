@@ -37,7 +37,6 @@ public class MessageServiceImpl implements MessageService {
 
     public void sendMessageGroup(Integer to, MessageDto msg, String userEmail) {
         System.out.println("String userEmail from Authentication auth: " + userEmail);
-
         if (!userService.getUserByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getVacancy().getAuthor().getId()) &&
                 !userService.getUserByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getResume().getApplicant().getId())) {
             throw new NoAccessException("Cannot access the chat you're not a member of");

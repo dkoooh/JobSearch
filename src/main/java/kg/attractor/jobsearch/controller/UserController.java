@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public String login(Authentication auth, @Valid UserLoginDto userLoginDto) {
+    public String login(Authentication auth, @RequestBody UserLoginDto userLoginDto) {
         userService.login(auth, userLoginDto);
 
         return "redirect:/users";

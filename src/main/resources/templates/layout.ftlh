@@ -11,6 +11,10 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
     <body>
+        <#assign known = SPRING_SECURITY_CONTEXT??>
+        <#if known>
+            <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication.principal>
+        </#if>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container">
                 <a class="navbar-brand" href="/">JobSearch</a>

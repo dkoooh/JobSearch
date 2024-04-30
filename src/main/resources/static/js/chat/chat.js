@@ -1,16 +1,37 @@
 'use strict';
 
+const socket = new SockJS("/ws");
+let stompClient = Stomp.over(socket);
 const path = window.location.pathname;
 const segments = path.split('/');
 const responseId = segments[segments.length - 1];
 const currentUser = Number(new URLSearchParams(window.location.search).get("currentUser"));
+const userFromStorage = localStorage.getItem("user");
+console.log(userFromStorage)
+
+window.addEventListener('load', async () => {
+    try {
+        let request = await fetch('http://localhost:1234/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: userFromStorage
+        })
+
+        if (request.ok) {
 
 
-window.addEventListener('load', restoreMessages)
-window.addEventListener('load', connect)
+            await restoreMessages();
+            await connect(event);
+        } else {
+            throw new Error();
+        }
 
-const socket = new SockJS("/ws");
-let stompClient = Stomp.over(socket);
+    } catch (e) {
+        console.log(e)
+    }
+})
 
 async function restoreMessages () {
     try {
@@ -29,11 +50,11 @@ async function restoreMessages () {
 
 function connect(event) {
     event.preventDefault();
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({'Authorization': 'Basic ' + btoa(userFromStorage.username + ':' + userFromStorage.password)},
+        onConnected, onError);
 }
 
 function onConnected() {
-    stompClient.subscribe('/response/test', onMessageReceived)
     stompClient.subscribe(`/response/${responseId}/queue/messages`, onMessageReceived)
 }
 
@@ -72,7 +93,9 @@ function addHtmlMessage (message) {
 function onMessageSend(event) {
     event.preventDefault();
     let messageText = document.getElementById('messageForm').value;
-    stompClient.send(`/app/${responseId}`, {}, JSON.stringify(
+    stompClient.send(`/app/${responseId}`,
+        {'Authorization': 'Basic ' + btoa(userFromStorage.username + ':' + userFromStorage.password)},
+        JSON.stringify(
         {
             content: messageText,
             responseId: responseId,
