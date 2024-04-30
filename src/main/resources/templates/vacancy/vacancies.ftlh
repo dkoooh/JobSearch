@@ -1,5 +1,4 @@
 <#import "../layout.ftlh" as main>
-<#--<#import "spring.ftl" as spring>-->
 
 <@main.layout>
     <h2>Вакансии:</h2>
@@ -32,7 +31,7 @@
                                 <p class="card-text">Опыт от ${vacancy.expFrom} лет</p>
                             </#if>
                         </#if>
-                        <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success">Откликнуться ${vacancy.id}</a>
+                        <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success">Откликнуться</a>
                     </div>
                 </div>
             </div>
