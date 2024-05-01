@@ -8,4 +8,6 @@ public interface CategoryService {
     List<CategoryDto> getAll();
 
     CategoryDto getById(Integer id);
+
+    Boolean isExist(Integer id);
 }

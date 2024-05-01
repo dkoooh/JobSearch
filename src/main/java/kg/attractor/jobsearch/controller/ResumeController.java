@@ -28,7 +28,7 @@ public class ResumeController {
 
     @GetMapping("{id}")
     public String getById(Model model, @PathVariable int id) {
-        ResumeDto resume = resumeService.getResumeById(id);
+        ResumeDto resume = resumeService.getById(id);
 
         model.addAttribute("resume", resume);
         return "/resume/resume";
@@ -51,7 +51,7 @@ public class ResumeController {
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("resume", resumeService.getResumeById(id));
+        model.addAttribute("resume", resumeService.getById(id));
         return "resume/edit";
     }
 

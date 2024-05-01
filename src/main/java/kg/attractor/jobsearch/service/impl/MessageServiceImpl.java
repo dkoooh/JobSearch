@@ -25,8 +25,8 @@ public class MessageServiceImpl implements MessageService {
     public List<MessageDto> getListMessagesGroups(Integer respondedApplicantId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (!userService.getUserByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
-                !userService.getUserByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
+        if (!userService.getByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
+                !userService.getByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
             throw new NoAccessException("Cannot access the chat you're not a member of");
         }
 
@@ -37,11 +37,11 @@ public class MessageServiceImpl implements MessageService {
 
     public void sendMessageGroup(Integer to, MessageDto msg, String userEmail) {
         System.out.println("String userEmail from Authentication auth: " + userEmail);
-        if (!userService.getUserByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getVacancy().getAuthor().getId()) &&
-                !userService.getUserByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getResume().getApplicant().getId())) {
+        if (!userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getVacancy().getAuthor().getId()) &&
+                !userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getResume().getApplicant().getId())) {
             throw new NoAccessException("Cannot access the chat you're not a member of");
         }
-        Integer userId = userService.getUserByEmail(userEmail).getId();
+        Integer userId = userService.getByEmail(userEmail).getId();
 
         messageDao.sendMessageGroup(to, msg, userId);
         msg.setSenderId(userId);

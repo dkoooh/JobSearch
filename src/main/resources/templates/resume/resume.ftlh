@@ -52,7 +52,7 @@
                     <div class="my-2">
 
                         <#list resume.contactInfos as contact>
-                            <p class="my-1">${contact.type}: ${contact.value}</p>
+                            <p class="my-1">${contact.type}: ${contact.getContactValue}</p>
                         </#list>
                     </div>
                 </div>

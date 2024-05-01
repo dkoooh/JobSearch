@@ -41,9 +41,9 @@ public class UserController {
 
     @GetMapping
     public String getUser (Model model, Authentication authentication) {
-        UserDto user = userService.getUserByEmail(authentication.getName());
+        UserDto user = userService.getByEmail(authentication.getName());
 
-        if ("applicant".equalsIgnoreCase(userService.getUserByEmail(authentication.getName()).getAccountType())) {
+        if ("applicant".equalsIgnoreCase(userService.getByEmail(authentication.getName()).getAccountType())) {
             List<ResumeDto> userResumes = resumeService.getResumesByApplicant(user.getId());
             model.addAttribute("userResumes", userResumes);
         } else {
@@ -57,7 +57,7 @@ public class UserController {
 
     @GetMapping("profile/edit")
     public String edit(Model model, Authentication authentication) {
-        UserDto user = userService.getUserByEmail(authentication.getName());
+        UserDto user = userService.getByEmail(authentication.getName());
         model.addAttribute("user", user);
         return "/user/edit";
     }
@@ -72,7 +72,7 @@ public class UserController {
 //        }
 //        MultipartFile file = dto.getAvatar();
 //        System.out.println("file = " + file);
-        userService.update(auth, dto, userService.getUserByEmail(auth.getName()).getId());
+        userService.update(auth, dto, userService.getByEmail(auth.getName()).getId());
         return "redirect:/users";
     }
 

@@ -10,16 +10,14 @@ import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.model.Vacancy;
+import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
-import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,8 +33,10 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
     private final VacancyDao vacancyDao;
     private final FileUtil fileUtil;
+    private final UserRepository userRepository;
 
-    public void create (UserCreationDto userDto){
+    @Override
+    public void create(UserCreationDto userDto) {
         if (isUserExists(userDto.getEmail())) {
             throw new CustomException("User with this email is already exists");
         } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
@@ -65,9 +65,10 @@ public class UserServiceImpl implements UserService {
                 .accountType(userDto.getAccountType())
                 .build();
 
-        userDao.createUser(newUser);
+        userRepository.save(newUser);
     }
 
+    @Override
     public void update(Authentication auth, UserUpdateDto dto, Integer userId) {
 
         if (!userId.equals(userDao.getUserByEmail(auth.getName()).get().getId())) {
@@ -83,9 +84,7 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
 
-        UserDto oldUser = getUserByEmail(auth.getName());
-
-        var avatar = oldUser.getAvatar();
+        UserDto oldUser = getByEmail(auth.getName());
 
         if (!dto.getAvatar().isEmpty()) {
             String filename = fileUtil.saveUploadedFile(dto.getAvatar(), "images/users");
@@ -94,26 +93,28 @@ public class UserServiceImpl implements UserService {
             user.setAvatar(oldUser.getAvatar());
         }
 
-        userDao.updateUser(user);
+        userRepository.save(user);
     }
 
-    @SneakyThrows
-    public UserDto getUserByEmail(String email) {
-        User user = userDao.getUserByEmail(email).orElseThrow(() -> new CustomException("Cannot find user with email: "
-                + email));
+    @Override
+    public UserDto getByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException("Cannot find user with email: " + email));
 
         return transformToDto(user);
     }
 
-    public UserDto getUserById (int userId) {
-        User user = userDao.getUserById(userId).orElseThrow(() -> new CustomException("Cannot find user with ID: "
-                + userId));
+    @Override
+    public UserDto getById(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException("Cannot find user with ID: " + userId));
 
         return transformToDto(user);
     }
 
-    public List<UserDto> getUsersByName(String name) {
-        List<User> users = userDao.getUsersByName(name);
+    @Override
+    public List<UserDto> getAllByName(String name) {
+        List<User> users = userRepository.findAllByName(name);
 
         List<UserDto> dtos = new ArrayList<>();
         users.forEach(
@@ -123,8 +124,9 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
-    public List<UserDto> getUsersByPhoneNumber(String phoneNumber) {
-        List<User> users = userDao.getUsersByPhoneNumber(phoneNumber);
+    @Override
+    public List<UserDto> getAllByPhoneNumber(String phoneNumber) {
+        List<User> users = userRepository.findAllByPhoneNumber(phoneNumber);
 
         List<UserDto> dtos = new ArrayList<>();
         users.forEach(
@@ -134,8 +136,8 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
+    @Override
     public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
-        Utils.verifyUser(email, "employer", userDao);
 
         if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
             throw new CustomException("Invalid vacancy");
@@ -150,32 +152,36 @@ public class UserServiceImpl implements UserService {
         return dtos;
     }
 
+    @Override
     public UserDto getEmployer(Integer employerId) {
-        return getUserById(employerId);
+        return getById(employerId);
     }
 
+    @Override
     public UserDto getApplicant(Integer applicantId) {
-        return getUserById(applicantId);
+        return getById(applicantId);
     }
 
+    @Override
     public Boolean isUserExists(String email) {
-        return userDao.isUserExists(email);
+        return userRepository.existsByEmail(email);
     }
 
     @Override
     public void uploadUserAvatar(String userEmail, MultipartFile userImage) {
-        Utils.verifyUser(userEmail, userDao);
-
         String fileName = fileUtil.saveUploadedFile(userImage, "images/users/");
+        User user = User.builder()
+                .email(userEmail)
+                .avatar(fileName)
+                .build();
+
+        userRepository.save(user);
         userDao.uploadUserAvatar(userEmail, fileName);
     }
 
     @Override
     public void login(Authentication auth, UserLoginDto userDto) {
-        Optional<User> foundUser = userDao.getUserByEmail(userDto.getUsername());
-
-        org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
-        System.out.println("Password: " + userDetails.getPassword());
+        Optional<User> foundUser = userRepository.findByEmail(userDto.getUsername());
 
         if (foundUser.isEmpty()) {
             throw new NotFoundException("Bad Credentials");
@@ -188,7 +194,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> downloadUserAvatar(String userEmail) {
-        String fileName = userDao.getUserByEmail(userEmail).get().getAvatar();
+        String fileName = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + userEmail))
+                .getAvatar();
         return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }
 

@@ -1,15 +1,16 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.ResumeDao;
-import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Resume;
+import kg.attractor.jobsearch.repository.CategoryRepository;
+import kg.attractor.jobsearch.repository.ResumeRepository;
+import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.service.*;
-import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,25 +29,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
-    private final UserDao userDao;
     private final CategoryService categoryService;
     private final WorkExpInfoService workExpInfoService;
     private final EduInfoService eduInfoService;
     private final ContactInfoService contactInfoService;
     private final UserService userService;
+    private final ResumeRepository resumeRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
-    public List<ResumeDto> getResumes(String employerEmail){
-        Utils.verifyUser(employerEmail, "employer", userDao);
-
-        return resumeDao.getResumes().stream()
+    public List<ResumeDto> getAll(String employerEmail){
+        return resumeRepository.findAll().stream()
                 .map(this::convertToDto)
                 .toList();
     }
 
     @Override
     public Page<ResumeDto> getActiveResumes (int page) {
-        List<ResumeDto> resumes = resumeDao.getResumes().stream()
+        List<ResumeDto> resumes = resumeRepository.findByIsActive(true).stream()
                 .map(this::convertToDto)
                 .toList();
 
@@ -67,9 +68,9 @@ public class ResumeServiceImpl implements ResumeService {
 
     @SneakyThrows
     @Override
-    public ResumeDto getResumeById(int resumeId) {
+    public ResumeDto getById(int resumeId) {
         return convertToDto(
-                resumeDao.getResumeById(resumeId)
+                resumeRepository.findById(resumeId)
                         .orElseThrow(() -> new CustomException("Cannot find resume with ID: " + resumeId))
         );
     }
@@ -77,7 +78,8 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public List<ResumeDto> getResumesByCategory(int categoryId, String email){
 
-        List<Resume> list = resumeDao.getResumesByCategory(categoryId);
+        List<Resume> list = resumeRepository.findByCategory(categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + categoryId)));
         return list.stream()
                 .map(this::convertToDto)
                 .toList();
@@ -93,21 +95,22 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void create(ResumeCreateDto dto, Authentication auth){
-        if (!categoryService.getAll().stream()
-                .map(CategoryDto::getId)
-                .toList().contains(dto.getCategoryId())) {
-            throw new CustomException("Invalid category");
-        } // TODO дублирующийеся проверки категории в Resume и Vacancy
+        if (!categoryService.isExist(dto.getCategoryId())) {
+            throw new NotFoundException("Invalid category");
+        }
 
         Resume resume = Resume.builder()
-                .applicantId(userDao.getUserByEmail(auth.getName()).get().getId())
+                .author(userRepository.findByEmail(auth.getName())
+                        .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + auth.getName())))
                 .name(dto.getName())
-                .categoryId(dto.getCategoryId())
+                .category(categoryRepository.findById(dto.getCategoryId())
+                        .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + dto.getCategoryId())))
                 .salary(dto.getSalary())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .build();
 
-        int resumeId = resumeDao.create(resume);
+
+        int resumeId = resumeRepository.save(resume).getId();
 
         dto.getEducationInfo().forEach(
                 eduInfoCreateDto -> eduInfoService.create(eduInfoCreateDto, resumeId)
@@ -122,21 +125,21 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void update(ResumeUpdateDto resumeDto, Authentication auth) {
-        if (!categoryService.getAll().stream()
-                .map(CategoryDto::getId)
-                .toList().contains(resumeDto.getCategoryId())) {
+        if (!categoryService.isExist(resumeDto.getCategoryId())) {
             throw new CustomException("Invalid category");
         }
 
-        if (!resumeDao.getResumes().stream().map(Resume::getId).toList().contains(resumeDto.getId())) {
+        if (!resumeRepository.existsById(resumeDto.getId())) {
             throw new CustomException("Cannot find resume with ID: " + resumeDto.getId());
         }
 
         Resume resume = Resume.builder()
                 .id(resumeDto.getId())
-                .applicantId(userDao.getUserByEmail(auth.getName()).get().getId())
+                .author(userRepository.findByEmail(auth.getName())
+                        .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + auth.getName())))
                 .name(resumeDto.getName())
-                .categoryId(resumeDto.getCategoryId())
+                .category(categoryRepository.findById(resumeDto.getCategoryId())
+                        .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + resumeDto.getCategoryId())))
                 .salary(resumeDto.getSalary())
                 .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : false)
                 .build();
@@ -151,27 +154,27 @@ public class ResumeServiceImpl implements ResumeService {
                 contactInfoUpdateDto -> contactInfoService.update(contactInfoUpdateDto, resume.getId())
         );
 
-        resumeDao.updateResume(resume);
+        resumeRepository.save(resume);
     }
 
     @Override
     public void deleteResume(int resumeId, String email){
 
-        if (!resumeDao.getResumes().stream().map(Resume::getId).toList().contains(resumeId)) {
-            throw new CustomException("Cannot find resume with ID: " + resumeId);
-        } if (!userDao.getUserByEmail(email).get().getId().equals(resumeDao.getResumeById(resumeId).get().getApplicantId())) {
+        if (!resumeRepository.existsById(resumeId)) {
+            throw new NotFoundException("Cannot find resume with ID: " + resumeId);
+        } if (!userService.getByEmail(email).getId().equals(getById(resumeId).getApplicant().getId())) {
             throw new CustomException("Access denied");
         }
 
-        resumeDao.deleteResume(resumeId);
+        resumeRepository.deleteById(resumeId);
     }
 
     private ResumeDto convertToDto(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
-                .applicant(userService.getUserById(resume.getApplicantId()))
+                .applicant(userService.getByEmail(resume.getAuthor().getEmail()))
                 .name(resume.getName())
-                .category(categoryService.getById(resume.getCategoryId()).getName()) // TODO CategoryDto?
+                .category(categoryService.getById(resume.getCategory().getId()).getName()) // TODO CategoryDto?
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .educationInfo(eduInfoService.getByResumeId(resume.getId()))

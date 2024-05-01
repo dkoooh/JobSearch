@@ -22,5 +22,6 @@ public class Category {
     private Category parent;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private List<Category> childCategories;
-//    Не запускается из-за text, нужен varchar
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<Resume> resumes;
 }

@@ -54,7 +54,7 @@ public class ResponseServiceImpl implements ResponseService {
 
         return ResponseDto.builder()
                 .id(respondedApplicant.getId())
-                .resume(resumeService.getResumeById(respondedApplicant.getResumeId()))
+                .resume(resumeService.getById(respondedApplicant.getResumeId()))
                 .vacancy(vacancyService.getVacancyById(respondedApplicant.getVacancyId()))
                 .isConfirmed(respondedApplicant.getIsConfirmed())
                 .build();
@@ -72,12 +72,12 @@ public class ResponseServiceImpl implements ResponseService {
         ResponseDto responseDto = ResponseDto.builder()
                 .id(response.getId())
                 .vacancy(vacancyService.getVacancyById(response.getVacancyId()))
-                .resume(resumeService.getResumeById(response.getResumeId()))
+                .resume(resumeService.getById(response.getResumeId()))
                 .isConfirmed(response.getIsConfirmed())
                 .build();
 
-        if (!userService.getUserByEmail(userEmail).getId().equals(responseDto.getVacancy().getAuthor().getId()) &&
-                !userService.getUserByEmail(userEmail).getId().equals(responseDto.getResume().getApplicant().getId())) {
+        if (!userService.getByEmail(userEmail).getId().equals(responseDto.getVacancy().getAuthor().getId()) &&
+                !userService.getByEmail(userEmail).getId().equals(responseDto.getResume().getApplicant().getId())) {
             throw new NoAccessException("Cannot get info of the response you're not a member of");
         }
 
@@ -91,7 +91,7 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     public List<Map<String, Object>> fetchAllGroups () {
-        UserDto user = userService.getUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        UserDto user = userService.getByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Map<String, Object>> responses = responseDao.fetchAllGroups(user.getId());
 
         responses.forEach(stringObjectMap -> {
@@ -99,7 +99,7 @@ public class ResponseServiceImpl implements ResponseService {
             stringObjectMap.remove("VACANCY_ID");
             stringObjectMap.put("VACANCY", vacancy);
 
-            ResumeDto resume = resumeService.getResumeById((Integer)stringObjectMap.get("RESUME_ID"));
+            ResumeDto resume = resumeService.getById((Integer)stringObjectMap.get("RESUME_ID"));
             stringObjectMap.remove("RESUME_ID");
             stringObjectMap.put("RESUME", resume);
         });

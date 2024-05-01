@@ -1,15 +1,23 @@
 package kg.attractor.jobsearch.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+import java.util.List;
+
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table (name = "contact_types")
 public class ContactType {
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Lob
     private String type;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
+    private List<ContactInfo> contactInfos;
 }

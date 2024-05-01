@@ -7,6 +7,7 @@ import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
@@ -54,12 +55,11 @@ public class VacancyServiceImpl implements VacancyService {
         return toPage(activeVacancies, PageRequest.of(page, 5));
     }
 
-    @SneakyThrows
     @Override
     public VacancyDto getVacancyById(int vacancyId) {
         return convertListToDto(
                 vacancyDao.getVacancyById(vacancyId).orElseThrow(
-                        () -> new CustomException("Not found")
+                        () -> new NotFoundException("Not found vacancy with ID: " + vacancyId)
                 )
         );
     }
@@ -81,10 +81,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getVacanciesByCategory(Integer categoryId) {
-        if (categoryId == null || !categoryService.getAll().stream()
-                .map(CategoryDto::getId)
-                .toList()
-                .contains(categoryId)) {
+        if (!categoryService.isExist(categoryId)) {
             throw new CustomException("Invalid category ID");
         }
 
@@ -198,7 +195,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .isActive(vacancy.getIsActive())
-                .author(userService.getUserById(vacancy.getAuthorId()))
+                .author(userService.getById(vacancy.getAuthorId()))
                 .createdDate(vacancy.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .updateTime(vacancy.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();

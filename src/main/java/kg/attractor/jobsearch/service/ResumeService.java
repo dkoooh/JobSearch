@@ -9,11 +9,11 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface ResumeService {
-    List<ResumeDto> getResumes (String employerEmail);
+    List<ResumeDto> getAll(String employerEmail);
 
     Page<ResumeDto> getActiveResumes (int page);
 
-    ResumeDto getResumeById(int resumeId);
+    ResumeDto getById(int resumeId);
 
     List<ResumeDto> getResumesByCategory (int categoryId, String email);
 

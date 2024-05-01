@@ -35,7 +35,7 @@ public class ResumeController {
 
     @GetMapping
     public ResponseEntity<?> getResumes(Authentication auth) {
-        return ResponseEntity.ok(resumeService.getResumes(auth.getName()));
+        return ResponseEntity.ok(resumeService.getAll(auth.getName()));
     }
 
     @GetMapping("category/{categoryId}")

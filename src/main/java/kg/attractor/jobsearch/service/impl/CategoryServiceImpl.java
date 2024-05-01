@@ -21,11 +21,17 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream().map(this::convertToDto).toList();
     }
 
+    @Override
     public CategoryDto getById(Integer id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not found category with ID: " + id));
 
         return convertToDto(category);
+    }
+
+    @Override
+    public Boolean isExist(Integer id) {
+        return categoryRepository.existsById(id);
     }
 
     private CategoryDto convertToDto (Category category) {

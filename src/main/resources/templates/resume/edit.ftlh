@@ -145,35 +145,35 @@
             <div class="col">
                 <div class="input-group">
                     <label for="telegram" class="input-group-text py-0"><i class="bi bi-telegram fs-5"></i></label>
-                    <input class="form-control" type="text" id="telegram" name="contacts[0].contactValue" value="${(resume.contactInfos[0].value)!" "}">
+                    <input class="form-control" type="text" id="telegram" name="contacts[0].contactValue" value="${(resume.contactInfos[0].getContactValue)!" "}">
                     <input style="display: none" type="number" name="contacts[0].typeId" value="1">
                 </div>
             </div>
             <div class="col">
                 <div class="input-group">
                     <label for="facebook" class="input-group-text py-0"><i class="bi bi-facebook fs-5"></i></label>
-                    <input class="form-control" type="text" id="facebook" name="contacts[1].contactValue" value="${(resume.contactInfos[1].value)!" "}">
+                    <input class="form-control" type="text" id="facebook" name="contacts[1].contactValue" value="${(resume.contactInfos[1].getContactValue)!" "}">
                     <input style="display: none" type="number" name="contacts[1].typeId" value="4">
                 </div>
             </div>
             <div class="col">
                 <div class="input-group">
                     <label for="email" class="input-group-text py-0"><i class="bi bi-envelope-at fs-5"></i></label>
-                    <input class="form-control" type="email" id="email" name="contacts[2].contactValue" value="${(resume.contactInfos[2].value)!" "}">
+                    <input class="form-control" type="email" id="email" name="contacts[2].contactValue" value="${(resume.contactInfos[2].getContactValue)!" "}">
                     <input style="display: none" type="number" name="contacts[2].typeId" value="2">
                 </div>
             </div>
             <div class="col">
                 <div class="input-group">
                     <label for="linkedIn" class="input-group-text py-0"><i class="bi bi-linkedin fs-5"></i></label>
-                    <input class="form-control" type="text" id="linkedIn" name="contacts[3].contactValue" value="${(resume.contactInfos[3].value)!" "}">
+                    <input class="form-control" type="text" id="linkedIn" name="contacts[3].contactValue" value="${(resume.contactInfos[3].getContactValue)!" "}">
                     <input style="display: none" type="number" name="contacts[3].typeId" value="5">
                 </div>
             </div>
             <div class="col">
                 <div class="input-group">
                     <label for="phoneNumber" class="input-group-text py-0"><i class="bi bi-telephone fs-5"></i></label>
-                    <input class="form-control" type="tel" id="phoneNumber" name="contacts[4].contactValue" value="${(resume.contactInfos[4].value)!" "}">
+                    <input class="form-control" type="tel" id="phoneNumber" name="contacts[4].contactValue" value="${(resume.contactInfos[4].getContactValue)!" "}">
                     <input style="display: none" type="number" name="contacts[4].typeId" value="3">
                 </div>
             </div>
