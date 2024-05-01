@@ -1,17 +1,13 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.CategoryDao;
 import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dao.UserDao;
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
-import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.exception.NotFoundException;
-import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Resume;
-import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.service.*;
 import kg.attractor.jobsearch.util.Utils;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +29,7 @@ import java.util.List;
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
     private final UserDao userDao;
-    private final CategoryDao categoryDao;
+    private final CategoryService categoryService;
     private final WorkExpInfoService workExpInfoService;
     private final EduInfoService eduInfoService;
     private final ContactInfoService contactInfoService;
@@ -97,11 +93,11 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void create(ResumeCreateDto dto, Authentication auth){
-        if (!categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (!categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList().contains(dto.getCategoryId())) {
             throw new CustomException("Invalid category");
-        }
+        } // TODO дублирующийеся проверки категории в Resume и Vacancy
 
         Resume resume = Resume.builder()
                 .applicantId(userDao.getUserByEmail(auth.getName()).get().getId())
@@ -126,8 +122,8 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void update(ResumeUpdateDto resumeDto, Authentication auth) {
-        if (!categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (!categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList().contains(resumeDto.getCategoryId())) {
             throw new CustomException("Invalid category");
         }
@@ -175,10 +171,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .id(resume.getId())
                 .applicant(userService.getUserById(resume.getApplicantId()))
                 .name(resume.getName())
-                .category(categoryDao.getCategoryById(
-                                resume.getCategoryId()).orElseThrow(
-                                () -> new NotFoundException("Cannot find category with ID: " + resume.getCategoryId()))
-                        .getName())
+                .category(categoryService.getById(resume.getCategoryId()).getName()) // TODO CategoryDto?
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .educationInfo(eduInfoService.getByResumeId(resume.getId()))

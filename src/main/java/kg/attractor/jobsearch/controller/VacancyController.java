@@ -2,10 +2,10 @@ package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
-import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class VacancyController {
     @GetMapping
     public String getVacancies(Model model, @RequestParam(name = "page", defaultValue = "1") Integer page) {
         Page<VacancyDto> vacancies = vacancyService.getActiveVacancies(page - 1);
-        List<Category> categories = categoryService.getCategories();
+        List<CategoryDto> categories = categoryService.getAll();
 
         model.addAttribute("page", page);
         model.addAttribute("vacancies", vacancies);
@@ -47,7 +47,7 @@ public class VacancyController {
                                           @RequestParam(name = "page", defaultValue = "1") Integer page,
                                           Model model) {
         Page<VacancyDto> vacancies = vacancyService.getVacanciesByCategory(categoryId, page - 1);
-        List<Category> categories = categoryService.getCategories();
+        List<CategoryDto> categories = categoryService.getAll();
 
         model.addAttribute("page", page);
         model.addAttribute("categories", categories);
@@ -58,7 +58,7 @@ public class VacancyController {
 
     @GetMapping("create")
     public String create(Model model) {
-        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categories", categoryService.getAll());
         return "vacancy/create";
     }
 
@@ -70,7 +70,7 @@ public class VacancyController {
 
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
-        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("vacancy", vacancyService.getVacancyById(id));
         return "vacancy/edit";
     }

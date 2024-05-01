@@ -1,12 +1,26 @@
 package kg.attractor.jobsearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+import java.util.List;
+
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "categories")
 public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private Integer parentId;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    private List<Category> childCategories;
+//    Не запускается из-за text, нужен varchar
 }

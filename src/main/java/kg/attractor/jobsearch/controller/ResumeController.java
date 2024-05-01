@@ -1,10 +1,10 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
-import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class ResumeController {
 
     @GetMapping("create")
     public String create(Model model) {
-        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categories", categoryService.getAll());
         return "/resume/create";
     }
 
@@ -51,7 +50,7 @@ public class ResumeController {
 
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
-        model.addAttribute("categories", categoryService.getCategories());
+        model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("resume", resumeService.getResumeById(id));
         return "resume/edit";
     }
@@ -65,7 +64,7 @@ public class ResumeController {
 
     @GetMapping
     public String getActiveResumes (@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
-        List<Category> categories = categoryService.getCategories();
+        List<CategoryDto> categories = categoryService.getAll();
         Page<ResumeDto> resumes = resumeService.getActiveResumes(page - 1);
 
         model.addAttribute("page", page);

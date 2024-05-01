@@ -1,9 +1,11 @@
 package kg.attractor.jobsearch.service;
 
-import kg.attractor.jobsearch.model.Category;
+import kg.attractor.jobsearch.dto.CategoryDto;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<Category> getCategories();
+    List<CategoryDto> getAll();
+
+    CategoryDto getById(Integer id);
 }

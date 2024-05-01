@@ -1,21 +1,19 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.CategoryDao;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dao.VacancyDao;
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.exception.NotFoundException;
-import kg.attractor.jobsearch.model.Category;
 import kg.attractor.jobsearch.model.Vacancy;
+import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.webmvc.core.fn.SpringdocRouteBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +32,7 @@ public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;
     private final UserService userService;
     private final UserDao userDao;
-    private final CategoryDao categoryDao;
+    private final CategoryService categoryService;
 
     @Override
     public List<VacancyDto> getVacancies() {
@@ -83,8 +81,8 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public List<VacancyDto> getVacanciesByCategory(Integer categoryId) {
-        if (categoryId == null || !categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (categoryId == null || !categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList()
                 .contains(categoryId)) {
             throw new CustomException("Invalid category ID");
@@ -98,8 +96,8 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public Page<VacancyDto> getVacanciesByCategory(Integer categoryId, int page) {
-        if (categoryId == null || !categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (categoryId == null || !categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList()
                 .contains(categoryId)) {
             throw new CustomException("Invalid category ID");
@@ -115,8 +113,8 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public void createVacancy(VacancyCreateDto vacancyDto, Authentication auth){
-        if (!categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (!categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList()
                 .contains(vacancyDto.getCategoryId())) {
             throw new CustomException("Invalid category");
@@ -140,8 +138,8 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public void updateVacancy(VacancyUpdateDto vacancyDto, Authentication auth)  {
-        if (!categoryDao.getCategories().stream()
-                .map(Category::getId)
+        if (!categoryService.getAll().stream()
+                .map(CategoryDto::getId)
                 .toList()
                 .contains(vacancyDto.getCategoryId())
         ) {
@@ -194,11 +192,8 @@ public class VacancyServiceImpl implements VacancyService {
                 .id(vacancy.getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
-                .category(categoryDao.getCategoryById(
-                        vacancy.getCategoryId()).orElseThrow(
-                                () -> new NotFoundException("Cannot find category with ID: " + vacancy.getCategoryId()))
-                        .getName()
-                )
+                .category(categoryService.getById(
+                        vacancy.getCategoryId()).getName()) // TODO возможно нужно передать весь CategoryDto
                 .salary(vacancy.getSalary())
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
