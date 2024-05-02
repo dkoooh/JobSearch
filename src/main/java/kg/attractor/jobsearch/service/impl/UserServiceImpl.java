@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
                         Set.of(Authority.builder()
                                 .authorityName(userDto.getAccountType())
                                 .build()))
-                )
+                ) // TODO переделать, дублируются роли
                 .enabled(true)
                 .build();
 

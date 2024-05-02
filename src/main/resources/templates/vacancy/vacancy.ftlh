@@ -1,6 +1,11 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
+    </#if>
+
     <div class="row row-cols-1 row-cols-md-2 justify-content-md-evenly align-items-start">
         <div class="card col-9 col-md-8">
             <div class="card-body">
@@ -22,7 +27,19 @@
                 </#if>
             </div>
             <div class="card-footer bg-white border-0">
-                <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success mb-2">Откликнуться</a>
+                <#if authorizedUser??>
+                    <#list authorizedUser.authorities as grantedAuthority>
+                        <#if grantedAuthority.authority == 'APPLICANT'>
+                            <a href="/responses/chooseResume?vacancyId=${vacancy.id}" class="btn btn-success">Откликнуться</a>
+                        </#if>
+                    </#list>
+                    <#if authorizedUser.name == vacancy.author.email>
+                        <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success">Редактировать</a>
+                    </#if>
+                <#else>
+                    <a href="/users/login" class="btn btn-primary">Войдите</a> или
+                    <a href="/users/register" class="btn btn-warning">Зарегестрируйтесь</a>
+                </#if>
             </div>
 
         </div>

@@ -15,7 +15,7 @@
         <#if known>
             <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication.principal>
         </#if>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-dark fw-medium" data-bs-theme="dark">
             <div class="container">
                 <a class="navbar-brand" href="/">JobSearch</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,10 +28,10 @@
                         </li>
                         <#if authorizedUser??>
                             <li class="nav-item ms-lg-auto">
-                                <a class="btn btn-outline-primary me-2" aria-current="page" href="/users">${authorizedUser.getUsername()}</a>
+                                <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/users">${authorizedUser.getUsername()}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-danger" aria-current="page" href="/logout">Выйти</a>
+                                <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">Выйти</a>
                             </li>
                         <#else>
                             <li class="nav-item ms-lg-auto">

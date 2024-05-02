@@ -3,6 +3,11 @@
 
 <#--    TODO исправить контакты-->
 <@main.layout>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
+    </#if>
+
     <div class="row row-cols-1 row-cols-md-2 justify-content-md-evenly align-items-start">
         <div class="col-12 col-md-8">
             <div class="card">
@@ -34,14 +39,23 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-0">
-                    <a href="#" class="btn btn-success mb-2">Откликнуться</a>
+                    <#if authorizedUser??>
+                        <#if resume.applicant.email == authorizedUser.name>
+                            <a href="/resumes/${resume.id}/edit" class="btn btn-success mb-2">Редактировать</a>
+                        </#if>
+                        <#list authorizedUser.authorities as grantedAuthority>
+                            <#if grantedAuthority.authority == 'EMPLOYER'>
+                                <a href="#" class="btn btn-success mb-2">Откликнуться</a> <#--TODO отклик на соискателя со стороны работодателя-->
+                            </#if>
+                        </#list>
+                    </#if>
                 </div>
             </div>
         </div>
         <div class="col-8 col-md-3">
             <div class="card px-0">
                 <div class="card-header">
-                    Applicant
+                    Соискатель
                 </div>
                 <div class="card-body">
                     <h3 class="card-title">${resume.applicant.name}</h3>
