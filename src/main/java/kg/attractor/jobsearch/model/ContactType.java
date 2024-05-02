@@ -3,6 +3,8 @@ package kg.attractor.jobsearch.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -18,4 +20,7 @@ public class ContactType {
 
     @Lob
     private String type;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
+    private List<ContactInfo> contactInfoList;
 }

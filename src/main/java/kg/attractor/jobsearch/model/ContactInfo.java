@@ -19,11 +19,6 @@ public class ContactInfo {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "TYPE_ID")
-    private ContactType type;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "RESUME_ID")
     private Resume resume;
@@ -31,4 +26,8 @@ public class ContactInfo {
     @Column(name = "contact_value")
     @Lob
     private String contactValue;
+
+    @ManyToOne
+    @JoinColumn(name = "TYPE_ID")
+    private ContactType type;
 }

@@ -19,9 +19,11 @@
                                         ${response.RESUME.name}
                                     </a></h6>
                                 <div class="card-text">${response.VACANCY.author.name} ${response.VACANCY.author.surname}</div>
-                                <div class="card-text">
-                                    Статус: ${response.CONFIRMATION?string("подтверждено", "не подтверждено")}
-                                </div>
+                                <#if response.confirmation??>
+                                    <div class="card-text">
+                                        Статус: ${response.CONFIRMATION?string("подтверждено", "не подтверждено")}
+                                    </div>
+                                </#if>
                             </div>
                             <div class="card-footer bg-white border-0">
                                 <a href="/chats/${response.ID}?currentUser=${response.RESUME.applicant.id}" class="btn btn-outline-primary">Открыть чат</a>

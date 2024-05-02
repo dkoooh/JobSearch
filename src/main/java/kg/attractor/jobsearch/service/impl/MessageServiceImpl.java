@@ -29,14 +29,14 @@ public class MessageServiceImpl implements MessageService {
     private final ResponseRepository responseRepository;
 
     public List<MessageDto> getListMessagesGroups(Integer respondedApplicantId) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        if (!userService.getByEmail(userEmail).getId()
-                .equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
-                !userService.getByEmail(userEmail).getId()
-                        .equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
-            throw new NoAccessException("Cannot access the chat you're not a member of");
-        }
+//        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+//
+//        if (!userService.getByEmail(userEmail).getId()
+//                .equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
+//                !userService.getByEmail(userEmail).getId()
+//                        .equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
+//            throw new NoAccessException("Cannot access the chat you're not a member of");
+//        }
 
         List<Message> messages = messageRepository.findAllByResponseId(respondedApplicantId);
         return messages.stream().map(this::convertToDto).toList();
@@ -44,11 +44,14 @@ public class MessageServiceImpl implements MessageService {
 
     public void sendMessageGroup(Integer to, MessageDto dto, String userEmail) {
         System.out.println("String userEmail from Authentication auth: " + userEmail);
-        if (!userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getVacancy().getAuthor().getId()) &&
-                !userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getResume().getApplicant().getId())) {
+
+        Integer employerId = responseService.getById(dto.getResponseId(), userEmail).getVacancy().getAuthor().getId();
+        Integer applicantId = responseService.getById(dto.getResponseId(), userEmail).getResume().getApplicant().getId();
+        Integer userId = userService.getByEmail(userEmail).getId();
+
+        if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
             throw new NoAccessException("Cannot access the chat you're not a member of");
         }
-        Integer userId = userService.getByEmail(userEmail).getId();
 
         Message message = Message.builder()
                 .content(dto.getContent())

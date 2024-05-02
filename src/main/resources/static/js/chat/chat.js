@@ -1,37 +1,16 @@
 'use strict';
 
-const socket = new SockJS("/ws");
-const stompClient = Stomp.over(socket);
 const path = window.location.pathname;
 const segments = path.split('/');
 const responseId = segments[segments.length - 1];
 const currentUser = Number(new URLSearchParams(window.location.search).get("currentUser"));
-const userFromStorage = localStorage.getItem("user");
-console.log(userFromStorage)
-
-window.addEventListener('load', async (event) => {
-    try {
-        let request = await fetch('http://localhost:1234/users/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: userFromStorage
-        })
-
-        if (request.ok) {
 
 
-            await restoreMessages();
-            await connect(event);
-        } else {
-            throw new Error();
-        }
+window.addEventListener('load', restoreMessages)
+window.addEventListener('load', connect)
 
-    } catch (e) {
-        console.log(e)
-    }
-})
+const socket = new SockJS("/ws");
+let stompClient = Stomp.over(socket);
 
 async function restoreMessages () {
     try {
@@ -50,16 +29,11 @@ async function restoreMessages () {
 
 function connect(event) {
     event.preventDefault();
-    console.log("connect (event)")
-    if (stompClient) {
-        stompClient.connect({}, onConnected, onError);
-        console.log("stompClient")
-    }
-    console.log('connected');
+    stompClient.connect({}, onConnected, onError);
 }
 
 function onConnected() {
-    console.log(`/response/${responseId}/queue/messages`)
+    stompClient.subscribe('/response/test', onMessageReceived)
     stompClient.subscribe(`/response/${responseId}/queue/messages`, onMessageReceived)
 }
 
@@ -98,12 +72,11 @@ function addHtmlMessage (message) {
 function onMessageSend(event) {
     event.preventDefault();
     let messageText = document.getElementById('messageForm').value;
-    stompClient.send(`/app/${responseId}`,
-        {},
-        JSON.stringify(
+    stompClient.send(`/app/${responseId}`, {}, JSON.stringify(
         {
             content: messageText,
             responseId: responseId,
+            senderId: currentUser,
             timeStamp: new Date(Date.now()).toLocaleString()
         }
     ));
