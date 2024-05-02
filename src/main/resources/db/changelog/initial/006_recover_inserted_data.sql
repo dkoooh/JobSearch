@@ -17,29 +17,29 @@ values (
        );
 
 
-insert into vacancies (name, category_id, author_id, CREATED_DATE, UPDATE_TIME)
+insert into vacancies (name, category_id, author_id, CREATED_DATE, UPDATE_TIME, IS_ACTIVE)
 values ('Middle Front-end developer',
         (select id from categories where name = 'Front-end'),
         (select id from users where email = 'bill.milner@gmail.com'),
         '2024-02-02 15:00',
-        '2024-02-02 15:00'),
+        '2024-02-02 15:00', true),
        ('Middle Java developer',
         (select id from categories where name = 'Back-end'),
         (select id from users where email = 'bill.milner@gmail.com'),
         '2024-02-02 15:00',
-        '2024-02-02 15:00');
+        '2024-02-02 15:00', true);
 
-insert into resumes (name, applicant_id, category_id, CREATED_DATE, UPDATE_TIME)
+insert into resumes (name, applicant_id, category_id, CREATED_DATE, UPDATE_TIME, IS_ACTIVE)
 values ('Java developer',
         (select id from users where email = 'jonhdoe@gmail.com'),
         (select id from categories where name = 'Back-end'),
         '2024-02-02 15:00',
-        '2024-02-02 15:00'),
+        '2024-02-02 15:00', true),
        ('Front-end developer',
         (select id from users where email = 'jonhdoe@gmail.com'),
         (select id from categories where name = 'Front-end'),
         '2024-02-02 15:00',
-        '2024-02-02 15:00');
+        '2024-02-02 15:00', true);
 
 insert into responded_applicants (resume_id, vacancy_id, confirmation)
 values ((select id from resumes where name = 'Front-end developer'),

@@ -21,8 +21,10 @@
                         <h5 class="card-title">
                             <a href="/vacancies/${vacancy.id}" class="text-decoration-none text-black">${vacancy.name}</a>
                         </h5>
-                        <#if vacancy.salary gt 0>
-                            <h6 class="card-subtitle">${vacancy.salary} сом</h6>
+                        <#if vacancy.salary??>
+                            <#if vacancy.salary gt 0>
+                                <h6 class="card-subtitle">${vacancy.salary} сом</h6>
+                            </#if>
                         </#if>
                         <#if vacancy.expFrom?? && vacancy.expFrom gt 0>
                             <#if vacancy.expTo?? && vacancy.expFrom gt 0>

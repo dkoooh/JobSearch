@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,6 +39,14 @@ public class User {
     private List<Vacancy> vacancies;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
     private List<Message> messages;
+
+    @ManyToMany (cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = { @JoinColumn(name="user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "authority_id")}
+    )
+    Set<Authority> authorities;
 
 //    todo не создаются authority
 }

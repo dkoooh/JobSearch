@@ -7,6 +7,7 @@ import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
+import kg.attractor.jobsearch.model.Authority;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.repository.VacancyRepository;
@@ -21,9 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -45,6 +44,11 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(userDto.getPhoneNumber())
                 .avatar("_default_avatar.png")
                 .accountType(userDto.getAccountType())
+                .authorities(new HashSet<>(
+                        Set.of(Authority.builder()
+                                .authorityName(userDto.getAccountType())
+                                .build()))
+                )
                 .enabled(true)
                 .build();
 
