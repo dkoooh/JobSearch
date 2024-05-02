@@ -9,7 +9,7 @@ import java.util.List;
 public interface ContactInfoService {
     void create(ContactInfoCreateDto contactInfoCreateDto, int resumeId);
 
-    List<ContactInfoDto> getByResumeId (int resumeId);
+    List<ContactInfoDto> getAllByResumeId(int resumeId);
 
     void update(ContactInfoUpdateDto contactInfoUpdateDto, int resumeId);
 }

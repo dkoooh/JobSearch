@@ -13,7 +13,7 @@ public interface WorkExpInfoService {
 
     WorkExpInfoDto getById (int id);
 
-    List<WorkExpInfoDto> getByResumeId(int resumeId);
+    List<WorkExpInfoDto> getAllByResumeId(int resumeId);
 
     void delete (int id);
 }

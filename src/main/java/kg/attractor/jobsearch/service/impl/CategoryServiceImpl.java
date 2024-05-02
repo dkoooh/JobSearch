@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Boolean isExist(Integer id) {
+    public Boolean isExists(Integer id) {
         return categoryRepository.existsById(id);
     }
 

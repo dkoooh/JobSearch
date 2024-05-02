@@ -1,7 +1,7 @@
 'use strict';
 
 const socket = new SockJS("/ws");
-let stompClient = Stomp.over(socket);
+const stompClient = Stomp.over(socket);
 const path = window.location.pathname;
 const segments = path.split('/');
 const responseId = segments[segments.length - 1];
@@ -9,7 +9,7 @@ const currentUser = Number(new URLSearchParams(window.location.search).get("curr
 const userFromStorage = localStorage.getItem("user");
 console.log(userFromStorage)
 
-window.addEventListener('load', async () => {
+window.addEventListener('load', async (event) => {
     try {
         let request = await fetch('http://localhost:1234/users/login', {
             method: 'POST',
@@ -50,11 +50,16 @@ async function restoreMessages () {
 
 function connect(event) {
     event.preventDefault();
-    stompClient.connect({'Authorization': 'Basic ' + btoa(userFromStorage.username + ':' + userFromStorage.password)},
-        onConnected, onError);
+    console.log("connect (event)")
+    if (stompClient) {
+        stompClient.connect({}, onConnected, onError);
+        console.log("stompClient")
+    }
+    console.log('connected');
 }
 
 function onConnected() {
+    console.log(`/response/${responseId}/queue/messages`)
     stompClient.subscribe(`/response/${responseId}/queue/messages`, onMessageReceived)
 }
 
@@ -94,7 +99,7 @@ function onMessageSend(event) {
     event.preventDefault();
     let messageText = document.getElementById('messageForm').value;
     stompClient.send(`/app/${responseId}`,
-        {'Authorization': 'Basic ' + btoa(userFromStorage.username + ':' + userFromStorage.password)},
+        {},
         JSON.stringify(
         {
             content: messageText,

@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ResponseController {
     private final ResponseService responseService;
 
-    @GetMapping("vacancy/{vacancyId}")
-    public ResponseEntity<?> getResponseByVacancy(@PathVariable Integer vacancyId, Authentication auth) {
-        return ResponseEntity.ok(responseService.getResponseByVacancy(vacancyId, auth.getName()));
-    }
+//    @GetMapping("vacancy/{vacancyId}")
+//    public ResponseEntity<?> getResponseByVacancy(@PathVariable Integer vacancyId, Authentication auth) {
+//        return ResponseEntity.ok(responseService.getResponseByVacancy(vacancyId, auth.getName()));
+//    }
+//    TODO коммент в сервисах
 
     @GetMapping("{id}")
     public ResponseEntity<?> getById(@PathVariable Integer id) {

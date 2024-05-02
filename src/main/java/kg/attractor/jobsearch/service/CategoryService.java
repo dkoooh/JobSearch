@@ -9,5 +9,5 @@ public interface CategoryService {
 
     CategoryDto getById(Integer id);
 
-    Boolean isExist(Integer id);
+    Boolean isExists(Integer id);
 }

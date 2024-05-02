@@ -20,8 +20,12 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private Category parent;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private List<Category> childCategories;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<Resume> resumes;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<Vacancy> vacancies;
+
 }

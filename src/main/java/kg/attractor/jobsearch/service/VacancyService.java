@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface VacancyService {
-    List<VacancyDto> getVacancies ();
+    Boolean isExists(Integer vacancyId);
+
+    List<VacancyDto> getAll();
 
     Page<VacancyDto> getActiveVacancies(int page);
 

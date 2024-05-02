@@ -1,9 +1,9 @@
 package kg.attractor.jobsearch.dao;
 
 import kg.attractor.jobsearch.model.Vacancy;
-import kg.attractor.jobsearch.service.mapper.VacancyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,70 +22,70 @@ public class VacancyDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
-    public List<Vacancy> getVacancies() {
-        String sql = """
-                select * from VACANCIES;
-                """;
-        return template.query(sql, new VacancyMapper());
-    }
+//    public List<Vacancy> getVacancies() {
+//        String sql = """
+//                select * from VACANCIES;
+//                """;
+//        return template.query(sql, new VacancyMapper());
+//    }
+//
+//    public List<Vacancy> getActiveVacancies () {
+//        String sql = """
+//                select * from VACANCIES
+//                where IS_ACTIVE = true;
+//                """;
+//
+//        return template.query(sql, new VacancyMapper());
+//    }
+//
+//    public Optional<Vacancy> getVacancyById(int vacancyId) {
+//        String sql = """
+//                select * from VACANCIES
+//                where ID = ?
+//                """;
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(
+//                        template.query(sql, new VacancyMapper(), vacancyId)
+//                )
+//        );
+//    }
 
-    public List<Vacancy> getActiveVacancies () {
-        String sql = """
-                select * from VACANCIES
-                where IS_ACTIVE = true;
-                """;
+//    public List<Vacancy> getVacanciesByApplicant(int userId) {
+//        String sql = """
+//                select * from VACANCIES
+//                where ID in (
+//                    select VACANCY_ID from RESPONDED_APPLICANTS
+//                    where RESUME_ID in (
+//                        select ID from RESUMES
+//                        where APPLICANT_ID = ?
+//                    )
+//                );
+//                """;
+//        return template.query(sql, new BeanPropertyRowMapper<>(Vacancy.class), userId);
+//    }
 
-        return template.query(sql, new VacancyMapper());
-    }
+//    public List<Vacancy> getVacanciesByEmployer(String email) {
+//        String sql = """
+//                select * from VACANCIES
+//                where AUTHOR_ID in (
+//                    select ID from USERS
+//                    where EMAIL = ?
+//                );
+//                """;
+//
+//        return template.query(sql, new VacancyMapper(), email);
+//    }
+//
+//    public List<Vacancy> getVacanciesByCategory(int categoryId) {
+//        String sql = """
+//                select * from vacancies
+//                where CATEGORY_ID = ?
+//                """;
+//        return template.query(sql, new VacancyMapper(), categoryId);
+//    }
 
-    public Optional<Vacancy> getVacancyById(int vacancyId) {
-        String sql = """
-                select * from VACANCIES
-                where ID = ?
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        template.query(sql, new VacancyMapper(), vacancyId)
-                )
-        );
-    }
-
-    public List<Vacancy> getVacanciesByApplicant(int userId) {
-        String sql = """
-                select * from VACANCIES
-                where ID in (
-                    select VACANCY_ID from RESPONDED_APPLICANTS
-                    where RESUME_ID in (
-                        select ID from RESUMES
-                        where APPLICANT_ID = ?
-                    )
-                );
-                """;
-        return template.query(sql, new VacancyMapper(), userId);
-    }
-
-    public List<Vacancy> getVacanciesByEmployer(String email) {
-        String sql = """
-                select * from VACANCIES
-                where AUTHOR_ID in (
-                    select ID from USERS
-                    where EMAIL = ?
-                );
-                """;
-
-        return template.query(sql, new VacancyMapper(), email);
-    }
-
-    public List<Vacancy> getVacanciesByCategory(int categoryId) {
-        String sql = """
-                select * from vacancies
-                where CATEGORY_ID = ?
-                """;
-        return template.query(sql, new VacancyMapper(), categoryId);
-    }
-
-    public Number createVacancy (Vacancy vacancy) {
+    /*public Number createVacancy (Vacancy vacancy) {
         String sql = """
                 insert into VACANCIES (NAME, DESCRIPTION, CATEGORY_ID, SALARY, EXP_FROM, EXP_TO, IS_ACTIVE, AUTHOR_ID,
                     CREATED_DATE, UPDATE_TIME)
@@ -96,12 +96,12 @@ public class VacancyDao {
         SqlParameterSource dataSource = new MapSqlParameterSource()
                 .addValue("name", vacancy.getName())
                 .addValue("description", vacancy.getDescription())
-                .addValue("category_id", vacancy.getCategoryId())
+                .addValue("category_id", vacancy.getCategory())
                 .addValue("salary", vacancy.getSalary())
                 .addValue("exp_from", vacancy.getExpFrom())
                 .addValue("exp_to", vacancy.getExpTo())
                 .addValue("is_active", vacancy.getIsActive())
-                .addValue("author_id", vacancy.getAuthorId())
+                .addValue("author_id", vacancy.getAuthor())
                 .addValue("created_date", Timestamp.valueOf(LocalDateTime.now()))
                 .addValue("update_time", Timestamp.valueOf(LocalDateTime.now()));
         namedTemplate.update(sql, dataSource);
@@ -121,7 +121,7 @@ public class VacancyDao {
                 .addValue("id", vacancy.getId())
                 .addValue("name", vacancy.getName())
                 .addValue("description", vacancy.getDescription())
-                .addValue("category_id", vacancy.getCategoryId())
+                .addValue("category_id", vacancy.getCategory())
                 .addValue("salary", vacancy.getSalary())
                 .addValue("exp_from", vacancy.getExpFrom())
                 .addValue("exp_to", vacancy.getExpTo())
@@ -138,5 +138,5 @@ public class VacancyDao {
 
         MapSqlParameterSource dateSource = new MapSqlParameterSource().addValue("vacancyId", vacancyId);
         namedTemplate.update(sql, dateSource);
-    }
+    }*/
 }

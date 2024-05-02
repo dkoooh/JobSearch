@@ -5,7 +5,10 @@ import kg.attractor.jobsearch.dto.educationInfo.EduInfoCreateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoUpdateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoDto;
 import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.EducationInfo;
+import kg.attractor.jobsearch.repository.EducationInfoRepository;
+import kg.attractor.jobsearch.repository.ResumeRepository;
 import kg.attractor.jobsearch.service.EduInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EduInfoInfoServiceImpl implements EduInfoService {
-    private final EducationInfoDao educationInfoDao;
+    private final EducationInfoRepository eduInfoRepository;
+    private final ResumeRepository resumeRepository;
+    private final EducationInfoRepository educationInfoRepository;
 
     public void create(EduInfoCreateDto dto, int resumeId) {
         EducationInfo eduInfo = EducationInfo.builder()
-                .resumeId(resumeId)
+                .resume(resumeRepository.findById(resumeId)
+                        .orElseThrow(() -> new NotFoundException("Not found resume with ID: " + resumeId)))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -27,14 +33,15 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
                 .degree(dto.getDegree())
                 .build();
 
-        educationInfoDao.create(eduInfo);
+        eduInfoRepository.save(eduInfo);
     }
 
     @Override
     public void update(EduInfoUpdateDto dto, int resumeId) {
         EducationInfo eduInfo = EducationInfo.builder()
                 .id(dto.getId())
-                .resumeId(resumeId)
+                .resume(resumeRepository.findById(resumeId)
+                        .orElseThrow(() -> new NotFoundException("Not found resume with ID: " + resumeId)))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -42,16 +49,13 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
                 .degree(dto.getDegree())
                 .build();
 
-        if (eduInfo.getId() != null && educationInfoDao.getById(dto.getId()).isPresent()) {
-            educationInfoDao.update(eduInfo);
-        } else {
-            educationInfoDao.create(eduInfo);
-        }
+        eduInfoRepository.save(eduInfo);
     }
 
     @Override
     public EduInfoDto getById(int id) {
-        EducationInfo eduInfo = educationInfoDao.getById(id).orElseThrow(() -> new CustomException("Not found"));
+        EducationInfo eduInfo = educationInfoRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Not found"));
 
         return EduInfoDto.builder()
                 .id(eduInfo.getId())
@@ -63,8 +67,9 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
                 .build();
     }
 
-    public List<EduInfoDto> getByResumeId (int resumeId) {
-        List<EducationInfo> eduInfo = educationInfoDao.getByResumeId(resumeId);
+    @Override
+    public List<EduInfoDto> getAllByResumeId(int resumeId) {
+        List<EducationInfo> eduInfo = educationInfoRepository.findAllByResumeId(resumeId);
 
         return eduInfo.stream()
                 .map(info -> EduInfoDto.builder()
@@ -81,6 +86,6 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
 
     @Override
     public void delete(Integer id, String applicantEmail) {
-        educationInfoDao.delete(id);
+        educationInfoRepository.deleteById(id);
     }
 }

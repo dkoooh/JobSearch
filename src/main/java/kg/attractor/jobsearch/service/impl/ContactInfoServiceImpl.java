@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.ContactInfoDao;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
@@ -22,7 +21,6 @@ import java.util.List;
 public class ContactInfoServiceImpl implements ContactInfoService {
     private final ContactInfoRepository contactInfoRepository;
 
-    private final ContactInfoDao contactInfoDao;
     private final ContactTypeRepository contactTypeRepository;
     private final ContactTypeService contactTypeService;
     private final ResumeRepository resumeRepository;
@@ -44,12 +42,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         contactInfoRepository.save(info);
     }
 
-    public List<ContactInfoDto> getByResumeId (int resumeId) {
-        List<ContactInfo> list = contactInfoDao.getByResumeId(resumeId);
+    public List<ContactInfoDto> getAllByResumeId(int resumeId) {
+        List<ContactInfo> list = contactInfoRepository.findAllByResumeId(resumeId);
 
         return list.stream()
                 .map(contactInfo -> ContactInfoDto.builder()
-                        .type(contactTypeService.getById(contactInfo.getId()))
+                        .type(contactInfo.getType().getType())
                         .value(contactInfo.getContactValue())
                         .build())
                 .toList();
@@ -64,6 +62,11 @@ public class ContactInfoServiceImpl implements ContactInfoService {
                         .orElseThrow(() -> new NotFoundException("Not found contact type with ID: " + dto.getTypeId())))
                 .contactValue(dto.getContactValue())
                 .build();
+
+        contactInfoRepository.findByResumeIdAndTypeId(resumeId, info.getType().getId())
+                .ifPresent(contactInfo ->
+                        info.setId(contactInfo.getId())
+                );
 
         contactInfoRepository.save(info);
     }

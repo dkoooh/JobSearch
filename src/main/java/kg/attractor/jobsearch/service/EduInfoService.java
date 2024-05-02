@@ -11,7 +11,7 @@ public interface EduInfoService {
 
     EduInfoDto getById (int id);
 
-    List<EduInfoDto> getByResumeId (int resumeId);
+    List<EduInfoDto> getAllByResumeId(int resumeId);
 
     void update (EduInfoUpdateDto dto, int resumeId);
 

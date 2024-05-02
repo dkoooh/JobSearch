@@ -14,21 +14,21 @@ import java.util.List;
 public class MessageDao {
     private final JdbcTemplate template;
 
-    public List<Message> getListMessagesGroups(Integer respondedApplicantId) {
-        String sql = """
-                select * from MESSAGES
-                where RESPONDED_APPLICANT_ID = ?
-                """;
-
-        return template.query(sql, new BeanPropertyRowMapper<>(Message.class), respondedApplicantId);
-    }
-
-    public void sendMessageGroup(Integer to, MessageDto msg, Integer userId) {
-        String sql = """
-                INSERT INTO MESSAGES(SENDER_ID,RESPONDED_APPLICANT_ID, CONTENT, TIMESTAMP)
-                values (?,?,?, current_timestamp())
-                """;
-
-        template.update(sql, userId, to, msg.getContent());
-    }
+//    public List<Message> getListMessagesGroups(Integer respondedApplicantId) {
+//        String sql = """
+//                select * from MESSAGES
+//                where RESPONDED_APPLICANT_ID = ?
+//                """;
+//
+//        return template.query(sql, new BeanPropertyRowMapper<>(Message.class), respondedApplicantId);
+//    }
+//
+//    public void sendMessageGroup(Integer to, MessageDto msg, Integer userId) {
+//        String sql = """
+//                INSERT INTO MESSAGES(SENDER_ID,RESPONDED_APPLICANT_ID, CONTENT, TIMESTAMP)
+//                values (?,?,?, current_timestamp())
+//                """;
+//
+//        template.update(sql, userId, to, msg.getContent());
+//    }
 }

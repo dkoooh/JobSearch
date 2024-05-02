@@ -31,14 +31,14 @@ public class ContactInfoDao {
 //        template.update(sql, info.getType(), info.getResumeId(), info.getContactValue());
 //    }
 
-    public List<ContactInfo> getByResumeId (int resumeId) {
-        String sql = """
-                select * from CONTACTS_INFO
-                where RESUME_ID = ?;
-                """;
-
-        return template.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), resumeId);
-    }
+//    public List<ContactInfo> getByResumeId (int resumeId) {
+//        String sql = """
+//                select * from CONTACTS_INFO
+//                where RESUME_ID = ?;
+//                """;
+//
+//        return template.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), resumeId);
+//    }
 
 //    public void update(ContactInfo info) {
 //        String sql = """
@@ -56,14 +56,14 @@ public class ContactInfoDao {
 //        namedTemplate.update(sql, dataSource);
 //    }
 
-    public Boolean isContactTypeExists (int typeId, int resumeId) {
-        String sql = """
-                select * from contacts_info
-                where type_id = ?
-                and resume_id = ?
-                """;
-
-        return !template.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), typeId, resumeId).isEmpty();
-    }
+//    public Boolean isContactTypeExists (int typeId, int resumeId) {
+//        String sql = """
+//                select * from contacts_info
+//                where type_id = ?
+//                and resume_id = ?
+//                """;
+//
+//        return !template.query(sql, new BeanPropertyRowMapper<>(ContactInfo.class), typeId, resumeId).isEmpty();
+//    }
 
 }

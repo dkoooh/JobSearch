@@ -30,6 +30,14 @@ public class User {
     private String avatar;
     @Column(name = "account_type")
     private String accountType;
+    private Boolean enabled;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private List<Resume> resumes;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private List<Vacancy> vacancies;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sender")
+    private List<Message> messages;
+
+//    todo не создаются authority
 }

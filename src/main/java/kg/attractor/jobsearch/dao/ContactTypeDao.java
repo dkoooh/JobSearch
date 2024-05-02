@@ -14,25 +14,25 @@ import java.util.Optional;
 public class ContactTypeDao {
     private final JdbcTemplate template;
 
-    public Boolean isTypeExists(int typeId) {
-        String sql = """
-                select * from CONTACT_TYPES
-                where ID = ?;
-                """;
-
-        return !template.query(sql, new BeanPropertyRowMapper<>(ContactType.class), typeId).isEmpty();
-    }
-
-    public Optional<ContactType> getById(Integer typeId) {
-        String sql = """
-                select * from CONTACT_TYPES
-                where ID = ?;
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(
-                        template.query(sql, new BeanPropertyRowMapper<>(ContactType.class), typeId)
-                )
-        );
-    }
+//    public Boolean isTypeExists(int typeId) {
+//        String sql = """
+//                select * from CONTACT_TYPES
+//                where ID = ?;
+//                """;
+//
+//        return !template.query(sql, new BeanPropertyRowMapper<>(ContactType.class), typeId).isEmpty();
+//    }
+//
+//    public Optional<ContactType> getById(Integer typeId) {
+//        String sql = """
+//                select * from CONTACT_TYPES
+//                where ID = ?;
+//                """;
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(
+//                        template.query(sql, new BeanPropertyRowMapper<>(ContactType.class), typeId)
+//                )
+//        );
+//    }
 }

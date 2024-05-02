@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dao.VacancyDao;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.user.UserLoginDto;
@@ -9,8 +8,8 @@ import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.User;
-import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repository.UserRepository;
+import kg.attractor.jobsearch.repository.VacancyRepository;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,29 +30,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
-    private final VacancyDao vacancyDao;
     private final FileUtil fileUtil;
     private final UserRepository userRepository;
+    private final VacancyRepository vacancyRepository;
 
     @Override
     public void create(UserCreationDto userDto) {
-        if (isUserExists(userDto.getEmail())) {
-            throw new CustomException("User with this email is already exists");
-        } else if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-            throw new CustomException("Email is blank");
-        } else if (userDto.getAge() != null && userDto.getAge() < 16) {
-            throw new CustomException("User is too young");
-        } else if (userDto.getAccountType() == null || !("employer".equalsIgnoreCase(userDto.getAccountType()) ||
-                "applicant".equalsIgnoreCase(userDto.getAccountType()))) {
-            throw new CustomException("Invalid account type");
-        } else if (userDto.getName() == null || userDto.getName().isBlank()) {
-            throw new CustomException("Name is empty");
-        } else if (userDto.getPassword() == null) {
-            throw new CustomException("Password is empty");
-        } else if (userDto.getPhoneNumber() == null) {
-            throw new CustomException("Phone number is empty");
-        }
-
         User newUser = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -63,6 +45,7 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(userDto.getPhoneNumber())
                 .avatar("_default_avatar.png")
                 .accountType(userDto.getAccountType())
+                .enabled(true)
                 .build();
 
         userRepository.save(newUser);
@@ -70,21 +53,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(Authentication auth, UserUpdateDto dto, Integer userId) {
-
-        if (!userId.equals(userDao.getUserByEmail(auth.getName()).get().getId())) {
-            throw new CustomException("Access denied");
-        }
+        UserDto oldUser = getByEmail(auth.getName());
 
         User user = User.builder()
                 .id(userId)
+                .email(oldUser.getEmail())
                 .name(dto.getName())
                 .surname(dto.getSurname())
                 .age(dto.getAge())
                 .password(new BCryptPasswordEncoder().encode(dto.getPassword()))
                 .phoneNumber(dto.getPhoneNumber())
+                .enabled(true)
+                .accountType(oldUser.getAccountType())
                 .build();
-
-        UserDto oldUser = getByEmail(auth.getName());
 
         if (!dto.getAvatar().isEmpty()) {
             String filename = fileUtil.saveUploadedFile(dto.getAvatar(), "images/users");
@@ -139,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
 
-        if (vacancyId == null || !vacancyDao.getVacancies().stream().map(Vacancy::getId).toList().contains(vacancyId)) {
+        if (!vacancyRepository.existsById(vacancyId)) {
             throw new CustomException("Invalid vacancy");
         }
         List<User> applicants = userDao.getApplicantsByVacancy(vacancyId);
@@ -176,7 +157,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
-        userDao.uploadUserAvatar(userEmail, fileName);
     }
 
     @Override

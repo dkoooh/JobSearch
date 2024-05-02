@@ -1,17 +1,25 @@
 package kg.attractor.jobsearch.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table (name = "responded_applicants")
 public class RespondedApplicant {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer vacancyId;
-    private Integer resumeId;
+    @ManyToOne
+    @JoinColumn(name = "vacancy_id")
+    private Vacancy vacancy;
+    @ManyToOne
+    @JoinColumn(name = "resume_Id")
+    private Resume resume;
+    @Column(name = "confirmation")
     private Boolean isConfirmed;
 }

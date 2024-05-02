@@ -50,13 +50,13 @@ public class ResumeDao {
 //        return template.query(sql, new ResumeMapper(), categoryId);
 //    }
 
-    public List<Resume> getResumesByApplicant(int applicantId) {
-        String sql = """
-                select * from RESUMES
-                where APPLICANT_ID = ?
-                """;
-        return template.query(sql, new BeanPropertyRowMapper<>(Resume.class), applicantId);
-    }
+//    public List<Resume> getResumesByApplicant(int applicantId) {
+//        String sql = """
+//                select * from RESUMES
+//                where APPLICANT_ID = ?
+//                """;
+//        return template.query(sql, new BeanPropertyRowMapper<>(Resume.class), applicantId);
+//    }
 
 //    public int create(Resume resume) {
 //        String sql = """
@@ -103,12 +103,12 @@ public class ResumeDao {
 //        namedTemplate.update(sql, dataSource);
 //    }
 
-    public void deleteResume(int resumeId) {
-        String sql = """
-                delete from RESUMES
-                where ID = :resumeId;
-                """;
-
-        template.update(sql, resumeId);
-    }
+//    public void deleteResume(int resumeId) {
+//        String sql = """
+//                delete from RESUMES
+//                where ID = :resumeId;
+//                """;
+//
+//        template.update(sql, resumeId);
+//    }
 }

@@ -21,33 +21,33 @@ public class UserDao {
     private final JdbcTemplate template;
     private final NamedParameterJdbcTemplate namedTemplate;
 
-    public Optional<User> getUserByEmail(String email) {
-        String sql = """
-                select * from USERS
-                where EMAIL = ?;
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), email)));
-    }
-
-    public List<User> getUsersByName(String name) {
-        String sql = """
-                select * from USERS
-                where NAME = ?;
-                """;
-
-        return template.query(sql, new UserMapper(), name);
-    }
-
-    public List<User> getUsersByPhoneNumber(String phoneNumber) {
-        String sql = """
-                select * from USERS
-                where PHONE_NUMBER = ?;
-                """;
-
-        return template.query(sql, new UserMapper(), phoneNumber);
-    }
+//    public Optional<User> getUserByEmail(String email) {
+//        String sql = """
+//                select * from USERS
+//                where EMAIL = ?;
+//                """;
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), email)));
+//    }
+//
+//    public List<User> getUsersByName(String name) {
+//        String sql = """
+//                select * from USERS
+//                where NAME = ?;
+//                """;
+//
+//        return template.query(sql, new UserMapper(), name);
+//    }
+//
+//    public List<User> getUsersByPhoneNumber(String phoneNumber) {
+//        String sql = """
+//                select * from USERS
+//                where PHONE_NUMBER = ?;
+//                """;
+//
+//        return template.query(sql, new UserMapper(), phoneNumber);
+//    }
 
     public List<User> getApplicantsByVacancy(int vacancyId) {
         String sql = """
@@ -63,89 +63,89 @@ public class UserDao {
         return template.query(sql, new UserMapper(), vacancyId);
     }
 
-    public Boolean isUserExists (String email) {
-        String sql = """
-                
-                    select * from USERS
-                    where EMAIL = ?
-                
-                """;
-
-        return !template.query(sql, new UserMapper(), email).isEmpty();
-    }
-
-    public void createUser (User user) {
-        String sql = """
-                insert into USERS (NAME, SURNAME, AGE, EMAIL, PASSWORD, PHONE_NUMBER, AVATAR, ACCOUNT_TYPE, ENABLED)
-                values ( :name, :surname, :age, :email, :password, :phone_number, :avatar, :account_type, true);
-                
-                insert into USER_AUTHORITY (USER_ID, AUTHORITY_ID) 
-                VALUES ( (select ID from USERS where EMAIL = :email),
-                         (select ID from AUTHORITIES where AUTHORITY = :account_type) )
-                """;
-
-        MapSqlParameterSource dataSource = new MapSqlParameterSource()
-                .addValue("name", user.getName())
-                .addValue("surname", user.getSurname())
-                .addValue("age", user.getAge())
-                .addValue("email", user.getEmail())
-                .addValue("password", user.getPassword())
-                .addValue("phone_number", user.getPhoneNumber())
-                .addValue("avatar", user.getAvatar())
-                .addValue("account_type", user.getAccountType());
-
-        namedTemplate.update(sql, dataSource);
-    }
-
-    public void updateUser(User user) {
-        String sql = """
-                update USERS
-                set NAME = :name, SURNAME = :surname, AGE = :age, PASSWORD = :password,
-                 PHONE_NUMBER = :phoneNumber, AVATAR = :avatar
-                 where id = :id
-                """;
-
-        MapSqlParameterSource dataSource = new MapSqlParameterSource()
-                .addValue("id", user.getId())
-                .addValue("name", user.getName())
-                .addValue("surname", user.getSurname())
-                .addValue("age", user.getAge())
-                .addValue("password", user.getPassword())
-                .addValue("phoneNumber", user.getPhoneNumber())
-                .addValue("avatar", user.getAvatar());
-
-        namedTemplate.update(sql, dataSource);
-    }
-
-    public void uploadUserAvatar(String userEmail, String fileName) {
-        String sql = """
-            update USERS
-            set AVATAR = ?
-            where EMAIL = ?;
-            """;
-
-        template.update(sql, fileName, userEmail);
-    }
-
-    public Optional<User> getUserById(int userId) {
-        String sql = """
-                select * from USERS
-                where ID = ?;
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), userId)));
-    }
-
-    public Boolean isCredentialsValid (User user) {
-        String sql = """
-                select * from USERS
-                where email = ?
-                and PASSWORD = ?
-                """;
-
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), user.getEmail(), user.getPassword()))
-        ).isPresent();
-    }
+//    public Boolean isUserExists (String email) {
+//        String sql = """
+//
+//                    select * from USERS
+//                    where EMAIL = ?
+//
+//                """;
+//
+//        return !template.query(sql, new UserMapper(), email).isEmpty();
+//    }
+//
+//    public void createUser (User user) {
+//        String sql = """
+//                insert into USERS (NAME, SURNAME, AGE, EMAIL, PASSWORD, PHONE_NUMBER, AVATAR, ACCOUNT_TYPE, ENABLED)
+//                values ( :name, :surname, :age, :email, :password, :phone_number, :avatar, :account_type, true);
+//
+//                insert into USER_AUTHORITY (USER_ID, AUTHORITY_ID)
+//                VALUES ( (select ID from USERS where EMAIL = :email),
+//                         (select ID from AUTHORITIES where AUTHORITY = :account_type) )
+//                """;
+//
+//        MapSqlParameterSource dataSource = new MapSqlParameterSource()
+//                .addValue("name", user.getName())
+//                .addValue("surname", user.getSurname())
+//                .addValue("age", user.getAge())
+//                .addValue("email", user.getEmail())
+//                .addValue("password", user.getPassword())
+//                .addValue("phone_number", user.getPhoneNumber())
+//                .addValue("avatar", user.getAvatar())
+//                .addValue("account_type", user.getAccountType());
+//
+//        namedTemplate.update(sql, dataSource);
+//    }
+//
+//    public void updateUser(User user) {
+//        String sql = """
+//                update USERS
+//                set NAME = :name, SURNAME = :surname, AGE = :age, PASSWORD = :password,
+//                 PHONE_NUMBER = :phoneNumber, AVATAR = :avatar
+//                 where id = :id
+//                """;
+//
+//        MapSqlParameterSource dataSource = new MapSqlParameterSource()
+//                .addValue("id", user.getId())
+//                .addValue("name", user.getName())
+//                .addValue("surname", user.getSurname())
+//                .addValue("age", user.getAge())
+//                .addValue("password", user.getPassword())
+//                .addValue("phoneNumber", user.getPhoneNumber())
+//                .addValue("avatar", user.getAvatar());
+//
+//        namedTemplate.update(sql, dataSource);
+//    }
+//
+//    public void uploadUserAvatar(String userEmail, String fileName) {
+//        String sql = """
+//            update USERS
+//            set AVATAR = ?
+//            where EMAIL = ?;
+//            """;
+//
+//        template.update(sql, fileName, userEmail);
+//    }
+//
+//    public Optional<User> getUserById(int userId) {
+//        String sql = """
+//                select * from USERS
+//                where ID = ?;
+//                """;
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), userId)));
+//    }
+//
+//    public Boolean isCredentialsValid (User user) {
+//        String sql = """
+//                select * from USERS
+//                where email = ?
+//                and PASSWORD = ?
+//                """;
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(template.query(sql, new UserMapper(), user.getEmail(), user.getPassword()))
+//        ).isPresent();
+//    }
 }

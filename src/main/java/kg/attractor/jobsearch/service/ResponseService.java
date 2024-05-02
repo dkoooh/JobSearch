@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ResponseService {
-    ResponseDto getResponseByVacancy(Integer vacancyId, String email);
+//    ResponseDto getResponseByVacancy(Integer vacancyId, String email);
 
     ResponseDto getById(Integer id, String userEmail);
 

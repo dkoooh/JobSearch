@@ -12,7 +12,6 @@ import kg.attractor.jobsearch.repository.ResumeRepository;
 import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.service.*;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public Page<ResumeDto> getActiveResumes (int page) {
-        List<ResumeDto> resumes = resumeRepository.findByIsActive(true).stream()
+        List<ResumeDto> resumes = resumeRepository.findAllByIsActive(true).stream()
                 .map(this::convertToDto)
                 .toList();
 
@@ -65,21 +65,18 @@ public class ResumeServiceImpl implements ResumeService {
         return new PageImpl<>(subList, pageable, resumes.size());
     }
 
-
-    @SneakyThrows
     @Override
     public ResumeDto getById(int resumeId) {
         return convertToDto(
                 resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new CustomException("Cannot find resume with ID: " + resumeId))
+                        .orElseThrow(() -> new NotFoundException("Cannot find resume with ID: " + resumeId))
         );
     }
 
     @Override
     public List<ResumeDto> getResumesByCategory(int categoryId, String email){
 
-        List<Resume> list = resumeRepository.findByCategory(categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + categoryId)));
+        List<Resume> list = resumeRepository.findAllByCategoryId(categoryId);
         return list.stream()
                 .map(this::convertToDto)
                 .toList();
@@ -87,7 +84,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public List<ResumeDto> getResumesByApplicant(int applicantId) {
-        List<Resume> list = resumeDao.getResumesByApplicant(applicantId);
+        List<Resume> list = resumeRepository.findAllByAuthorId(applicantId);
         return list.stream()
                 .map(this::convertToDto)
                 .toList();
@@ -95,7 +92,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void create(ResumeCreateDto dto, Authentication auth){
-        if (!categoryService.isExist(dto.getCategoryId())) {
+        if (!categoryService.isExists(dto.getCategoryId())) {
             throw new NotFoundException("Invalid category");
         }
 
@@ -107,6 +104,8 @@ public class ResumeServiceImpl implements ResumeService {
                         .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + dto.getCategoryId())))
                 .salary(dto.getSalary())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
+                .createdDate(LocalDateTime.now())
+                .updateTime(LocalDateTime.now())
                 .build();
 
 
@@ -125,7 +124,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void update(ResumeUpdateDto resumeDto, Authentication auth) {
-        if (!categoryService.isExist(resumeDto.getCategoryId())) {
+        if (!categoryService.isExists(resumeDto.getCategoryId())) {
             throw new CustomException("Invalid category");
         }
 
@@ -141,7 +140,9 @@ public class ResumeServiceImpl implements ResumeService {
                 .category(categoryRepository.findById(resumeDto.getCategoryId())
                         .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + resumeDto.getCategoryId())))
                 .salary(resumeDto.getSalary())
-                .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : false)
+                .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : Boolean.FALSE)
+                .createdDate(LocalDateTime.parse(getById(resumeDto.getId()).getCreatedDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .updateTime(LocalDateTime.now())
                 .build();
 
         resumeDto.getEducationInfo().forEach(
@@ -177,9 +178,9 @@ public class ResumeServiceImpl implements ResumeService {
                 .category(categoryService.getById(resume.getCategory().getId()).getName()) // TODO CategoryDto?
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
-                .educationInfo(eduInfoService.getByResumeId(resume.getId()))
-                .workExperienceInfo(workExpInfoService.getByResumeId(resume.getId()))
-                .contactInfos(contactInfoService.getByResumeId(resume.getId()))
+                .educationInfo(eduInfoService.getAllByResumeId(resume.getId()))
+                .workExperienceInfo(workExpInfoService.getAllByResumeId(resume.getId()))
+                .contactInfos(contactInfoService.getAllByResumeId(resume.getId()))
                 .createdDate(resume.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .updateTime(resume.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();

@@ -1,15 +1,11 @@
 package kg.attractor.jobsearch.controller.api;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +18,7 @@ public class VacancyController {
 
     @GetMapping
     public ResponseEntity<?> getVacancies() {
-        return ResponseEntity.ok(vacancyService.getVacancies());
+        return ResponseEntity.ok(vacancyService.getAll());
     }
 
     @GetMapping("category/{categoryId}")

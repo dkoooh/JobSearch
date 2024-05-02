@@ -32,6 +32,13 @@ public class Resume {
     private LocalDateTime createdDate;
     @Column(name = "update_time")
     private LocalDateTime updateTime;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "resume")
     private List<ContactInfo> contactInfos;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resume")
+    private List<EducationInfo> educationInfo;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resume")
+    private List<WorkExperienceInfo> workExperienceInfo;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "resume")
+    private List<RespondedApplicant> responses;
 }

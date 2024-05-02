@@ -1,8 +1,11 @@
 package kg.attractor.jobsearch.service.impl;
-import kg.attractor.jobsearch.dao.MessageDao;
 import kg.attractor.jobsearch.dto.message.MessageDto;
 import kg.attractor.jobsearch.exception.NoAccessException;
+import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Message;
+import kg.attractor.jobsearch.repository.MessageRepository;
+import kg.attractor.jobsearch.repository.ResponseRepository;
+import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.service.MessageService;
 import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.UserService;
@@ -11,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -19,23 +23,26 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final ResponseService responseService;
-    private final MessageDao messageDao;
+    private final MessageRepository messageRepository;
+    private final ResponseRepository responseRepository;
 
     public List<MessageDto> getListMessagesGroups(Integer respondedApplicantId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (!userService.getByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
-                !userService.getByEmail(userEmail).getId().equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
+        if (!userService.getByEmail(userEmail).getId()
+                .equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
+                !userService.getByEmail(userEmail).getId()
+                        .equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
             throw new NoAccessException("Cannot access the chat you're not a member of");
         }
 
-
-        List<Message> msgs = messageDao.getListMessagesGroups(respondedApplicantId);
-        return msgs.stream().map(this::convertToDto).toList();
+        List<Message> messages = messageRepository.findAllByResponseId(respondedApplicantId);
+        return messages.stream().map(this::convertToDto).toList();
     }
 
-    public void sendMessageGroup(Integer to, MessageDto msg, String userEmail) {
+    public void sendMessageGroup(Integer to, MessageDto dto, String userEmail) {
         System.out.println("String userEmail from Authentication auth: " + userEmail);
         if (!userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getVacancy().getAuthor().getId()) &&
                 !userService.getByEmail(userEmail).getId().equals(responseService.getById(to, userEmail).getResume().getApplicant().getId())) {
@@ -43,21 +50,27 @@ public class MessageServiceImpl implements MessageService {
         }
         Integer userId = userService.getByEmail(userEmail).getId();
 
-        messageDao.sendMessageGroup(to, msg, userId);
-        msg.setSenderId(userId);
+        Message message = Message.builder()
+                .content(dto.getContent())
+                .sender(userRepository.findById(userId)
+                        .orElseThrow(() -> new NotFoundException("Not found user with ID: " + dto.getSenderId())))
+                .response(responseRepository.findById(dto.getResponseId())
+                        .orElseThrow(() -> new NotFoundException("Not found response with ID: " + dto.getResponseId())))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        messageRepository.save(message);
 
         String destination = "/response/" + to + "/queue/messages";
-        System.out.println(destination);
-//        msg.setRespondedApplicantId(to);
-        simpMessagingTemplate.convertAndSend(destination, msg);
+        simpMessagingTemplate.convertAndSend(destination, dto);
     }
 
     private MessageDto convertToDto (Message msg) {
         return MessageDto.builder()
                 .content(msg.getContent())
-                .responseId(msg.getRespondedApplicantId())
-                .senderId(msg.getSenderId())
-                .timeStamp(msg.getTimeStamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .responseId(msg.getResponse().getId())
+                .senderId(msg.getSender().getId())
+                .timeStamp(msg.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 
