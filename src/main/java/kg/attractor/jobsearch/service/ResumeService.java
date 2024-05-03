@@ -11,17 +11,17 @@ import java.util.List;
 public interface ResumeService {
     List<ResumeDto> getAll(String employerEmail);
 
-    Page<ResumeDto> getActiveResumes (int page);
+    Page<ResumeDto> getAllActive(int page);
 
     ResumeDto getById(int resumeId);
 
-    List<ResumeDto> getResumesByCategory (int categoryId, String email);
+    List<ResumeDto> getAllByCategory(int categoryId, String email);
 
-    List<ResumeDto> getResumesByApplicant (int applicantId);
+    List<ResumeDto> getAllByApplicant(int applicantId);
 
     void create (ResumeCreateDto resume, Authentication auth);
 
     void update (ResumeUpdateDto resume, Authentication auth);
 
-    void deleteResume (int resumeId, String email);
+    void delete(int resumeId, String email);
 }

@@ -5,7 +5,7 @@ import kg.attractor.jobsearch.dto.ResponseDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
-import kg.attractor.jobsearch.exception.NoAccessException;
+import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.RespondedApplicant;
 import kg.attractor.jobsearch.repository.ResponseRepository;
@@ -64,21 +64,24 @@ public class ResponseServiceImpl implements ResponseService {
     public ResponseDto getById(Integer id, String userEmail) {
 
         RespondedApplicant response = responseRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Cannot find response with ID: " + id)
+                () -> new NotFoundException("Response not found. The requested response does not exists " + id)
         );
 
         System.out.println("ResponseService authorized: " + SecurityContextHolder.getContext().getAuthentication());
 
         ResponseDto responseDto = ResponseDto.builder()
                 .id(response.getId())
-                .vacancy(vacancyService.getVacancyById(response.getVacancy().getId()))
+                .vacancy(vacancyService.getById(response.getVacancy().getId()))
                 .resume(resumeService.getById(response.getResume().getId()))
                 .isConfirmed(response.getIsConfirmed())
                 .build();
 
-        if (!userService.getByEmail(userEmail).getId().equals(responseDto.getVacancy().getAuthor().getId()) &&
-                !userService.getByEmail(userEmail).getId().equals(responseDto.getResume().getApplicant().getId())) {
-            throw new NoAccessException("Cannot get info of the response you're not a member of");
+        Integer employerId = responseDto.getVacancy().getAuthor().getId();
+        Integer applicantId = responseDto.getResume().getApplicant().getId();
+        Integer userId = userService.getByEmail(userEmail).getId();
+
+        if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
+            throw new ForbiddenException("You do not have permission to access response");
         }
 
         return responseDto;
@@ -96,7 +99,7 @@ public class ResponseServiceImpl implements ResponseService {
         List<Map<String, Object>> responses = responseDao.fetchAllGroups(user.getId());
 
         responses.forEach(stringObjectMap -> {
-            VacancyDto vacancy = vacancyService.getVacancyById((Integer) stringObjectMap.get("VACANCY_ID"));
+            VacancyDto vacancy = vacancyService.getById((Integer) stringObjectMap.get("VACANCY_ID"));
             stringObjectMap.remove("VACANCY_ID");
             stringObjectMap.put("VACANCY", vacancy);
 
@@ -112,9 +115,9 @@ public class ResponseServiceImpl implements ResponseService {
     public void create(Integer vacancyId, Integer resumeId) {
         RespondedApplicant response = RespondedApplicant.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume by ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
                 .vacancy(vacancyRepository.findById(vacancyId)
-                        .orElseThrow(() -> new NotFoundException("Not found vacancy by ID: " + vacancyId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid vacancy")))
                 .isConfirmed(false)
                 .build();
         responseRepository.saveAndFlush(response);

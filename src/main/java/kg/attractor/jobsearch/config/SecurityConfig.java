@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final DataSource dataSource;
 
     @Bean
-    public PasswordEncoder encoder() {
+    public static PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .dataSource(dataSource)
                 .usersByUsernameQuery(userQuery)
                 .authoritiesByUsernameQuery(authorityQuery)
-                .passwordEncoder(new BCryptPasswordEncoder());
+                .passwordEncoder(encoder());
     }
 
 

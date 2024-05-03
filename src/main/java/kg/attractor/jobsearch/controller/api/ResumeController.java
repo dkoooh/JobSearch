@@ -29,7 +29,7 @@ public class ResumeController {
 
     @DeleteMapping("{resumeId}")
     public ResponseEntity<?> deleteResume(Authentication auth, @PathVariable Integer resumeId) {
-        resumeService.deleteResume(resumeId, auth.getName());
+        resumeService.delete(resumeId, auth.getName());
         return ResponseEntity.ok("Resume is successfully deleted");
     }
 
@@ -40,7 +40,7 @@ public class ResumeController {
 
     @GetMapping("category/{categoryId}")
     public ResponseEntity<?> getResumeByCategory(@PathVariable int categoryId, Authentication auth) {
-        return ResponseEntity.ok(resumeService.getResumesByCategory(categoryId, auth.getName()));
+        return ResponseEntity.ok(resumeService.getAllByCategory(categoryId, auth.getName()));
     }
 
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
-    List<Vacancy> findAllByIsActive(Boolean active);
+    List<Vacancy> findAllByIsActiveTrue();
 
     List<Vacancy> findAllByAuthorEmail (String email);
 

@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.dao;
 
-import kg.attractor.jobsearch.service.mapper.UserMapper;
 import kg.attractor.jobsearch.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
@@ -49,19 +48,19 @@ public class UserDao {
 //        return template.query(sql, new UserMapper(), phoneNumber);
 //    }
 
-    public List<User> getApplicantsByVacancy(int vacancyId) {
-        String sql = """
-                select * from USERS where ID in (
-                    select APPLICANT_ID from RESUMES
-                    where ID in (
-                        select RESUME_ID from RESPONDED_APPLICANTS
-                        where VACANCY_ID = ?
-                    )
-                )
-                """;
-
-        return template.query(sql, new UserMapper(), vacancyId);
-    }
+//    public List<User> getApplicantsByVacancy(int vacancyId) {
+//        String sql = """
+//                select * from USERS where ID in (
+//                    select APPLICANT_ID from RESUMES
+//                    where ID in (
+//                        select RESUME_ID from RESPONDED_APPLICANTS
+//                        where VACANCY_ID = ?
+//                    )
+//                )
+//                """;
+//
+//        return template.query(sql, new UserMapper(), vacancyId);
+//    }
 
 //    public Boolean isUserExists (String email) {
 //        String sql = """

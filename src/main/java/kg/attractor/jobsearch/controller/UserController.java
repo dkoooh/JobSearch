@@ -44,10 +44,10 @@ public class UserController {
         UserDto user = userService.getByEmail(authentication.getName());
 
         if ("applicant".equalsIgnoreCase(userService.getByEmail(authentication.getName()).getAccountType())) {
-            List<ResumeDto> userResumes = resumeService.getResumesByApplicant(user.getId());
+            List<ResumeDto> userResumes = resumeService.getAllByApplicant(user.getId());
             model.addAttribute("userResumes", userResumes);
         } else {
-            List<VacancyDto> userVacancies = vacancyService.getVacanciesByEmployer(authentication);
+            List<VacancyDto> userVacancies = vacancyService.getAllByEmployer(authentication);
             model.addAttribute("vacancies", userVacancies);
         }
         model.addAttribute("user", user);

@@ -35,7 +35,7 @@ public class ResponseController {
 
     @GetMapping("chooseResume")
     public String chooseResume(@RequestParam Integer vacancyId, Model model, Authentication auth) {
-        List<ResumeDto> resumes = resumeService.getResumesByApplicant(
+        List<ResumeDto> resumes = resumeService.getAllByApplicant(
                 userService.getByEmail(auth.getName()).getId());
 
         model.addAttribute("resumes", resumes);

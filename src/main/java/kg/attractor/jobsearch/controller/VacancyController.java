@@ -26,7 +26,7 @@ public class VacancyController {
 
     @GetMapping("{id}")
     public String getVacancyById(@PathVariable int id, Model model) {
-        VacancyDto vacancy = vacancyService.getVacancyById(id);
+        VacancyDto vacancy = vacancyService.getById(id);
         model.addAttribute("vacancy", vacancy);
         return "/vacancy/vacancy";
     }
@@ -46,7 +46,7 @@ public class VacancyController {
     public String getVacanciesByCategory (@NotNull @RequestParam Integer categoryId,
                                           @RequestParam(name = "page", defaultValue = "1") Integer page,
                                           Model model) {
-        Page<VacancyDto> vacancies = vacancyService.getVacanciesByCategory(categoryId, page - 1);
+        Page<VacancyDto> vacancies = vacancyService.getAllByCategory(categoryId, page - 1);
         List<CategoryDto> categories = categoryService.getAll();
 
         model.addAttribute("page", page);
@@ -64,20 +64,20 @@ public class VacancyController {
 
     @PostMapping("create")
     public String create(@Valid VacancyCreateDto dto, Authentication auth) {
-        vacancyService.createVacancy(dto, auth);
+        vacancyService.create(dto, auth);
         return "redirect:/users";
     }
 
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("vacancy", vacancyService.getVacancyById(id));
+        model.addAttribute("vacancy", vacancyService.getById(id));
         return "vacancy/edit";
     }
 
     @PostMapping("{id}/edit")
     public String edit(@Valid VacancyUpdateDto dto, Authentication auth) {
-        vacancyService.updateVacancy(dto, auth);
+        vacancyService.update(dto, auth);
         return "redirect:/users";
     }
 }

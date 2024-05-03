@@ -3,14 +3,11 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.ContactInfo;
 import kg.attractor.jobsearch.repository.ContactInfoRepository;
 import kg.attractor.jobsearch.repository.ContactTypeRepository;
 import kg.attractor.jobsearch.repository.ResumeRepository;
 import kg.attractor.jobsearch.service.ContactInfoService;
-import kg.attractor.jobsearch.service.ContactTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +17,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ContactInfoServiceImpl implements ContactInfoService {
     private final ContactInfoRepository contactInfoRepository;
-
     private final ContactTypeRepository contactTypeRepository;
-    private final ContactTypeService contactTypeService;
     private final ResumeRepository resumeRepository;
 
     @Override
     public void create(ContactInfoCreateDto dto, int resumeId) {
-        if (!contactTypeService.isExists(dto.getTypeId())) {
-            throw new CustomException("Invalid type ID");
-        }
-
         ContactInfo info = ContactInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Cannot find resume by ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID: " + resumeId)))
                 .type(contactTypeRepository.findById(dto.getTypeId())
-                        .orElseThrow(() -> new NotFoundException("Not found contact type with ID:" + dto.getTypeId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid contact type ID:" + dto.getTypeId())))
                 .contactValue(dto.getContactValue())
                 .build();
 
@@ -57,9 +48,9 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     public void update(ContactInfoUpdateDto dto, int resumeId) {
         ContactInfo info = ContactInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume with ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID: " + resumeId)))
                 .type(contactTypeRepository.findById(dto.getTypeId())
-                        .orElseThrow(() -> new NotFoundException("Not found contact type with ID: " + dto.getTypeId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid contact type ID:" + dto.getTypeId())))
                 .contactValue(dto.getContactValue())
                 .build();
 

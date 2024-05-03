@@ -9,25 +9,25 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface VacancyService {
-    Boolean isExists(Integer vacancyId);
+    Boolean exists(Integer vacancyId);
 
     List<VacancyDto> getAll();
 
     Page<VacancyDto> getActiveVacancies(int page);
 
-    VacancyDto getVacancyById (int vacancyId);
+    VacancyDto getById(int vacancyId);
 
-    List<VacancyDto> getVacanciesByApplicant(int id);
+    List<VacancyDto> getAllByApplicant(int id);
 
-    List<VacancyDto> getVacanciesByEmployer(Authentication auth);
+    List<VacancyDto> getAllByEmployer(Authentication auth);
 
-    Page<VacancyDto> getVacanciesByCategory (Integer categoryId, int page);
+    Page<VacancyDto> getAllByCategory(Integer categoryId, int page);
 
-    List<VacancyDto> getVacanciesByCategory (Integer categoryId);
+    List<VacancyDto> getAllByCategory(Integer categoryId);
 
-    void createVacancy (VacancyCreateDto vacancyDto, Authentication auth);
+    void create(VacancyCreateDto vacancyDto, Authentication auth);
 
-    void updateVacancy (VacancyUpdateDto vacancyDto, Authentication auth);
+    void update(VacancyUpdateDto vacancyDto, Authentication auth);
 
-    void deleteVacancy (int vacancyId, String email);
+    void delete(int vacancyId, String email);
 }

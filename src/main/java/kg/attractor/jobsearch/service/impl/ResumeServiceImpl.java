@@ -1,10 +1,9 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.ResumeDao;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Resume;
 import kg.attractor.jobsearch.repository.CategoryRepository;
@@ -28,7 +27,6 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
-    private final ResumeDao resumeDao;
     private final CategoryService categoryService;
     private final WorkExpInfoService workExpInfoService;
     private final EduInfoService eduInfoService;
@@ -46,35 +44,24 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public Page<ResumeDto> getActiveResumes (int page) {
-        List<ResumeDto> resumes = resumeRepository.findAllByIsActive(true).stream()
+    public Page<ResumeDto> getAllActive(int page) {
+        List<ResumeDto> resumes = resumeRepository.findAllByIsActiveTrue().stream()
                 .map(this::convertToDto)
                 .toList();
 
         return toPage(resumes, PageRequest.of(page, 5));
     }
 
-    private Page<ResumeDto> toPage(List<ResumeDto> resumes, Pageable pageable){
-        if (pageable.getOffset() >= resumes.size()){
-            return Page.empty();
-        }
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize() > resumes.size() ?
-                resumes.size() : pageable.getOffset() + pageable.getPageSize()));
-        List<ResumeDto> subList = resumes.subList(startIndex, endIndex);
-        return new PageImpl<>(subList, pageable, resumes.size());
-    }
-
     @Override
     public ResumeDto getById(int resumeId) {
         return convertToDto(
                 resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Cannot find resume with ID: " + resumeId))
+                        .orElseThrow(() -> new NotFoundException("Resume not found. The requested resume does not exist"))
         );
     }
 
     @Override
-    public List<ResumeDto> getResumesByCategory(int categoryId, String email){
+    public List<ResumeDto> getAllByCategory(int categoryId, String email){
 
         List<Resume> list = resumeRepository.findAllByCategoryId(categoryId);
         return list.stream()
@@ -83,7 +70,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getResumesByApplicant(int applicantId) {
+    public List<ResumeDto> getAllByApplicant(int applicantId) {
         List<Resume> list = resumeRepository.findAllByAuthorId(applicantId);
         return list.stream()
                 .map(this::convertToDto)
@@ -92,16 +79,12 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void create(ResumeCreateDto dto, Authentication auth){
-        if (!categoryService.isExists(dto.getCategoryId())) {
-            throw new NotFoundException("Invalid category");
-        }
-
         Resume resume = Resume.builder()
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + auth.getName())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
                 .name(dto.getName())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + dto.getCategoryId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
                 .salary(dto.getSalary())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .createdDate(LocalDateTime.now())
@@ -124,21 +107,17 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void update(ResumeUpdateDto resumeDto, Authentication auth) {
-        if (!categoryService.isExists(resumeDto.getCategoryId())) {
-            throw new CustomException("Invalid category");
-        }
-
         if (!resumeRepository.existsById(resumeDto.getId())) {
-            throw new CustomException("Cannot find resume with ID: " + resumeDto.getId());
+            throw new NotFoundException("Resume not found. The requested resume does not exist.");
         }
 
         Resume resume = Resume.builder()
                 .id(resumeDto.getId())
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + auth.getName())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
                 .name(resumeDto.getName())
                 .category(categoryRepository.findById(resumeDto.getCategoryId())
-                        .orElseThrow(() -> new NotFoundException("Cannot find category by ID:" + resumeDto.getCategoryId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
                 .salary(resumeDto.getSalary())
                 .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : Boolean.FALSE)
                 .createdDate(LocalDateTime.parse(getById(resumeDto.getId()).getCreatedDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
@@ -159,15 +138,26 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void deleteResume(int resumeId, String email){
+    public void delete(int resumeId, String email){
 
         if (!resumeRepository.existsById(resumeId)) {
-            throw new NotFoundException("Cannot find resume with ID: " + resumeId);
+            throw new NotFoundException("Resume not found. The requested resume does not exist.");
         } if (!userService.getByEmail(email).getId().equals(getById(resumeId).getApplicant().getId())) {
-            throw new CustomException("Access denied");
+            throw new ForbiddenException("You do not have permission to delete this resume");
         }
 
         resumeRepository.deleteById(resumeId);
+    }
+
+    private Page<ResumeDto> toPage(List<ResumeDto> resumes, Pageable pageable){
+        if (pageable.getOffset() >= resumes.size()){
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize() > resumes.size() ?
+                resumes.size() : pageable.getOffset() + pageable.getPageSize()));
+        List<ResumeDto> subList = resumes.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, resumes.size());
     }
 
     private ResumeDto convertToDto(Resume resume) {

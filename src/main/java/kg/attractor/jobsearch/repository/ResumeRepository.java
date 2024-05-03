@@ -10,7 +10,7 @@ import java.util.List;
 public interface ResumeRepository extends JpaRepository<Resume, Integer> {
     List<Resume> findAllByCategoryId(Integer categoryId);
 
-    List<Resume> findAllByIsActive(Boolean isActive);
+    List<Resume> findAllByIsActiveTrue();
 
     List<Resume> findAllByAuthorId (Integer authorId);
 }

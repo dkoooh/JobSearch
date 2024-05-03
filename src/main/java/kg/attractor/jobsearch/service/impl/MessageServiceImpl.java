@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dto.message.MessageDto;
-import kg.attractor.jobsearch.exception.NoAccessException;
-import kg.attractor.jobsearch.exception.NotFoundException;
+import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.model.Message;
 import kg.attractor.jobsearch.repository.MessageRepository;
 import kg.attractor.jobsearch.repository.ResponseRepository;
@@ -11,7 +10,6 @@ import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,15 +26,14 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ResponseRepository responseRepository;
 
-    public List<MessageDto> getListMessagesGroups(Integer respondedApplicantId) {
-//        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-//
-//        if (!userService.getByEmail(userEmail).getId()
-//                .equals(responseService.getById(respondedApplicantId).getVacancy().getAuthor().getId()) &&
-//                !userService.getByEmail(userEmail).getId()
-//                        .equals(responseService.getById(respondedApplicantId).getResume().getApplicant().getId())) {
-//            throw new NoAccessException("Cannot access the chat you're not a member of");
-//        }
+    public List<MessageDto> getListMessagesGroups(Integer respondedApplicantId, String userEmail) {
+        Integer employerId = responseService.getById(respondedApplicantId, userEmail).getVacancy().getAuthor().getId();
+        Integer applicantId = responseService.getById(respondedApplicantId, userEmail).getResume().getApplicant().getId();
+        Integer userId = userService.getByEmail(userEmail).getId();
+
+        if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
+            throw new ForbiddenException("You do not have permission to access chat");
+        }
 
         List<Message> messages = messageRepository.findAllByResponseId(respondedApplicantId);
         return messages.stream().map(this::convertToDto).toList();
@@ -50,15 +47,15 @@ public class MessageServiceImpl implements MessageService {
         Integer userId = userService.getByEmail(userEmail).getId();
 
         if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
-            throw new NoAccessException("Cannot access the chat you're not a member of");
+            throw new ForbiddenException("You do not have permission to access chat");
         }
 
         Message message = Message.builder()
                 .content(dto.getContent())
                 .sender(userRepository.findById(userId)
-                        .orElseThrow(() -> new NotFoundException("Not found user with ID: " + dto.getSenderId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
                 .response(responseRepository.findById(dto.getResponseId())
-                        .orElseThrow(() -> new NotFoundException("Not found response with ID: " + dto.getResponseId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
                 .timestamp(LocalDateTime.now())
                 .build();
 

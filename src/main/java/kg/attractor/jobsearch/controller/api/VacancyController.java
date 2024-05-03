@@ -23,24 +23,24 @@ public class VacancyController {
 
     @GetMapping("category/{categoryId}")
     public ResponseEntity<?> getVacanciesByCategory(@PathVariable @NotNull Integer categoryId) {
-        return ResponseEntity.ok(vacancyService.getVacanciesByCategory(categoryId));
+        return ResponseEntity.ok(vacancyService.getAllByCategory(categoryId));
     }
 
     @PostMapping
     public ResponseEntity<?> createVacancy(@RequestBody @Valid VacancyCreateDto vacancyDto, Authentication auth) {
-        vacancyService.createVacancy(vacancyDto, auth);
+        vacancyService.create(vacancyDto, auth);
         return ResponseEntity.ok("Vacancy is successfully created");
     }
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateVacancy(@RequestBody @Valid VacancyUpdateDto vacancyDto, Authentication auth) {
-        vacancyService.updateVacancy(vacancyDto, auth);
+        vacancyService.update(vacancyDto, auth);
         return ResponseEntity.ok("Vacancy is successfully updated");
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteVacancy(@PathVariable @NotNull int id, Authentication auth) {
-        vacancyService.deleteVacancy(id, auth.getName());
+        vacancyService.delete(id, auth.getName());
         return ResponseEntity.ok("Vacancy is successfully deleted");
     }
 }

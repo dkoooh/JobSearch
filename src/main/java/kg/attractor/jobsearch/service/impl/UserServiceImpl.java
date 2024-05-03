@@ -1,16 +1,16 @@
 package kg.attractor.jobsearch.service.impl;
 
+import kg.attractor.jobsearch.config.SecurityConfig;
 import kg.attractor.jobsearch.dao.UserDao;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
-import kg.attractor.jobsearch.model.Authority;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.repository.VacancyRepository;
+import kg.attractor.jobsearch.service.AuthorityService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
     private final FileUtil fileUtil;
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
+    private final AuthorityService authorityService;
+
+    private final PasswordEncoder encoder = SecurityConfig.encoder();
 
     @Override
     public void create(UserCreationDto userDto) {
@@ -40,15 +44,13 @@ public class UserServiceImpl implements UserService {
                 .surname(userDto.getSurname())
                 .age(userDto.getAge())
                 .email(userDto.getEmail())
-                .password(new BCryptPasswordEncoder().encode(userDto.getPassword()))
+                .password(encoder.encode(userDto.getPassword()))
                 .phoneNumber(userDto.getPhoneNumber())
                 .avatar("_default_avatar.png")
                 .accountType(userDto.getAccountType())
                 .authorities(new HashSet<>(
-                        Set.of(Authority.builder()
-                                .authorityName(userDto.getAccountType())
-                                .build()))
-                ) // TODO переделать, дублируются роли
+                        Set.of(authorityService.getByName(userDto.getAccountType())))
+                )
                 .enabled(true)
                 .build();
 
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 .name(dto.getName())
                 .surname(dto.getSurname())
                 .age(dto.getAge())
-                .password(new BCryptPasswordEncoder().encode(dto.getPassword()))
+                .password(encoder.encode(dto.getPassword()))
                 .phoneNumber(dto.getPhoneNumber())
                 .enabled(true)
                 .accountType(oldUser.getAccountType())
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException("Cannot find user with email: " + email));
+                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
 
         return transformToDto(user);
     }
@@ -92,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException("Cannot find user with ID: " + userId));
+                .orElseThrow(() -> new NotFoundException(("User not found. The requested user does not exist")));
 
         return transformToDto(user);
     }
@@ -125,9 +127,9 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
 
         if (!vacancyRepository.existsById(vacancyId)) {
-            throw new CustomException("Invalid vacancy");
+            throw new NotFoundException("Invalid vacancy");
         }
-        List<User> applicants = userDao.getApplicantsByVacancy(vacancyId);
+        List<User> applicants = userRepository.findApplicantsByVacancyId(vacancyId);
 
         List<UserDto> dtos = new ArrayList<>();
         applicants.forEach(
@@ -148,12 +150,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean isUserExists(String email) {
+    public Boolean exists(String email) {
         return userRepository.existsByEmail(email);
     }
 
     @Override
-    public void uploadUserAvatar(String userEmail, MultipartFile userImage) {
+    public void uploadAvatar(String userEmail, MultipartFile userImage) {
         String fileName = fileUtil.saveUploadedFile(userImage, "images/users/");
         User user = User.builder()
                 .email(userEmail)
@@ -179,7 +181,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> downloadUserAvatar(String userEmail) {
         String fileName = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Cannot find user with email: " + userEmail))
+                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"))
                 .getAvatar();
         return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }
