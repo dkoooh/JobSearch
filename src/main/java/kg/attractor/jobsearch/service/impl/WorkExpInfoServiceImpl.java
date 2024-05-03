@@ -3,8 +3,6 @@ package kg.attractor.jobsearch.service.impl;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoCreateDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
-import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.WorkExperienceInfo;
 import kg.attractor.jobsearch.repository.ResumeRepository;
 import kg.attractor.jobsearch.repository.WorkExperienceInfoRepository;
@@ -18,22 +16,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkExpInfoServiceImpl implements WorkExpInfoService {
     private final WorkExperienceInfoRepository workExpInfoRepository;
-    private final WorkExperienceInfoRepository workExperienceInfoRepository;
-
     private final ResumeRepository resumeRepository;
 
     @Override
     public void create(WorkExpInfoCreateDto dto, int resumeId) {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume by ID:" + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID:" + resumeId)))
                 .years(dto.getYears())
                 .companyName(dto.getCompanyName())
                 .position(dto.getPosition())
                 .responsibilities(dto.getResponsibilities())
                 .build();
 
-        workExperienceInfoRepository.save(info);
+        workExpInfoRepository.save(info);
     }
 
     @Override
@@ -41,20 +37,20 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
                 .id(dto.getId())
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume by ID:" + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID:" + resumeId)))
                 .years(dto.getYears())
                 .companyName(dto.getCompanyName())
                 .position(dto.getPosition())
                 .responsibilities(dto.getResponsibilities())
                 .build();
 
-        workExperienceInfoRepository.save(info);
+        workExpInfoRepository.save(info);
     }
 
     @Override
     public WorkExpInfoDto getById(int id) {
-        WorkExperienceInfo info = workExperienceInfoRepository.findById(id).orElseThrow(
-                () -> new CustomException("Cannot find WorkExperienceInfo with ID: " + id)
+        WorkExperienceInfo info = workExpInfoRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Invalid work experience info ID: " + id)
         );
 
         return WorkExpInfoDto.builder()
@@ -83,6 +79,8 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
 
     @Override
     public void delete(int id) {
-        workExperienceInfoRepository.deleteById(id);
+//        TODO проверка пользователя
+
+        workExpInfoRepository.deleteById(id);
     }
 }

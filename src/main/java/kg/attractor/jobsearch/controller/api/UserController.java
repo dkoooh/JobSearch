@@ -1,14 +1,11 @@
 package kg.attractor.jobsearch.controller.api;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +48,7 @@ public class UserController {
 
     @PostMapping("user/image")
     public ResponseEntity<?> uploadUserAvatar(@NotNull MultipartFile file, Authentication auth) {
-        userService.uploadUserAvatar(auth.getName(), file);
+        userService.uploadAvatar(auth.getName(), file);
         return ResponseEntity.ok("User avatar was uploaded");
     }
 

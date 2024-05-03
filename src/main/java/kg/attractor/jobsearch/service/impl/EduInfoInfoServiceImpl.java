@@ -1,10 +1,8 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.EducationInfoDao;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoCreateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoUpdateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoDto;
-import kg.attractor.jobsearch.exception.CustomException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.EducationInfo;
 import kg.attractor.jobsearch.repository.EducationInfoRepository;
@@ -25,7 +23,7 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
     public void create(EduInfoCreateDto dto, int resumeId) {
         EducationInfo eduInfo = EducationInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume with ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -41,7 +39,7 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
         EducationInfo eduInfo = EducationInfo.builder()
                 .id(dto.getId())
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Not found resume with ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -55,7 +53,7 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
     @Override
     public EduInfoDto getById(int id) {
         EducationInfo eduInfo = educationInfoRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Not found"));
+                .orElseThrow(() -> new NotFoundException("Education info not found"));
 
         return EduInfoDto.builder()
                 .id(eduInfo.getId())
@@ -86,6 +84,8 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
 
     @Override
     public void delete(Integer id, String applicantEmail) {
+//        TODO валидация пользователя
+
         educationInfoRepository.deleteById(id);
     }
 }

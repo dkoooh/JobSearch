@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.ContactType;
 import kg.attractor.jobsearch.repository.ContactTypeRepository;
 import kg.attractor.jobsearch.service.ContactTypeService;
@@ -14,9 +13,8 @@ public class ContactTypeServiceImpl implements ContactTypeService {
 
     @Override
     public String getById(Integer typeId) {
-        ContactType contactType = contactTypeRepository.findById(typeId).orElseThrow(() -> new NotFoundException(
-                "Cannot find contact type with ID: " + typeId
-        ));
+        ContactType contactType = contactTypeRepository.findById(typeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid contact type"));
 
         return contactType.getType();
     }

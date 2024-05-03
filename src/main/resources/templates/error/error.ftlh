@@ -34,7 +34,7 @@
             align-items: center;
             display: flex;
             justify-content: center;
-            height: 100vh;
+            height: 85vh;
         }
 
         .main_block {
@@ -326,6 +326,9 @@
 
                 <#if details??>
                     <ul class="details">
+                        <#if message??>
+                            <li class="mb-3"><span>Причина</span>: <span><code>${message}</code></span></li>
+                        </#if>
                         <#if details.serverName??>
                             <li><span><span data-l10n>Host</span>:</span> <code>${details.serverName}</code></li>
                         </#if>

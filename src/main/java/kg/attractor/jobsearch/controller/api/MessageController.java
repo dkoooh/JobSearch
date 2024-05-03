@@ -30,8 +30,8 @@ public class MessageController {
     }
 
     @GetMapping("/{groupId}")
-    public List<MessageDto> getListMessageGroupChat(@PathVariable Integer groupId) {
-        return messageService.getListMessagesGroups(groupId);
+    public List<MessageDto> getListMessageGroupChat(@PathVariable Integer groupId, Authentication auth) {
+        return messageService.getListMessagesGroups(groupId, auth.getName());
     }
 
     @GetMapping("/")

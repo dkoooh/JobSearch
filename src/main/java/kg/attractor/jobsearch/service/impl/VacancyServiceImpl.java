@@ -1,11 +1,9 @@
 package kg.attractor.jobsearch.service.impl;
 
-import kg.attractor.jobsearch.dao.VacancyDao;
-import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
-import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.Vacancy;
 import kg.attractor.jobsearch.repository.CategoryRepository;
@@ -27,21 +25,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
-    private final VacancyDao vacancyDao;
     private final UserService userService;
     private final CategoryService categoryService;
+
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
 
     @Override
-    public Boolean isExists (Integer vacancyId) {
+    public Boolean exists(Integer vacancyId) {
         return vacancyRepository.existsById(vacancyId);
     }
 
@@ -56,7 +53,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public Page<VacancyDto> getActiveVacancies(int page) {
-        List<Vacancy> list = vacancyRepository.findAllByIsActive(true);
+        List<Vacancy> list = vacancyRepository.findAllByIsActiveTrue();
 
         List<VacancyDto> activeVacancies = list.stream()
                 .map(this::convertListToDto)
@@ -66,25 +63,24 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public VacancyDto getVacancyById(int vacancyId) {
+    public VacancyDto getById(int vacancyId) {
         return convertListToDto(
                 vacancyRepository.findById(vacancyId).orElseThrow(
-                        () -> new NotFoundException("Not found vacancy with ID: " + vacancyId)
+                        () -> new NotFoundException("Vacancy not found. The requested vacancy does not exist.")
                 )
         );
     }
 
     @Override
-    public List<VacancyDto> getVacanciesByApplicant(int applicantId) {
+    public List<VacancyDto> getAllByApplicant(int applicantId) {
         List<Vacancy> list = vacancyRepository.findAllByApplicantId(applicantId);
-//        Вложенный запрос
         return list.stream()
                 .map(this::convertListToDto)
                 .toList();
     }
 
     @Override
-    public List<VacancyDto> getVacanciesByEmployer(Authentication auth) {
+    public List<VacancyDto> getAllByEmployer(Authentication auth) {
         List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(auth.getName());
         return list.stream()
                 .map(this::convertListToDto)
@@ -92,9 +88,9 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getVacanciesByCategory(Integer categoryId) {
+    public List<VacancyDto> getAllByCategory(Integer categoryId) {
         if (!categoryService.isExists(categoryId)) {
-            throw new CustomException("Invalid category ID");
+            throw new NotFoundException("Invalid category");
         }
 
         List<Vacancy> list = vacancyRepository.findAllByCategoryId(categoryId);
@@ -104,9 +100,9 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDto> getVacanciesByCategory(Integer categoryId, int page) {
+    public Page<VacancyDto> getAllByCategory(Integer categoryId, int page) {
         if (!categoryService.isExists(categoryId)) {
-            throw new CustomException("Invalid category ID");
+            throw new NotFoundException("Invalid category");
         }
 
         List<Vacancy> list = vacancyRepository.findAllByCategoryId(categoryId);
@@ -118,19 +114,12 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void createVacancy(VacancyCreateDto dto, Authentication auth){
-        if (!categoryService.getAll().stream()
-                .map(CategoryDto::getId)
-                .toList()
-                .contains(dto.getCategoryId())) {
-            throw new CustomException("Invalid category");
-        }
-
+    public void create(VacancyCreateDto dto, Authentication auth){
         Vacancy vacancy = Vacancy.builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new NotFoundException("Not found category by ID: " + dto.getCategoryId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
                 .expTo(dto.getExpTo())
@@ -138,24 +127,22 @@ public class VacancyServiceImpl implements VacancyService {
                 .createdDate(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new NotFoundException("Not found user by email: " + auth.getName())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user email")))
                 .build();
 
         vacancyRepository.save(vacancy);
     }
 
     @Override
-    public void updateVacancy(VacancyUpdateDto dto, Authentication auth)  {
-        if (!categoryService.isExists(dto.getCategoryId())) {
-            throw new CustomException("Invalid category");
-        } else if (!Objects.equals(
+    public void update(VacancyUpdateDto dto, Authentication auth)  {
+        if (!Objects.equals(
                 vacancyRepository.findById(dto.getId())
-                        .orElseThrow(() -> new NotFoundException("Not found vacancy by ID: " + dto.getCategoryId()))
+                        .orElseThrow(() -> new NotFoundException("Vacancy not found. The requested vacancy does not exist."))
                         .getAuthor().getId(),
                 userService.getByEmail(auth.getName()).getId()
             )
         ) {
-            throw new CustomException("You cannot change the vacancy of another employer");
+            throw new ForbiddenException("You do not have permission to edit this vacancy");
         }
 
         Vacancy vacancy = Vacancy.builder()
@@ -163,13 +150,13 @@ public class VacancyServiceImpl implements VacancyService {
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new NotFoundException("Not found category by ID: " + dto.getCategoryId())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
-                .expTo(dto.getExpTo())
+                .expTo(dto.getExpTo()) // TODO валидация
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new NotFoundException("Not found user with email: " + auth.getName())))
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid user email")))
                 .createdDate(vacancyRepository.getReferenceById(dto.getId()).getCreatedDate())
                 .updateTime(LocalDateTime.now())
                 .build();
@@ -178,15 +165,15 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void deleteVacancy(int vacancyId, String email)  {
+    public void delete(int vacancyId, String email)  {
         if (!Objects.equals(
                 vacancyRepository.findById(vacancyId)
-                        .orElseThrow(() -> new NotFoundException("Not found vacancy by ID: " + vacancyId))
+                        .orElseThrow(() -> new NotFoundException("Vacancy not found. The requested vacancy does not exist."))
                         .getAuthor().getId(),
                 userService.getByEmail(email).getId()
         )
         ) {
-            throw new CustomException("You cannot change the vacancy of another employer");
+            throw new ForbiddenException("You do not have permission to delete this vacancy");
         }
         vacancyRepository.deleteById(vacancyId);
     }

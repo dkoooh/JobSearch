@@ -65,7 +65,7 @@ public class ResumeController {
     @GetMapping
     public String getActiveResumes (@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         List<CategoryDto> categories = categoryService.getAll();
-        Page<ResumeDto> resumes = resumeService.getActiveResumes(page - 1);
+        Page<ResumeDto> resumes = resumeService.getAllActive(page - 1);
 
         model.addAttribute("page", page);
         model.addAttribute("categories", categories);

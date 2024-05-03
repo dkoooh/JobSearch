@@ -26,7 +26,7 @@ public interface UserService {
 
     UserDto getApplicant (Integer applicantEmail);
 
-    Boolean isUserExists (String email);
+    Boolean exists(String email);
 
     void create(UserCreationDto userDto);
 
@@ -36,5 +36,5 @@ public interface UserService {
 
     ResponseEntity<?> downloadUserAvatar(String userEmail);
 
-    void uploadUserAvatar(String userEmail, MultipartFile userImage);
+    void uploadAvatar(String userEmail, MultipartFile userImage);
 }
