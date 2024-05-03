@@ -63,9 +63,23 @@ public class ResumeController {
     }
 
     @GetMapping
-    public String getActiveResumes (@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
+    public String getAll(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         List<CategoryDto> categories = categoryService.getAll();
         Page<ResumeDto> resumes = resumeService.getAllActive(page - 1);
+
+        model.addAttribute("page", page);
+        model.addAttribute("categories", categories);
+        model.addAttribute("resumes", resumes);
+
+        return "resume/resumes";
+    }
+
+    @GetMapping("categories")
+    public String getAllByCategory(@RequestParam(name = "page", defaultValue = "1") int page,
+                                   @RequestParam int categoryId,
+                                   Model model) {
+        List<CategoryDto> categories = categoryService.getAll();
+        Page<ResumeDto> resumes = resumeService.getAllActiveByCategory(categoryId, page - 1);
 
         model.addAttribute("page", page);
         model.addAttribute("categories", categories);

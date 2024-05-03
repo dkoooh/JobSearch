@@ -13,7 +13,7 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
 
     List<Vacancy> findAllByAuthorEmail (String email);
 
-    List<Vacancy> findAllByCategoryId (Integer categoryId);
+    List<Vacancy> findAllByCategoryIdAndIsActiveTrue(Integer categoryId);
 
     @Query("""
                         select v from Vacancy as v where v in (

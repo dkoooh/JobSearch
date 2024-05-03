@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Integer> {
-    List<Resume> findAllByCategoryId(Integer categoryId);
+    List<Resume> findAllByCategoryIdAndIsActiveTrue(Integer categoryId);
 
     List<Resume> findAllByIsActiveTrue();
 

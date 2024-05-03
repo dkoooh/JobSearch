@@ -46,7 +46,7 @@ public class VacancyController {
     public String getVacanciesByCategory (@NotNull @RequestParam Integer categoryId,
                                           @RequestParam(name = "page", defaultValue = "1") Integer page,
                                           Model model) {
-        Page<VacancyDto> vacancies = vacancyService.getAllByCategory(categoryId, page - 1);
+        Page<VacancyDto> vacancies = vacancyService.getAllActiveByCategory(categoryId, page - 1);
         List<CategoryDto> categories = categoryService.getAll();
 
         model.addAttribute("page", page);

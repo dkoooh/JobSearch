@@ -88,24 +88,24 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getAllByCategory(Integer categoryId) {
+    public List<VacancyDto> getAllActiveByCategory(Integer categoryId) {
         if (!categoryService.isExists(categoryId)) {
             throw new NotFoundException("Invalid category");
         }
 
-        List<Vacancy> list = vacancyRepository.findAllByCategoryId(categoryId);
+        List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(categoryId);
         return list.stream()
                 .map(this::convertListToDto)
                 .toList();
     }
 
     @Override
-    public Page<VacancyDto> getAllByCategory(Integer categoryId, int page) {
+    public Page<VacancyDto> getAllActiveByCategory(Integer categoryId, int page) {
         if (!categoryService.isExists(categoryId)) {
             throw new NotFoundException("Invalid category");
         }
 
-        List<Vacancy> list = vacancyRepository.findAllByCategoryId(categoryId);
+        List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(categoryId);
         List<VacancyDto> vacancies = list.stream()
                 .map(this::convertListToDto)
                 .toList();

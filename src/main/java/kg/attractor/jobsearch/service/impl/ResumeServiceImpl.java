@@ -61,12 +61,19 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDto> getAllByCategory(int categoryId, String email){
-
-        List<Resume> list = resumeRepository.findAllByCategoryId(categoryId);
+    public List<ResumeDto> getAllActiveByCategory(int categoryId) {
+        List<Resume> list = resumeRepository.findAllByCategoryIdAndIsActiveTrue(categoryId);
         return list.stream()
                 .map(this::convertToDto)
                 .toList();
+    }
+
+    public Page<ResumeDto> getAllActiveByCategory(int categoryId, int page) {
+        List<ResumeDto> list = resumeRepository.findAllByCategoryIdAndIsActiveTrue(categoryId).stream()
+                .map(this::convertToDto)
+                .toList();
+
+        return toPage(list, PageRequest.of(page, 5));
     }
 
     @Override

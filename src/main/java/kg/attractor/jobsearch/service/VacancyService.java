@@ -21,9 +21,9 @@ public interface VacancyService {
 
     List<VacancyDto> getAllByEmployer(Authentication auth);
 
-    Page<VacancyDto> getAllByCategory(Integer categoryId, int page);
+    Page<VacancyDto> getAllActiveByCategory(Integer categoryId, int page);
 
-    List<VacancyDto> getAllByCategory(Integer categoryId);
+    List<VacancyDto> getAllActiveByCategory(Integer categoryId);
 
     void create(VacancyCreateDto vacancyDto, Authentication auth);
 

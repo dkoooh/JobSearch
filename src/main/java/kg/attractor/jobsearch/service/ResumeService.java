@@ -15,7 +15,9 @@ public interface ResumeService {
 
     ResumeDto getById(int resumeId);
 
-    List<ResumeDto> getAllByCategory(int categoryId, String email);
+    List<ResumeDto> getAllActiveByCategory(int categoryId);
+
+    Page<ResumeDto> getAllActiveByCategory(int categoryId, int page);
 
     List<ResumeDto> getAllByApplicant(int applicantId);
 

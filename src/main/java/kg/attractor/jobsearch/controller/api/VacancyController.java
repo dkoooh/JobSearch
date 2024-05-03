@@ -23,7 +23,7 @@ public class VacancyController {
 
     @GetMapping("category/{categoryId}")
     public ResponseEntity<?> getVacanciesByCategory(@PathVariable @NotNull Integer categoryId) {
-        return ResponseEntity.ok(vacancyService.getAllByCategory(categoryId));
+        return ResponseEntity.ok(vacancyService.getAllActiveByCategory(categoryId));
     }
 
     @PostMapping
