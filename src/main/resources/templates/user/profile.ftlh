@@ -6,7 +6,7 @@
             <img src="api/users/user/image" class="img w-100 my-auto" alt="avatar">
         </div>
         <div class="col">
-            <h3>${user.name} ${user.surname}</h3>
+            <h3>${user.name} ${user.surname!("")}</h3>
             <#if user.accountType == "APPLICANT">
                 <p>Возраст: ${user.age}</p>
             </#if>
@@ -18,7 +18,7 @@
                     style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
             <#else>
                 <a href="/vacancies/create" class="btn btn-danger d-flex justify-content-center align-items-center"
-                   style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
+                   style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>вакансию</a>
             </#if>
             <a href="/responses" class="btn btn-light d-flex border border-1 justify-content-center align-items-center"
                style="height: 100px; width: 100px; text-align: center">Отклики</a>

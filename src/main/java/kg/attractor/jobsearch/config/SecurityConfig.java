@@ -66,10 +66,10 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers(HttpMethod.GET, "/", "/vacancies", "vacancies/*").permitAll()
-                                        .requestMatchers(HttpMethod.GET, "users/register").permitAll()
+                                        .requestMatchers("users/register").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/vacancies", "/vacancies/*").hasAuthority("EMPLOYER")
                                         .requestMatchers(HttpMethod.POST, "resumes", "resumes/*").hasAuthority("APPLICANT")
-                                        .requestMatchers(HttpMethod.POST, "api/users", "users/register").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "api/users").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")
                                         .requestMatchers(HttpMethod.GET, "api/responses/*").hasAuthority("APPLICANT")
@@ -77,7 +77,6 @@ public class SecurityConfig {
                                         .requestMatchers("api/resumes", "api/resumes/*", "api/users/employers/*").hasAuthority("APPLICANT")
                                         .requestMatchers("data/**").permitAll()
                                         .anyRequest().authenticated()
-//                                    .anyRequest().permitAll()
                 );
         return http.build();
 

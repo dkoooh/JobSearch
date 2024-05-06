@@ -1,8 +1,7 @@
 package kg.attractor.jobsearch.service.impl;
 
 import kg.attractor.jobsearch.config.SecurityConfig;
-import kg.attractor.jobsearch.dao.UserDao;
-import kg.attractor.jobsearch.dto.user.UserCreationDto;
+import kg.attractor.jobsearch.dto.user.*;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
@@ -29,7 +28,6 @@ import java.util.*;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
     private final FileUtil fileUtil;
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;

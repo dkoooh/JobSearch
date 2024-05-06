@@ -47,7 +47,6 @@ public class ResponseController {
     @GetMapping("respond")
     public String respond(@RequestParam Integer vacancyId, @RequestParam Integer resumeId) {
         responseService.create(vacancyId, resumeId);
-
         return "redirect:/responses";
     }
 }

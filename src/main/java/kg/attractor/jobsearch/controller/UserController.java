@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,15 +29,19 @@ public class UserController {
     private final VacancyService vacancyService;
 
     @GetMapping("register")
-    public String create() {
+    public String create(Model model) {
+        model.addAttribute("userCreationDto", new UserCreationDto());
         return "user/register";
     }
 
     @PostMapping("register")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String create(@Valid UserCreationDto dto) {
-        userService.create(dto);
-        return "redirect:/users";
+    public String create(@Valid UserCreationDto dto, BindingResult bindingResult, Model model) {
+         if (!bindingResult.hasErrors()) {
+            userService.create(dto);
+            return "redirect:/users/login";
+        }
+        model.addAttribute("userCreationDto", dto);
+        return "user/register";
     }
 
     @GetMapping
@@ -58,22 +63,21 @@ public class UserController {
     @GetMapping("profile/edit")
     public String edit(Model model, Authentication authentication) {
         UserDto user = userService.getByEmail(authentication.getName());
-        model.addAttribute("user", user);
+        model.addAttribute("userDto", user);
         return "/user/edit";
     }
 
     @PostMapping("profile/edit")
     @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(@Valid UserUpdateDto dto, Authentication auth) {
-//        if (result.hasErrors()) {
-//            System.err.println("ERROR FILE");
-//            System.err.println(result.getModel());
-//            return "redirect:/";
-//        }
-//        MultipartFile file = dto.getAvatar();
-//        System.out.println("file = " + file);
-        userService.update(auth, dto, userService.getByEmail(auth.getName()).getId());
-        return "redirect:/users";
+    public String edit(@Valid UserUpdateDto dto, BindingResult bindingResult, Authentication auth,
+                       Model model) {
+        if (!bindingResult.hasErrors()) {
+            userService.update(auth, dto, userService.getByEmail(auth.getName()).getId());
+            return "redirect:/users";
+        }
+        UserDto user = userService.getByEmail(auth.getName());
+        model.addAttribute("userDto", user);
+        return "user/edit";
     }
 
     @GetMapping("login")

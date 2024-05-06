@@ -31,6 +31,15 @@ public class GlobalExceptionHandler {
         return "/error/error";
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String IllegalArgumentExceptionHandler(Model model, HttpServletRequest request, IllegalArgumentException e) {
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("reason", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        model.addAttribute("message", e.getMessage());
+        model.addAttribute("details", request);
+        return "/error/error";
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse MethodArgumentNotValidExceptionHandler (MethodArgumentNotValidException e) {
         return ErrorResponse.builder(e, HttpStatus.BAD_REQUEST, e.getMessage()).build();
