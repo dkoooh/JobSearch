@@ -19,6 +19,8 @@ public interface ResumeService {
 
     Page<ResumeDto> getAllActiveByCategory(int categoryId, int page);
 
+    Page<ResumeDto> getAllByApplicant(int applicantId, int page);
+
     List<ResumeDto> getAllByApplicant(int applicantId);
 
     void create (ResumeCreateDto resume, Authentication auth);

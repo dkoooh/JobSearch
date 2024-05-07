@@ -19,7 +19,7 @@ public interface VacancyService {
 
     List<VacancyDto> getAllByApplicant(int id);
 
-    List<VacancyDto> getAllByEmployer(Authentication auth);
+    Page<VacancyDto> getAllByEmployer(Authentication auth, int page);
 
     List<VacancyDto> getAllActiveByCategory(Integer categoryId);
 

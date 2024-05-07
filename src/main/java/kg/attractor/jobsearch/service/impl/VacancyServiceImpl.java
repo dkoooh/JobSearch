@@ -66,11 +66,11 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<VacancyDto> getAllByEmployer(Authentication auth) {
+    public Page<VacancyDto> getAllByEmployer(Authentication auth, int page) {
         List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(auth.getName());
-        return list.stream()
+        return toPage(list.stream()
                 .map(this::convertListToDto)
-                .toList();
+                .toList(), PageRequest.of(page, 6));
     }
 
     @Override

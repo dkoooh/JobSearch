@@ -11,6 +11,7 @@ import kg.attractor.jobsearch.service.ResumeService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -45,16 +46,19 @@ public class UserController {
     }
 
     @GetMapping
-    public String getUser (Model model, Authentication authentication) {
+    public String getUser (Model model,
+                           Authentication authentication,
+                           @RequestParam (name="page", defaultValue = "1") int page) {
         UserDto user = userService.getByEmail(authentication.getName());
 
         if ("applicant".equalsIgnoreCase(userService.getByEmail(authentication.getName()).getAccountType())) {
-            List<ResumeDto> userResumes = resumeService.getAllByApplicant(user.getId());
+            Page<ResumeDto> userResumes = resumeService.getAllByApplicant(user.getId(), page - 1);
             model.addAttribute("userResumes", userResumes);
         } else {
-            List<VacancyDto> userVacancies = vacancyService.getAllByEmployer(authentication);
+            Page<VacancyDto> userVacancies = vacancyService.getAllByEmployer(authentication, page - 1);
             model.addAttribute("vacancies", userVacancies);
         }
+        model.addAttribute("page", page);
         model.addAttribute("user", user);
 
         return "/user/profile";

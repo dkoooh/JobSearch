@@ -77,6 +77,14 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    public Page<ResumeDto> getAllByApplicant(int applicantId, int page) {
+        List<Resume> list = resumeRepository.findAllByAuthorId(applicantId);
+        return toPage(list.stream()
+                .map(this::convertToDto)
+                .toList(), PageRequest.of(page, 6));
+    }
+
+    @Override
     public List<ResumeDto> getAllByApplicant(int applicantId) {
         List<Resume> list = resumeRepository.findAllByAuthorId(applicantId);
         return list.stream()

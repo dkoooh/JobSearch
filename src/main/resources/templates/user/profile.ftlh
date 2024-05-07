@@ -27,9 +27,9 @@
     <#if user.accountType = "APPLICANT">
         <h5>Резюме: </h5>
         <#if userResumes??>
-            <#if userResumes?size != 0>
+            <#if userResumes.content?size != 0>
                 <div class="row rol-cols gap-2">
-                    <#list userResumes as resume>
+                    <#list userResumes.content as resume>
                         <div class="col-7 col-sm-4 col-md-3 px-auto px-sm-0">
                             <div class="card h-100">
                                 <div class="card-body">
@@ -45,6 +45,39 @@
                             </div>
                         </div>
                     </#list>
+                    <nav class="my-5">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <#if page == 1>
+                                    <a class="page-link disabled" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                <#else>
+                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </#if>
+                            </li>
+                            <#list 1..userResumes.getTotalPages() as p>
+                                <#if p == userResumes.getNumber() + 1>
+                                    <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
+                                <#else>
+                                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}page=${p}">${p}</a></li>
+                                </#if>
+                            </#list>
+                            <li class="page-item">
+                                <#if page == userResumes.getTotalPages()>
+                                    <a class="page-link disabled" href="/" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                <#else>
+                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </#if>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             <#else>
                 <h5>Резюме не найдены</h5>
@@ -56,9 +89,9 @@
     <#if user.accountType = "EMPLOYER">
         <h5>Вакансии: </h5>
         <#if (vacancies)??>
-            <#if vacancies?size != 0>
+            <#if vacancies.content?size != 0>
                 <div class="row rol-cols gap-2">
-                    <#list vacancies as vacancy>
+                    <#list vacancies.content as vacancy>
                         <div class="col-7 col-sm-4 col-md-3 px-auto px-sm-0">
                             <div class="card h-100">
                                 <div class="card-body">
@@ -76,6 +109,39 @@
                             </div>
                         </div>
                     </#list>
+                    <nav class="my-5">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <#if page == 1>
+                                    <a class="page-link disabled" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                <#else>
+                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </#if>
+                            </li>
+                            <#list 1..vacancies.getTotalPages() as p>
+                                <#if p == vacancies.getNumber() + 1>
+                                    <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
+                                <#else>
+                                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}page=${p}">${p}</a></li>
+                                </#if>
+                            </#list>
+                            <li class="page-item">
+                                <#if page == vacancies.getTotalPages()>
+                                    <a class="page-link disabled" href="/" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                <#else>
+                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </#if>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             <#else>
                 <h5>Вакансии не найдены</h5>
