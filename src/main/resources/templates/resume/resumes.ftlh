@@ -39,7 +39,7 @@
                         </#if>
 
                         <a href="#" class="link-secondary text-decoration-none"> <#-- TODO профиль компании -->
-                            <i class="bi bi-person-circle"></i> ${resume.applicant.name}
+                            <i class="bi bi-person-circle"></i> ${resume.applicant.name} ${resume.applicant.surname!("")}
                         </a>
 <#--                        <#if resume.expFrom?? && resume.expFrom gt 0>-->
 <#--                            <#if resume.expTo?? && resume.expFrom gt 0>-->
@@ -75,10 +75,10 @@
 <#--                        <#if authorizedUser??>  Незарег. пользователи не могут смотреть список резюме-->
                             <#list authorizedUser.authorities as grantedAuthority>
                                 <#if grantedAuthority.authority == 'EMPLOYER'>
-                                    <a href="/responses/chooseVacancy?resumeId=${resume.id}"
+                                    <button type="button" data-bs-toggle="modal" id="${resume.id}" data-bs-target="#vacancyChoiceModal"
                                        class="btn btn-success fw-medium">
                                         Откликнуться
-                                    </a>
+                                    </button>
                                 </#if>
                             </#list>
 <#--                        </#if>-->
@@ -122,4 +122,80 @@
             </li>
         </ul>
     </nav>
+
+    <div class="modal fade" id="vacancyChoiceModal" tabindex="-1" aria-labelledby="vacancyChoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0">
+                    <h1 class="modal-title fs-5" id="vacancyChoiceModalLabel">Выберите вакансию: </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="vacancies" class="row row-cols-1 row-gap-2">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let modal = document.getElementById('vacancyChoiceModal');
+        modal.addEventListener('show.bs.modal', onShowModal);
+
+        async function onShowModal (event) {
+            try {
+                let vacanciesRequest = await fetch (`http://localhost:1234/api/vacancies/byEmployer`);
+                if (vacanciesRequest.ok) {
+                    let vacancies = await vacanciesRequest.json();
+
+                    for (let vacancy of vacancies) {
+                        let vacancyHtml = document.createElement('div')
+                        vacancyHtml.classList.add('col')
+
+                        let salary;
+                        if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
+                            salary = 'Договорная'
+                        } else {
+                            salary = vacancy['salary'] + ' сом'
+                        }
+
+                        let exp = "";
+                        if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
+                            if (vacancy['expTo'] && vacancy['expTo'] > 0) {
+                                exp = 'Опыт от ' + vacancy['expFrom'] + ' до ' + vacancy['expTo'];
+                            } else {
+                                exp = 'Опыт от ' + vacancy['expFrom']
+                            }
+                        }
+
+                        vacancyHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
+                                <div class="card-body px-md-4">
+                                    <h5 class="m-0 p-0">
+                                        <a href="/responses/respond?vacancyId=` + vacancy['id'] + `&resumeId=` + event.relatedTarget.id + `"<#--+ `&resumeId?=${resumeId}"-->
+                                           class="text-decoration-none">
+                                            ` + vacancy['name'] +  `
+                                        </a>
+                                    </h5>
+                                    <h3 class="card-title">` + salary + `</h3>
+                                    <p class="card-text m-0 p-0">` + exp + `</p>
+                                </div>
+                                <div
+                                        class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
+                                    <div class="text-body-tertiary mt-auto ">Дата создания: ` + vacancy['createdDate'] + `</div>
+                                    <div class="text-body-tertiary ms-auto mt-auto ">Последнее обновление:
+                                        ` + vacancy['updateTime'] + `</div>
+                                </div>
+                            </div>`;
+
+                        document.getElementById('vacancies').appendChild(vacancyHtml)
+                    }
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    </script>
 </@main.layout>
