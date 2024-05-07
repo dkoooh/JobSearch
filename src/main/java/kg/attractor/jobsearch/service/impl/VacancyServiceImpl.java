@@ -14,10 +14,7 @@ import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -52,17 +49,6 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDto> getActiveVacancies(int page) {
-        List<Vacancy> list = vacancyRepository.findAllByIsActiveTrue();
-
-        List<VacancyDto> activeVacancies = list.stream()
-                .map(this::convertListToDto)
-                .toList();
-
-        return toPage(activeVacancies, PageRequest.of(page, 5));
-    }
-
-    @Override
     public VacancyDto getById(int vacancyId) {
         return convertListToDto(
                 vacancyRepository.findById(vacancyId).orElseThrow(
@@ -93,24 +79,41 @@ public class VacancyServiceImpl implements VacancyService {
             throw new NotFoundException("Invalid category");
         }
 
-        List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(categoryId);
+        List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
+                categoryId, Sort.by(Sort.Order.desc("createdDate"))
+        );
         return list.stream()
                 .map(this::convertListToDto)
                 .toList();
     }
 
     @Override
-    public Page<VacancyDto> getAllActiveByCategory(Integer categoryId, int page) {
-        if (!categoryService.isExists(categoryId)) {
+    public Page<VacancyDto> getAllActive(Integer categoryId, String sortedBy, Integer page) {
+        if (categoryId != null && !categoryService.isExists(categoryId)) {
             throw new NotFoundException("Invalid category");
+        } // TODO проверки могут дублироваться
+
+
+        List<Vacancy> list;
+        if (categoryId != null) {
+            if (sortedBy != null) {
+                list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
+                        categoryId, Sort.by(Sort.Order.desc(sortedBy))
+                );
+            } else {
+                list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
+                        categoryId, Sort.by(Sort.Order.desc("createdDate"))
+                );
+            }
+        } else {
+            if (sortedBy != null) {
+                list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc(sortedBy)));
+            } else {
+                list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc("createdDate")));
+            }
         }
 
-        List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(categoryId);
-        List<VacancyDto> vacancies = list.stream()
-                .map(this::convertListToDto)
-                .toList();
-
-        return toPage(vacancies, PageRequest.of(page, 5));
+        return toPage(list.stream().map(this::convertListToDto).toList(), PageRequest.of(page, 5));
     }
 
     @Override

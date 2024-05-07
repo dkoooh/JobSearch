@@ -15,7 +15,7 @@
     <body>
         <#assign known = SPRING_SECURITY_CONTEXT??>
         <#if known>
-            <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication.principal>
+            <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
         </#if>
         <nav class="navbar navbar-expand-lg bg-dark fw-medium" data-bs-theme="dark">
             <div class="container">
@@ -26,11 +26,18 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/vacancies">Все вакансии</a>
+                            <a class="nav-link" aria-current="page" href="/vacancies">Вакансии</a>
                         </li>
                         <#if authorizedUser??>
+                            <#list authorizedUser.authorities as grantedAuthority>
+                                <#if grantedAuthority.authority == "EMPLOYER">
+                                    <li class="nav-item">
+                                        <a class="nav-link" aria-current="page" href="/resumes">Резюме</a>
+                                    </li>
+                                </#if>
+                            </#list>
                             <li class="nav-item ms-lg-auto">
-                                <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/users">${authorizedUser.getUsername()}</a>
+                                <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/users">${authorizedUser.principal.getUsername()}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">Выйти</a>

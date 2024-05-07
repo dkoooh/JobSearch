@@ -1,6 +1,7 @@
 <#import "../layout.ftlh" as main>
+<#--<#import "../pagination.ftlh" as pagination />-->
 
-<@main.layout>
+<@main.layout; spring>
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
         <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
@@ -8,13 +9,19 @@
     <h2 class="m-1">Вакансии:</h2>
 <#--    TODO добавить название орг-ции-->
 
-    <form class="my-3 row align-content-baseline" method="GET" action="http://localhost:1234/vacancies/categories">
+    <form class="my-3 row align-content-baseline" method="GET" action="http://localhost:1234/vacancies">
         <div class="col-auto">
-            <select class="form-select border-0 bg-body h-100" name="categoryId" aria-label="Default select example">
+            <select class="form-select border-0 bg-body h-100" name="categoryId">
                 <option selected disabled>Выберите категорию</option>
                 <#list categories as category>
                     <option value="${category.id}">${category.name}</option>
                 </#list>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select class="form-select border-0 bg-body h-100" name="sortedBy">
+                <option value="createdDate">По дате публикации</option>
+                <option value="responses">По откликам</option>
             </select>
         </div>
         <div class="col-auto px-0">
@@ -77,7 +84,7 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 <#else>
-                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Previous">
+                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </#if>
@@ -86,16 +93,16 @@
                 <#if p == vacancies.getNumber() + 1>
                     <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
                 <#else>
-                    <li class="page-item"><a class="page-link" href="/vacancies?page=${p}">${p}</a></li>
+                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}page=${p}">${p}</a></li>
                 </#if>
             </#list>
             <li class="page-item">
                 <#if page == vacancies.getTotalPages()>
-                    <a class="page-link disabled" href="#" aria-label="Next">
+                    <a class="page-link disabled" href="/" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 <#else>
-                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Next">
+                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </#if>

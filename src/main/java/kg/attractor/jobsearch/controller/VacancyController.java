@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
@@ -11,7 +10,6 @@ import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +31,29 @@ public class VacancyController {
     }
 
     @GetMapping
-    public String getVacancies(Model model, @RequestParam(name = "page", defaultValue = "1") Integer page) {
-        Page<VacancyDto> vacancies = vacancyService.getActiveVacancies(page - 1);
+    public String getVacancies(Model model,
+                               @RequestParam(name = "page", defaultValue = "1") Integer page,
+                               @RequestParam(required = false) Integer categoryId,
+                               @RequestParam(required = false) String sortedBy) {
+
+        Page<VacancyDto> vacancies = vacancyService.getAllActive(categoryId, sortedBy, page - 1);
         List<CategoryDto> categories = categoryService.getAll();
+
+        String attributes;
+        if (categoryId != null) {
+            if (sortedBy != null && !sortedBy.isBlank()) {
+                attributes = String.format("categoryId=%s&sortedBy=%s&", categoryId, sortedBy);
+                model.addAttribute("attributes", attributes);
+            } else {
+                attributes = String.format("categoryId=%s&", categoryId);
+                model.addAttribute("attributes", attributes);
+            }
+        } else {
+            if (sortedBy != null && !sortedBy.isBlank()) {
+                attributes = String.format("sortedBy=%s&", sortedBy);
+                model.addAttribute("attributes", attributes);
+            }
+        }
 
         model.addAttribute("page", page);
         model.addAttribute("vacancies", vacancies);
@@ -43,19 +61,19 @@ public class VacancyController {
         return "vacancy/vacancies";
     }
 
-    @GetMapping("categories")
-    public String getVacanciesByCategory (@NotNull @RequestParam Integer categoryId,
-                                          @RequestParam(name = "page", defaultValue = "1") Integer page,
-                                          Model model) {
-        Page<VacancyDto> vacancies = vacancyService.getAllActiveByCategory(categoryId, page - 1);
-        List<CategoryDto> categories = categoryService.getAll();
-
-        model.addAttribute("page", page);
-        model.addAttribute("categories", categories);
-        model.addAttribute("vacancies", vacancies);
-
-        return "/vacancy/vacancies";
-    }
+//    @GetMapping("categories")
+//    public String getVacanciesByCategory (@NotNull @RequestParam Integer categoryId,
+//                                          @RequestParam(name = "page", defaultValue = "1") Integer page,
+//                                          Model model) {
+//        Page<VacancyDto> vacancies = vacancyService.getAllActiveByCategory(categoryId, page - 1);
+//        List<CategoryDto> categories = categoryService.getAll();
+//
+//        model.addAttribute("page", page);
+//        model.addAttribute("categories", categories);
+//        model.addAttribute("vacancies", vacancies);
+//
+//        return "/vacancy/vacancies";
+//    }
 
 
     @GetMapping("create")

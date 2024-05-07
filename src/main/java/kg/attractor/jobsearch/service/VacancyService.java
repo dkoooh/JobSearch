@@ -13,15 +13,13 @@ public interface VacancyService {
 
     List<VacancyDto> getAll();
 
-    Page<VacancyDto> getActiveVacancies(int page);
+    Page<VacancyDto> getAllActive(Integer categoryId, String sortedBy, Integer page);
 
     VacancyDto getById(int vacancyId);
 
     List<VacancyDto> getAllByApplicant(int id);
 
     List<VacancyDto> getAllByEmployer(Authentication auth);
-
-    Page<VacancyDto> getAllActiveByCategory(Integer categoryId, int page);
 
     List<VacancyDto> getAllActiveByCategory(Integer categoryId);
 

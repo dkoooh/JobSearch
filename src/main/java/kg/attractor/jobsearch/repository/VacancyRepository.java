@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.repository;
 
 import kg.attractor.jobsearch.model.Vacancy;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -9,11 +10,11 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
-    List<Vacancy> findAllByIsActiveTrue();
+    List<Vacancy> findAllByIsActiveTrue(Sort sort);
 
     List<Vacancy> findAllByAuthorEmail (String email);
 
-    List<Vacancy> findAllByCategoryIdAndIsActiveTrue(Integer categoryId);
+    List<Vacancy> findAllByCategoryIdAndIsActiveTrue(Integer categoryId, Sort sort);
 
     @Query("""
                         select v from Vacancy as v where v in (
