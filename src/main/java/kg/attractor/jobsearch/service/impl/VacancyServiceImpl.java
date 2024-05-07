@@ -74,6 +74,14 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
+    public List<VacancyDto> getAllByEmployer(Authentication auth) {
+        List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(auth.getName());
+        return list.stream()
+                .map(this::convertListToDto)
+                .toList();
+    }
+
+    @Override
     public List<VacancyDto> getAllActiveByCategory(Integer categoryId) {
         if (!categoryService.isExists(categoryId)) {
             throw new NotFoundException("Invalid category");
