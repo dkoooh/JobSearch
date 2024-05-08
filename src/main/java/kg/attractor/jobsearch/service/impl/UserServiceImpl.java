@@ -9,7 +9,6 @@ import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.repository.VacancyRepository;
-import kg.attractor.jobsearch.service.AuthorityService;
 import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class UserServiceImpl implements UserService {
     private final FileUtil fileUtil;
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
-    private final AuthorityService authorityService;
 
     private final PasswordEncoder encoder = SecurityConfig.encoder();
 
@@ -46,9 +44,6 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(userDto.getPhoneNumber())
                 .avatar("_default_avatar.png")
                 .accountType(userDto.getAccountType())
-                .authorities(new HashSet<>(
-                        Set.of(authorityService.getByName(userDto.getAccountType())))
-                )
                 .enabled(true)
                 .build();
 

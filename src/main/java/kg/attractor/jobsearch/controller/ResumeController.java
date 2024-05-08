@@ -7,7 +7,6 @@ import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.ResumeService;
-import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
-    private final UserService userService;
     private final CategoryService categoryService;
 
     @GetMapping("{id}")

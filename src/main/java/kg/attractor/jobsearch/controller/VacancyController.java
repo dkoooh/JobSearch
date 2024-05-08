@@ -61,20 +61,6 @@ public class VacancyController {
         return "vacancy/vacancies";
     }
 
-//    @GetMapping("categories")
-//    public String getVacanciesByCategory (@NotNull @RequestParam Integer categoryId,
-//                                          @RequestParam(name = "page", defaultValue = "1") Integer page,
-//                                          Model model) {
-//        Page<VacancyDto> vacancies = vacancyService.getAllActiveByCategory(categoryId, page - 1);
-//        List<CategoryDto> categories = categoryService.getAll();
-//
-//        model.addAttribute("page", page);
-//        model.addAttribute("categories", categories);
-//        model.addAttribute("vacancies", vacancies);
-//
-//        return "/vacancy/vacancies";
-//    }
-
 
     @GetMapping("create")
     public String create(Model model) {
