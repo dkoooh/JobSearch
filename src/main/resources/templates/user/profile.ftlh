@@ -1,16 +1,22 @@
 <#import "../layout.ftlh" as main>
 
-<@main.layout>
+<@main.layout ; spring>
+    <#assign known = SPRING_SECURITY_CONTEXT??>
+    <#if known>
+        <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
+    </#if>
+    <#assign user = authorizedUser.principal>
+
     <div class="row row-cols-2 row-cols-md-3 gap-3 mb-4 justify-content-center">
         <div class="col px-0" style="max-width: 128px">
-            <img src="api/users/user/image" class="img w-100 my-auto" alt="avatar">
+            <img src="/api/users/user/image" class="img w-100 my-auto" alt="avatar">
         </div>
         <div class="col">
             <h3>${user.name} ${user.surname!("")}</h3>
             <#if user.accountType == "APPLICANT">
                 <p>Возраст: ${user.age}</p>
             </#if>
-            <a href="/users/profile/edit" class="btn btn-success">Редактировать</a>
+            <a href="/users/profile/edit" type="button" class="btn btn-success" id="editBtn">Редактировать</a>
         </div>
         <div class="col my-auto d-flex flex-row gap-3 gap-md-2 justify-content-center">
             <#if user.accountType = "APPLICANT">

@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
             user.setAvatar(oldUser.getAvatar());
         }
 
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 
     @Override

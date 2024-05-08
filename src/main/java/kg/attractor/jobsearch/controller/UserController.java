@@ -12,7 +12,6 @@ import kg.attractor.jobsearch.service.UserService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,39 +46,35 @@ public class UserController {
     public String getUser (Model model,
                            Authentication authentication,
                            @RequestParam (name="page", defaultValue = "1") int page) {
-        UserDto user = userService.getByEmail(authentication.getName());
-
         if ("applicant".equalsIgnoreCase(userService.getByEmail(authentication.getName()).getAccountType())) {
-            Page<ResumeDto> userResumes = resumeService.getAllByApplicant(user.getId(), page - 1);
+            UserDto userDto = userService.getByEmail(authentication.getName());
+            Page<ResumeDto> userResumes = resumeService.getAllByApplicant(userDto.getId(), page - 1);
             model.addAttribute("userResumes", userResumes);
         } else {
             Page<VacancyDto> userVacancies = vacancyService.getAllByEmployer(authentication, page - 1);
             model.addAttribute("vacancies", userVacancies);
         }
         model.addAttribute("page", page);
-        model.addAttribute("user", user);
-
         return "/user/profile";
     }
 
     @GetMapping("profile/edit")
-    public String edit(Model model, Authentication authentication) {
-        UserDto user = userService.getByEmail(authentication.getName());
-        model.addAttribute("userDto", user);
+    public String edit(Model model) {
+        model.addAttribute("userUpdateDto", new UserUpdateDto());
         return "/user/edit";
     }
 
     @PostMapping("profile/edit")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(@Valid UserUpdateDto dto, BindingResult bindingResult, Authentication auth,
+    public String edit(Authentication auth,
+                       @Valid UserUpdateDto userUpdateDto,
+                       BindingResult bindingResult,
                        Model model) {
         if (!bindingResult.hasErrors()) {
-            userService.update(auth, dto, userService.getByEmail(auth.getName()).getId());
+            userService.update(auth, userUpdateDto, userService.getByEmail(auth.getName()).getId());
             return "redirect:/users";
         }
-        UserDto user = userService.getByEmail(auth.getName());
-        model.addAttribute("userDto", user);
-        return "user/edit";
+        model.addAttribute("userUpdateDto", userUpdateDto);
+        return "/user/edit";
     }
 
     @GetMapping("login")
