@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.service;
 
-import kg.attractor.jobsearch.dto.ResponseDto;
-import kg.attractor.jobsearch.exception.CustomException;
+import kg.attractor.jobsearch.dto.response.ResponseDto;
 
 import java.util.List;
 import java.util.Map;

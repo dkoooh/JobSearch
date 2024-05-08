@@ -38,7 +38,7 @@
                             <h3 class="card-title fw-bolder">Договорная</h3>
                         </#if>
 
-                        <a href="#" class="link-secondary text-decoration-none"> <#-- TODO профиль компании -->
+                        <a href="#" class="link-secondary text-decoration-none"> <#-- TODO профиль юзера -->
                             <i class="bi bi-person-circle"></i> ${resume.applicant.name} ${resume.applicant.surname!("")}
                         </a>
 <#--                        <#if resume.expFrom?? && resume.expFrom gt 0>-->
@@ -72,16 +72,14 @@
                     </div>
 
                     <div class="card-footer pb-3 bg-body-tertiary border-0 d-flex rounded-4 px-md-4">
-<#--                        <#if authorizedUser??>  Незарег. пользователи не могут смотреть список резюме-->
-                            <#list authorizedUser.authorities as grantedAuthority>
-                                <#if grantedAuthority.authority == 'EMPLOYER'>
-                                    <button type="button" data-bs-toggle="modal" id="${resume.id}" data-bs-target="#vacancyChoiceModal"
-                                       class="btn btn-success fw-medium">
-                                        Откликнуться
-                                    </button>
-                                </#if>
-                            </#list>
-<#--                        </#if>-->
+                        <#list authorizedUser.authorities as grantedAuthority>
+                            <#if grantedAuthority.authority == 'EMPLOYER'>
+                                <button type="button" id="${resume.id}" class="btn btn-success fw-medium"
+                                        data-bs-target="#vacancyChoiceModal" data-bs-toggle="modal">
+                                    Откликнуться
+                                </button>
+                            </#if>
+                        </#list>
                         <div class ="text-body-tertiary ms-auto mt-auto ">${resume.createdDate}</div>
                     </div>
                 </div>
@@ -145,7 +143,7 @@
 
         async function onShowModal (event) {
             try {
-                let vacanciesRequest = await fetch (`http://localhost:1234/api/vacancies/byEmployer`);
+                let vacanciesRequest = await fetch (`http://localhost:1234/api/vacancies/employer`);
                 if (vacanciesRequest.ok) {
                     let vacancies = await vacanciesRequest.json();
 
@@ -172,10 +170,16 @@
                         vacancyHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
                                 <div class="card-body px-md-4">
                                     <h5 class="m-0 p-0">
-                                        <a href="/responses/respond?vacancyId=` + vacancy['id'] + `&resumeId=` + event.relatedTarget.id + `"<#--+ `&resumeId?=${resumeId}"-->
-                                           class="text-decoration-none">
-                                            ` + vacancy['name'] +  `
-                                        </a>
+                                        <form action="/responses/respond" method="post">
+                                            <input type="hidden" name="vacancyId" value="` + vacancy['id'] + `">
+                                            <input type="hidden" name="resumeId" value="` + event.relatedTarget.id + `">
+                                            <#if _csrf??>
+                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                                       value="${(_csrf.token)!'--no-token--'}"/>
+                                            </#if>
+                                            <button type="submit" class="border-0 bg-body-tertiary p-0 m-0 fw-medium
+                                             link-primary">` + vacancy['name'] + `</button>
+                                        </form>
                                     </h5>
                                     <h3 class="card-title">` + salary + `</h3>
                                     <p class="card-text m-0 p-0">` + exp + `</p>

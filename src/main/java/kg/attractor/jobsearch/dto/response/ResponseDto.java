@@ -1,4 +1,4 @@
-package kg.attractor.jobsearch.dto;
+package kg.attractor.jobsearch.dto.response;
 
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;

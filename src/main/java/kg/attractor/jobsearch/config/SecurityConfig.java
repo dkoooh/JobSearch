@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
+                                        .requestMatchers("api/resumes/applicant").hasAuthority("APPLICANT")
                                         .requestMatchers(HttpMethod.GET, "/", "/vacancies", "vacancies/*").permitAll()
                                         .requestMatchers("users/register").permitAll()
                                         .requestMatchers(HttpMethod.POST, "/vacancies", "/vacancies/*").hasAuthority("EMPLOYER")

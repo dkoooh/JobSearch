@@ -1,5 +1,7 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.service.ResponseService;
 import kg.attractor.jobsearch.service.ResumeService;
@@ -44,8 +46,8 @@ public class ResponseController {
         return "response/applicant/resumes";
     }
 
-    @GetMapping("respond")
-    public String respond(@RequestParam Integer vacancyId, @RequestParam Integer resumeId) {
+    @PostMapping("respond")
+    public String respond(@NotNull Integer vacancyId, @NotNull Integer resumeId) {
         responseService.create(vacancyId, resumeId);
         return "redirect:/responses";
     }

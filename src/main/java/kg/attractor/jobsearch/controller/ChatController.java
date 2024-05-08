@@ -1,6 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
-import kg.attractor.jobsearch.dto.ResponseDto;
+import kg.attractor.jobsearch.dto.response.ResponseDto;
 import kg.attractor.jobsearch.service.ResponseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

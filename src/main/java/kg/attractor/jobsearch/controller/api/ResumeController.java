@@ -4,9 +4,12 @@ import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
 import kg.attractor.jobsearch.service.ResumeService;
+import kg.attractor.jobsearch.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("resumeControllerRest")
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<?> createResume(@RequestBody @Valid ResumeCreateDto resumeDto, Authentication auth) {
@@ -43,5 +47,8 @@ public class ResumeController {
         return ResponseEntity.ok(resumeService.getAllActiveByCategory(categoryId));
     }
 
-
+    @GetMapping("applicant")
+    public ResponseEntity<?> getResumesByApplicant (Authentication auth) {
+        return ResponseEntity.ok(resumeService.getAllByApplicant(userService.getByEmail(auth.getName()).getId()));
+    }
 }

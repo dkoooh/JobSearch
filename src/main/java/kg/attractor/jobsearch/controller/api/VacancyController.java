@@ -44,7 +44,7 @@ public class VacancyController {
         return ResponseEntity.ok("Vacancy is successfully deleted");
     }
 
-    @GetMapping("byEmployer")
+    @GetMapping("employer")
     public ResponseEntity<?> getVacanciesByEmployer (Authentication auth) {
         return ResponseEntity.ok(vacancyService.getAllByEmployer(auth));
     }
