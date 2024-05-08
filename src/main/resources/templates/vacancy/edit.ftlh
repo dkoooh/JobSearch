@@ -76,6 +76,11 @@
             </label>
         </div>
 
+        <#if _csrf??>
+            <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                   value="${(_csrf.token)!'--no-token--'}"/>
+        </#if>
+
         <button type="submit" class="btn btn-success w-100">Опубликовать</button>
     </form>
 </@main.layout>

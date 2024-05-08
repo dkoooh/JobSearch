@@ -27,6 +27,11 @@
                                     <label class="form-label" for="typePasswordX">Пароль</label>
                                 </div>
 
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                           value="${(_csrf.token)!'--no-token--'}"/>
+                                </#if>
+
                                 <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary btn-lg
                                 px-5" type="submit">Войти</button>
 

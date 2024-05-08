@@ -79,6 +79,10 @@
 
                             <div class="row mt-4 pt-2">
                                 <div class="col">
+                                    <#if _csrf??>
+                                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                               value="${(_csrf.token)!'--no-token--'}"/>
+                                    </#if>
                                     <button type="submit" class="btn btn-outline-primary fw-medium btn-lg">Зарегистрироваться</button>
                                 </div>
                                 <div class="col align-content-center">

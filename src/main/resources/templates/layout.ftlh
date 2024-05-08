@@ -40,7 +40,16 @@
                                 <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/users">${authorizedUser.principal.getUsername()}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">Выйти</a>
+                                <#if _csrf??>
+                                    <form action="/logout" method="post">
+                                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                               value="${(_csrf.token)!'--no-token--'}"/>
+                                        <button type="submit" class="btn btn-outline-danger fw-medium">Выйти</button>
+                                    </form>
+                                <#else>
+                                    <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">Выйти</a>
+                                </#if>
+
                             </li>
                         <#else>
                             <li class="nav-item ms-lg-auto">
