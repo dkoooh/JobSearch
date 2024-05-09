@@ -17,8 +17,12 @@ public class VacancyController {
     private final VacancyService vacancyService;
 
     @GetMapping
-    public ResponseEntity<?> getVacancies() {
-        return ResponseEntity.ok(vacancyService.getAll());
+    public ResponseEntity<?> getVacancies(
+            @RequestParam(name = "s", defaultValue = "", required = false) String search,
+            @RequestParam(name = "c", required = false) Integer categoryId,
+            @RequestParam(name = "sb", required = false) String sortedBy,
+            @RequestParam(name = "p", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(vacancyService.getAllActive(page - 1, categoryId, sortedBy, search));
     }
 
     @GetMapping("category/{categoryId}")
@@ -45,7 +49,7 @@ public class VacancyController {
     }
 
     @GetMapping("employer")
-    public ResponseEntity<?> getVacanciesByEmployer (Authentication auth) {
+    public ResponseEntity<?> getVacanciesByEmployer(Authentication auth) {
         return ResponseEntity.ok(vacancyService.getAllByEmployer(auth));
     }
 }

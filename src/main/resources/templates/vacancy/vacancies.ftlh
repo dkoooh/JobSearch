@@ -7,9 +7,9 @@
     </#if>
 
     <h2 class="m-1">Вакансии:</h2>
-    <form class="my-3 row align-content-baseline" method="GET" action="http://localhost:1234/vacancies">
+    <form class="my-3 row align-content-baseline row-gap-1" id="searchForm">
         <div class="col-auto">
-            <select class="form-select border-0 bg-body h-100" name="categoryId">
+            <select class="form-select border-0 bg-body h-100" name="c">
                 <option selected disabled>Выберите категорию</option>
                 <#list categories as category>
                     <option value="${category.id}">${category.name}</option>
@@ -17,16 +17,21 @@
             </select>
         </div>
         <div class="col-auto">
-            <select class="form-select border-0 bg-body h-100" name="sortedBy">
+            <select class="form-select border-0 bg-body h-100" name="sb">
                 <option value="createdDate">По дате публикации</option>
                 <option value="responses">По откликам</option>
             </select>
         </div>
-        <div class="col-auto px-0">
-            <button type="submit" class="btn btn-primary">Поиск</button>
+        <div class="col-auto row">
+            <div class="col-auto">
+                <input type="search" placeholder="Поиск" name="s" class="form-control rounded-3">
+            </div>
+            <div class="col-auto px-0">
+                <button type="submit" class="btn btn-primary rounded-3">Поиск</button>
+            </div>
         </div>
     </form>
-    <div class="row row-cols-1 row-gap-2 fw-medium">
+    <div id='vacancies' class="row row-cols-1 row-gap-2 fw-medium">
         <#list vacancies.content as vacancy>
             <div class="col">
                 <div class="card border-0 bg-body-tertiary rounded-4">
@@ -74,7 +79,8 @@
         </#list>
     </div>
 
-    <nav class="my-5">
+    <nav id="pagination" class="my-5">
+        <#assign page = vacancies.number + 1>
         <ul class="pagination">
             <li class="page-item">
                 <#if page == 1>
@@ -82,25 +88,26 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 <#else>
-                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Previous">
+                    <a class="page-link" href="/vacancies?${attributes!("")}p=${page-1}"
+                       aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </#if>
             </li>
-            <#list 1..vacancies.getTotalPages() as p>
-                <#if p == vacancies.getNumber() + 1>
+            <#list 1..vacancies.totalPages as p>
+                <#if p == page>
                     <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
                 <#else>
-                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}page=${p}">${p}</a></li>
+                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}p=${p}">${p}</a></li>
                 </#if>
             </#list>
             <li class="page-item">
-                <#if page == vacancies.getTotalPages()>
+                <#if page == vacancies.totalPages>
                     <a class="page-link disabled" href="/" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 <#else>
-                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Next">
+                    <a class="page-link" href="/vacancies?${attributes!("")}p=${page-1}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </#if>
@@ -108,9 +115,10 @@
         </ul>
     </nav>
 
-    <div class="modal fade" id="resumeChoiceModal" tabindex="-1" aria-labelledby="resumeChoiceModalLabel" aria-hidden="true">
+    <div class="modal fade" id="resumeChoiceModal" tabindex="-1" aria-labelledby="resumeChoiceModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
-            <div class="modal-content rounded-4">
+            <div class="modal-content rounded-4 fw-medium">
                 <div class="modal-header border-0">
                     <h1 class="modal-title fs-5" id="resumeChoiceModalLabel">Выберите вакансию: </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -128,12 +136,13 @@
         let modal = document.getElementById('resumeChoiceModal');
         modal.addEventListener('show.bs.modal', onShowModal);
 
-        async function onShowModal (event) {
+        async function onShowModal(event) {
             try {
-                let resumesRequest = await fetch (`http://localhost:1234/api/resumes/applicant`);
+                let resumesRequest = await fetch(`http://localhost:1234/api/resumes/applicant`);
                 if (resumesRequest.ok) {
-                    let resumes = await resumesRequest.json();
+                    let resumes = await resumesRequest.json()
 
+                    document.getElementById('resumes').innerHTML = '';
                     for (let resume of resumes) {
                         let resumeHtml = document.createElement('div')
                         resumeHtml.classList.add('col')
@@ -153,11 +162,11 @@
                             }
 
                             if (years % 10 === 1) {
-                                exp = years + ' год';
+                                exp = "Опыт: " + years + ' год';
                             } else if (years % 10 > 1 && years % 10 < 5) {
-                                exp = years + ' года';
+                                exp = "Опыт: " + years + ' года';
                             } else {
-                                exp = years + ' лет';
+                                exp = "Опыт: " + years + ' лет';
                             }
                         }
 
@@ -195,5 +204,130 @@
                 console.log(error)
             }
         }
+
+        let searchField = document.getElementById('searchForm')
+        searchField.addEventListener('submit', onSearch);
+
+        async function onSearch(event) {
+            event.preventDefault()
+            let data = new FormData(event.target);
+            try {
+                let category;
+                if (data.get("c") == null) {
+                    category = ""
+                } else {
+                    category = data.get('c')
+                }
+                let params = 's=' + data.get('s') + '&c=' + category + '&sb=' + data.get('sb') + '&';
+                console.log(params)
+                let searchRequest = await fetch('/api/vacancies?' + params)
+
+                if (searchRequest.ok) {
+                    let vacancies = await searchRequest.json();
+
+                    console.log(vacancies)
+                    displayVacancies(vacancies['content'])
+
+                    let paginationHtml = document.createElement('ul')
+                    paginationHtml.classList.add('pagination')
+
+                    let currentPage = vacancies.number + 1
+
+                    let pageNumBtns = '';
+                    for (let i = 1; i <= vacancies['totalPages']; i++) {
+                        if (i === currentPage) {
+                            pageNumBtns += `<li class="page-item"><a class="page-link active" href="#">` + i + `</a></li>`;
+                        } else {
+                            pageNumBtns += `<li class="page-item"><a class="page-link" href="/vacancies?`+ params + `p=` + i +`">` + i + `</a></li>`;
+                        }
+                    }
+
+                    let prevPageBtn;
+                    if (vacancies.first) {
+                        prevPageBtn = `<li class="page-item"><a class="page-link disabled" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a></li>`
+                    } else {
+                        prevPageBtn = `<li class="page-item"><a class="page-link" href="/vacancies?` + params + `p=` + (currentPage - 1) + `" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a></li>`
+                    }
+
+                    let nextPageBtn;
+                    if (vacancies.last) {
+                        nextPageBtn = `<li class="page-item"><a class="page-link disabled" href="/" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a></li>`
+                    } else {
+                        nextPageBtn = `<li class="page-item"><a class="page-link" href="/vacancies?` + params + `p=` + (currentPage + 1) + `" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a></li>`
+                    }
+
+                    paginationHtml.innerHTML = prevPageBtn + pageNumBtns + nextPageBtn;
+                    document.getElementById('pagination').innerHTML = ''
+                    console.log(document.getElementById('pagination'))
+                    console.log(paginationHtml)
+
+                    document.getElementById('pagination').appendChild(paginationHtml)
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+        function displayVacancies(vacancies) {
+            document.getElementById('vacancies').innerHTML = '';
+            for (let vacancy of vacancies) {
+                let vacancyHtml = document.createElement('div')
+                vacancyHtml.classList.add('col')
+
+                let salary;
+                if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
+                    salary = 'Договорная'
+                } else {
+                    salary = vacancy['salary'] + ' сом'
+                }
+
+                let exp = "";
+                if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
+                    if (vacancy['expTo'] && vacancy['expTo'] > 0) {
+                        exp = 'Опыт от ' + vacancy['expFrom'] + ' до ' + vacancy['expTo'];
+                    } else {
+                        exp = 'Опыт от ' + vacancy['expFrom']
+                    }
+                }
+
+                vacancyHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
+                                <div class="card-body px-md-4">
+                                    <h5 class="m-0 p-0">
+                                    <a href="/vacancies/` + vacancy['id'] + `" class="text-decoration-none">
+                                        ` + vacancy['name'] + `</a>
+                                    </h5>
+                                    <h3 class="card-title fw-bolder">` + salary + `</h3>
+                                    <a href="# TODO" class="link-secondary text-decoration-none">
+                                        <i class="bi bi-briefcase"></i> ` + vacancy['author'].name + `
+                                    </a>
+                                    <p class="card-text m-0 p-0">` + exp + `</p>
+                                </div>
+                                <div class="card-footer pb-3 bg-body-tertiary border-0 d-flex rounded-4 px-md-4">
+                                    <#if authorizedUser??>
+                                        <#if authorizedUser.authorities[0].authority == 'APPLICANT'>
+                                            <button type="button" class="btn btn-success fw-medium" id="` + vacancy['id'] + `"
+                                                data-bs-target="#resumeChoiceModal" data-bs-toggle="modal">
+                                                Откликнуться
+                                            </button>
+                                        </#if>
+                                    </#if>
+                                    <div class="text-body-tertiary ms-auto mt-auto ">` + vacancy['createdDate'] + `</div>
+                                </div>
+                            </div>`;
+
+                document.getElementById('vacancies').appendChild(vacancyHtml)
+            }
+        }
+
     </script>
 </@main.layout>
