@@ -96,29 +96,28 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDto> getAllActive(Integer categoryId, String sortedBy, Integer page) {
+    public Page<VacancyDto> getAllActive() {
+        List<Vacancy> list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc("createdDate")));
+        return toPage(list.stream().map(this::convertListToDto).toList(), PageRequest.of(0, 5));
+    }
+
+    @Override
+    public Page<VacancyDto> getAllActive(Integer page, Integer categoryId, String sortedBy, String search) {
         if (categoryId != null && !categoryService.isExists(categoryId)) {
             throw new NotFoundException("Invalid category");
         } // TODO проверки могут дублироваться
 
-
         List<Vacancy> list;
         if (categoryId != null) {
-            if (sortedBy != null) {
-                list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
-                        categoryId, Sort.by(Sort.Order.desc(sortedBy))
-                );
-            } else {
-                list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
-                        categoryId, Sort.by(Sort.Order.desc("createdDate"))
-                );
-            }
+            list = vacancyRepository.findAllByCategoryIdAndIsActiveTrueAndNameContainsIgnoreCase(
+                    categoryId,
+                    search,
+                    Sort.by(Sort.Order.desc(Objects.requireNonNullElse(sortedBy, "createdDate")))
+            );
         } else {
-            if (sortedBy != null) {
-                list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc(sortedBy)));
-            } else {
-                list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc("createdDate")));
-            }
+            list = vacancyRepository.findAllByIsActiveTrueAndNameContainsIgnoreCase(
+                    search
+            );
         }
 
         return toPage(list.stream().map(this::convertListToDto).toList(), PageRequest.of(page, 5));

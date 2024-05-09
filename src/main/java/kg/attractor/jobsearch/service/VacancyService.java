@@ -13,7 +13,9 @@ public interface VacancyService {
 
     List<VacancyDto> getAll();
 
-    Page<VacancyDto> getAllActive(Integer categoryId, String sortedBy, Integer page);
+    Page<VacancyDto> getAllActive(Integer page, Integer categoryId, String sortedBy, String search);
+
+    Page<VacancyDto> getAllActive();
 
     VacancyDto getById(int vacancyId);
 

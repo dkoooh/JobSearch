@@ -10,11 +10,15 @@ import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Integer> {
-    List<Vacancy> findAllByIsActiveTrue(Sort sort);
-
     List<Vacancy> findAllByAuthorEmail (String email);
 
+    List<Vacancy> findAllByIsActiveTrue(Sort sort);
+
     List<Vacancy> findAllByCategoryIdAndIsActiveTrue(Integer categoryId, Sort sort);
+
+    List<Vacancy> findAllByIsActiveTrueAndNameContainsIgnoreCase(String name);
+
+    List<Vacancy> findAllByCategoryIdAndIsActiveTrueAndNameContainsIgnoreCase(Integer categoryId, String name, Sort sort);
 
     @Query("""
                         select v from Vacancy as v where v in (

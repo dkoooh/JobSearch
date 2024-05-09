@@ -32,25 +32,33 @@ public class VacancyController {
 
     @GetMapping
     public String getVacancies(Model model,
-                               @RequestParam(name = "page", defaultValue = "1") Integer page,
-                               @RequestParam(required = false) Integer categoryId,
-                               @RequestParam(required = false) String sortedBy) {
+                               @RequestParam(name = "p", defaultValue = "1") Integer page,
+                               @RequestParam(name = "c", required = false) Integer categoryId,
+                               @RequestParam(name = "sb", required = false) String sortedBy,
+                               @RequestParam(name = "s", required = false, defaultValue = "") String search) {
 
-        Page<VacancyDto> vacancies = vacancyService.getAllActive(categoryId, sortedBy, page - 1);
+        Page<VacancyDto> vacancies = vacancyService.getAllActive(page - 1, categoryId, sortedBy, search);
         List<CategoryDto> categories = categoryService.getAll();
+
+        if (search == null) {
+            search = "";
+        }
 
         String attributes;
         if (categoryId != null) {
             if (sortedBy != null && !sortedBy.isBlank()) {
-                attributes = String.format("categoryId=%s&sortedBy=%s&", categoryId, sortedBy);
+                attributes = String.format("c=%s&sb=%s&s=%s&", categoryId, sortedBy, search);
                 model.addAttribute("attributes", attributes);
             } else {
-                attributes = String.format("categoryId=%s&", categoryId);
+                attributes = String.format("c=%s&s=%s&", categoryId, search);
                 model.addAttribute("attributes", attributes);
             }
         } else {
             if (sortedBy != null && !sortedBy.isBlank()) {
-                attributes = String.format("sortedBy=%s&", sortedBy);
+                attributes = String.format("sb=%s&s=%s&", sortedBy, search);
+                model.addAttribute("attributes", attributes);
+            } else {
+                attributes = String.format("s=%s&", search);
                 model.addAttribute("attributes", attributes);
             }
         }
@@ -60,7 +68,6 @@ public class VacancyController {
         model.addAttribute("categories", categories);
         return "vacancy/vacancies";
     }
-
 
     @GetMapping("create")
     public String create(Model model) {

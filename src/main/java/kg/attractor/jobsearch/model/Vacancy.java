@@ -17,7 +17,6 @@ public class Vacancy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Lob
     private String name;
     @Lob
     private String description;
