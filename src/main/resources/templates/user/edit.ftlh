@@ -9,7 +9,7 @@
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body py-3 px-4 p-md-5">
                         <h3 class="mb-4 pb-2 pb-md-0">Редактирование профиля</h3>
-                        <form action="/users/profile/edit" method="POST" id="form" enctype="multipart/form-data">
+                        <form action="/account/edit" method="POST" id="form" enctype="multipart/form-data">
 
                             <#assign errorClassList = "text-danger d-block error" />
 

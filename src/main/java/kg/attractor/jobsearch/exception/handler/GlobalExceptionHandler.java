@@ -3,6 +3,7 @@ package kg.attractor.jobsearch.exception.handler;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.exception.NotFoundException;
+import kg.attractor.jobsearch.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.ErrorResponse;
@@ -35,6 +36,15 @@ public class GlobalExceptionHandler {
     public String IllegalArgumentExceptionHandler(Model model, HttpServletRequest request, IllegalArgumentException e) {
         model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
         model.addAttribute("reason", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        model.addAttribute("message", e.getMessage());
+        model.addAttribute("details", request);
+        return "/error/error";
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public String UserAlreadyExistsException(Model model, HttpServletRequest request, UserAlreadyExistsException e) {
+        model.addAttribute("status", HttpStatus.CONFLICT.value());
+        model.addAttribute("reason", HttpStatus.CONFLICT.getReasonPhrase());
         model.addAttribute("message", e.getMessage());
         model.addAttribute("details", request);
         return "/error/error";

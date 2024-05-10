@@ -49,7 +49,7 @@
                             <h3 class="card-title fw-bolder">Договорная</h3>
                         </#if>
 
-                        <a href="#" class="link-secondary text-decoration-none"> <#-- TODO профиль компании -->
+                        <a href="/employer/${vacancy.author.email}" class="link-secondary text-decoration-none">
                             <i class="bi bi-briefcase"></i> ${vacancy.author.name}
                         </a>
                         <#if vacancy.expFrom?? && vacancy.expFrom gt 0>
@@ -307,7 +307,7 @@
                                         ` + vacancy['name'] + `</a>
                                     </h5>
                                     <h3 class="card-title fw-bolder">` + salary + `</h3>
-                                    <a href="# TODO" class="link-secondary text-decoration-none">
+                                    <a href="/employer/` + vacancy['author'].email + `" class="link-secondary text-decoration-none">
                                         <i class="bi bi-briefcase"></i> ` + vacancy['author'].name + `
                                     </a>
                                     <p class="card-text m-0 p-0">` + exp + `</p>

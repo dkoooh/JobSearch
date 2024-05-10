@@ -66,8 +66,8 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDto> getAllByEmployer(Authentication auth, int page) {
-        List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(auth.getName());
+    public Page<VacancyDto> getAllByEmployer(String email, int page) {
+        List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(email);
         return toPage(list.stream()
                 .map(this::convertListToDto)
                 .toList(), PageRequest.of(page, 6));

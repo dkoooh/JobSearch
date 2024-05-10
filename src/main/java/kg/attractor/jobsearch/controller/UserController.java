@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
-import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.service.ResumeService;
@@ -19,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -34,37 +32,62 @@ public class UserController {
 
     @PostMapping("register")
     public String create(@Valid UserCreationDto dto, BindingResult bindingResult, Model model) {
-         if (!bindingResult.hasErrors()) {
+        if (!bindingResult.hasErrors()) {
             userService.create(dto);
-            return "redirect:/users/login";
+            return "redirect:/login";
         }
         model.addAttribute("userCreationDto", dto);
         return "user/register";
     }
 
-    @GetMapping
-    public String getUser (Model model,
-                           Authentication authentication,
-                           @RequestParam (name="page", defaultValue = "1") int page) {
-        if ("applicant".equalsIgnoreCase(userService.getByEmail(authentication.getName()).getAccountType())) {
-            UserDto userDto = userService.getByEmail(authentication.getName());
-            Page<ResumeDto> userResumes = resumeService.getAllByApplicant(userDto.getId(), page - 1);
-            model.addAttribute("userResumes", userResumes);
-        } else {
-            Page<VacancyDto> userVacancies = vacancyService.getAllByEmployer(authentication, page - 1);
-            model.addAttribute("vacancies", userVacancies);
-        }
-        model.addAttribute("page", page);
+    @GetMapping("applicant/{email}")
+    public String getApplicant(@PathVariable String email,
+                               Model model,
+                               @RequestParam(name = "page", defaultValue = "1") int page) {
+        UserDto applicant = userService.getApplicant(email);
+        Page<ResumeDto> userResumes = resumeService.getAllByApplicant(applicant.getId(), page - 1);
+
+        model.addAttribute("userResumes", userResumes);
+        model.addAttribute("user", applicant);
         return "/user/profile";
     }
 
-    @GetMapping("profile/edit")
+    @GetMapping("employer/{email}")
+    public String getEmployer(@PathVariable String email, Model model,
+                              @RequestParam(name = "page", defaultValue = "1") int page) {
+        UserDto employer = userService.getEmployer(email);
+        Page<VacancyDto> userVacancies = vacancyService.getAllByEmployer(employer.getEmail(), page - 1);
+
+        model.addAttribute("vacancies", userVacancies);
+        model.addAttribute("user", employer);
+        return "/user/profile";
+    }
+
+    @GetMapping("account/profile")
+    private String getProfile(
+            Model model,
+            Authentication auth,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
+
+        UserDto user = userService.getByEmail(auth.getName());
+        if ("applicant".equalsIgnoreCase(user.getAccountType())) {
+            Page<ResumeDto> userResumes = resumeService.getAllByApplicant(user.getId(), page - 1);
+            model.addAttribute("userResumes", userResumes);
+        } else {
+            Page<VacancyDto> userVacancies = vacancyService.getAllByEmployer(user.getEmail(), page - 1);
+            model.addAttribute("vacancies", userVacancies);
+        }
+        model.addAttribute("user", user);
+        return "/user/profile";
+    }
+
+    @GetMapping("account/edit")
     public String edit(Model model) {
         model.addAttribute("userUpdateDto", new UserUpdateDto());
         return "/user/edit";
     }
 
-    @PostMapping("profile/edit")
+    @PostMapping("account/edit")
     public String edit(Authentication auth,
                        @Valid UserUpdateDto userUpdateDto,
                        BindingResult bindingResult,
@@ -80,12 +103,5 @@ public class UserController {
     @GetMapping("login")
     public String login() {
         return "/user/login";
-    }
-
-    @PostMapping("login")
-    public String login(Authentication auth, @RequestBody UserLoginDto userLoginDto) {
-        userService.login(auth, userLoginDto);
-
-        return "redirect:/users";
     }
 }

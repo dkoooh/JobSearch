@@ -26,25 +26,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .formLogin(httpSecurityFormLoginConfigurer -> {
-                    httpSecurityFormLoginConfigurer
-                            .loginPage("/users/login")
+                .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
+                            .loginPage("/login")
                             .loginProcessingUrl("/login")
-                            .defaultSuccessUrl("/users")
-                            .permitAll();
-                })
-//                .logout(logout -> logout
-//                        .logoutRequestMatcher(new AntPathRequestMatcher("logout"))
-//                )
-//                .csrf(AbstractHttpConfigurer::disable)
+                            .defaultSuccessUrl("/account/profile")
+                            .permitAll()
+                )
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
+                                        .requestMatchers("/applicant/{email}", "/resumes", "/resumes/categories",
+                                                "/vacancies/create", "/vacancies/*/edit").hasAuthority("EMPLOYER")
+                                        .requestMatchers("/", "/vacancies", "/vacancies/*", "/register", "employer/*").permitAll()
+                                        .requestMatchers("resumes/create", "resumes/{id}/edit").hasAuthority("APPLICANT")
                                         .requestMatchers("api/resumes/applicant").hasAuthority("APPLICANT")
-                                        .requestMatchers(HttpMethod.GET, "/", "/vacancies", "vacancies/*").permitAll()
-                                        .requestMatchers("users/register").permitAll()
-                                        .requestMatchers(HttpMethod.POST, "/vacancies", "/vacancies/*").hasAuthority("EMPLOYER")
-                                        .requestMatchers(HttpMethod.POST, "resumes", "resumes/*").hasAuthority("APPLICANT")
                                         .requestMatchers(HttpMethod.POST, "api/users").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/vacancies", "api/vacancies/*").permitAll()
                                         .requestMatchers(HttpMethod.GET, "api/resumes", "api/resumes/**").hasAuthority("EMPLOYER")

@@ -10,15 +10,21 @@
                     <div class="col col-md-10 col-lg-9">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title"><a href = "/vacancies/${response.VACANCY.id}"
-                                                          style="text-decoration: none; color: black">${response.VACANCY.name}
-                                    </a></h5>
+                                <h5 class="card-title">
+                                    <a href = "/vacancies/${response.VACANCY.id}" style="text-decoration: none; color: black">
+                                        ${response.VACANCY.name}
+                                    </a>
+                                </h5>
                                 <h6 class="card-subtitle mb-2 text-body-secondary">
                                     Резюме:
                                     <a href = "/resumes/${response.RESUME.id}" style="text-decoration: none; color: black">
                                         ${response.RESUME.name}
                                     </a></h6>
-                                <div class="card-text">${response.VACANCY.author.name} ${response.VACANCY.author.surname}</div>
+                                <div class="card-text">
+                                    <a href="/employer/${response.VACANCY.author.email}" class="link-secondary">
+                                        ${response.VACANCY.author.name} ${response.VACANCY.author.surname}
+                                    </a>
+                                </div>
                                 <#if response.confirmation??>
                                     <div class="card-text">
                                         Статус: ${response.CONFIRMATION?string("подтверждено", "не подтверждено")}

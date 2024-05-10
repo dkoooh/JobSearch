@@ -6,6 +6,7 @@ import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.NotFoundException;
+import kg.attractor.jobsearch.exception.UserAlreadyExistsException;
 import kg.attractor.jobsearch.model.User;
 import kg.attractor.jobsearch.repository.UserRepository;
 import kg.attractor.jobsearch.repository.VacancyRepository;
@@ -35,6 +36,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(UserCreationDto userDto) {
+        if (exists(userDto.getEmail())) {
+            throw new UserAlreadyExistsException("User with this email is already exists");
+        }
+
         User newUser = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -133,13 +138,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getEmployer(Integer employerId) {
-        return getById(employerId);
+    public UserDto getEmployer(String employerEmail) {
+        UserDto employer = getByEmail(employerEmail);
+
+        if (!"EMPLOYER".equals(employer.getAccountType())) {
+            throw new NotFoundException("User not found. The requested user does not exist");
+        }
+
+        return employer;
+        // TODO возможно переделать под енам и сразу с базы доставать
     }
 
     @Override
-    public UserDto getApplicant(Integer applicantId) {
-        return getById(applicantId);
+    public UserDto getApplicant(String applicantEmail) {
+        UserDto applicant = getByEmail(applicantEmail);
+
+        if (!"APPLICANT".equals(applicant.getAccountType())) {
+            throw new NotFoundException("User not found. The requested user does not exist");
+        }
+
+        return applicant;
     }
 
     @Override

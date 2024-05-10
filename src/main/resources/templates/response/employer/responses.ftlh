@@ -21,7 +21,10 @@
                                     </a>
                                 </h6>
                                 <div class="card-text">
-                                    Соискатель: ${response.RESUME.applicant.name} ${response.RESUME.applicant.surname}
+                                    Соискатель:
+                                    <a href="/applicant/${response.RESUME.applicant.email}">
+                                        ${response.RESUME.applicant.name} ${response.RESUME.applicant.surname}
+                                    </a>
                                 </div>
                                 <#if response.confirmation??>
                                     <div class="card-text">

@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.controller.api;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.user.UserCreationDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
@@ -35,7 +36,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-
     @GetMapping("user/image")
     public ResponseEntity<?> downloadUserAvatar(Authentication auth) {
         return userService.downloadUserAvatar(auth.getName());
@@ -52,14 +52,14 @@ public class UserController {
         return ResponseEntity.ok("User avatar was uploaded");
     }
 
-    @GetMapping("employers/{employerId}")
-    public ResponseEntity<?> getEmployer(@PathVariable @NotNull Integer employerId) {
-        return ResponseEntity.ok(userService.getEmployer(employerId));
+    @GetMapping("employers/{employerEmail}")
+    public ResponseEntity<?> getEmployer(@PathVariable @NotBlank String employerEmail) {
+        return ResponseEntity.ok(userService.getEmployer(employerEmail));
     }
 
-    @GetMapping("applicants/{applicantId}")
-    public ResponseEntity<?> getApplicant(@PathVariable @NotNull Integer applicantId) {
-        return ResponseEntity.ok(userService.getApplicant(applicantId));
+    @GetMapping("applicants/{applicantEmail}")
+    public ResponseEntity<?> getApplicant(@PathVariable @NotBlank String applicantEmail) {
+        return ResponseEntity.ok(userService.getApplicant(applicantEmail));
     }
 
     @GetMapping("vacancies/{vacancyId}")

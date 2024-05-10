@@ -1,8 +1,6 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout>
-<#--   <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">-->
-
     <section class="vh-100 gradient-custom">
         <div class="container py-2 ">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -38,7 +36,7 @@
                             </form>
 
                             <div>
-                                <p class="mb-0">Нет учетной записи? <a href="/users/register" class="text-primary-50
+                                <p class="mb-0">Нет учетной записи? <a href="/register" class="text-primary-50
                                  text-decoration-none fw-bold">Зарегестрируйтесь</a>
                                 </p>
                             </div>
@@ -50,37 +48,37 @@
         </div>
     </section>
 
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
-            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
-    <script <#--src="/static/js/user/login.js"-->>
-        let params = new URLSearchParams(window.location.search);
-        if (params.has("error")) {
-            window.onload = () => {
-                let msg = $('#login-text')
+<#--    <script src="https://code.jquery.com/jquery-3.6.1.min.js"-->
+<#--            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>-->
+<#--    <script &lt;#&ndash;src="/static/js/user/login.js"&ndash;&gt;>-->
+<#--        let params = new URLSearchParams(window.location.search);-->
+<#--        if (params.has("error")) {-->
+<#--            window.onload = () => {-->
+<#--                let msg = $('#login-text')-->
 
-                $(msg).text('Неверный email или пароль...')
-                $(msg).addClass('text-danger');
-                $(msg).removeClass('text-black-50');
-            }
-        }
+<#--                $(msg).text('Неверный email или пароль...')-->
+<#--                $(msg).addClass('text-danger');-->
+<#--                $(msg).removeClass('text-black-50');-->
+<#--            }-->
+<#--        }-->
 
-        let form = document.getElementById('login')
-        form.addEventListener('submit', onSubmitAddToLocalStorage)
+<#--        let form = document.getElementById('login')-->
+<#--        form.addEventListener('submit', onSubmitAddToLocalStorage)-->
 
-        async function onSubmitAddToLocalStorage (event) {
-            let data = new FormData(event.target);
-            let user = Object.fromEntries(data);
+<#--        async function onSubmitAddToLocalStorage (event) {-->
+<#--            let data = new FormData(event.target);-->
+<#--            let user = Object.fromEntries(data);-->
 
-            try {
-                let request = await fetch("http://localhost:1234/users/login")
+<#--            try {-->
+<#--                let request = await fetch("http://localhost:1234/login")-->
 
-                if (request.ok) {
-                    localStorage.setItem("user", JSON.stringify(user));
-                }
+<#--                if (request.ok) {-->
+<#--                    localStorage.setItem("user", JSON.stringify(user));-->
+<#--                }-->
 
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    </script>
+<#--            } catch (e) {-->
+<#--                console.log(e)-->
+<#--            }-->
+<#--        }-->
+<#--    </script>-->
 </@main.layout>

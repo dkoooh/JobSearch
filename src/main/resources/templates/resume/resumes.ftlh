@@ -38,16 +38,9 @@
                             <h3 class="card-title fw-bolder">Договорная</h3>
                         </#if>
 
-                        <a href="#" class="link-secondary text-decoration-none"> <#-- TODO профиль юзера -->
+                        <a href="/applicant/${resume.applicant.email}" class="link-secondary text-decoration-none">
                             <i class="bi bi-person-circle"></i> ${resume.applicant.name} ${resume.applicant.surname!("")}
                         </a>
-<#--                        <#if resume.expFrom?? && resume.expFrom gt 0>-->
-<#--                            <#if resume.expTo?? && resume.expFrom gt 0>-->
-<#--                                <p class="card-text mb-0 pb-0">Опыт от ${resume.expFrom} до ${resume.expTo} лет</p>-->
-<#--                            <#else>-->
-<#--                                <p class="card-text mb-0 pb-0">Опыт от ${resume.expFrom} лет</p>-->
-<#--                            </#if>-->
-<#--                        </#if>-->
 
                         <#if resume.workExperienceInfo??>
                             <#assign sum = 0>

@@ -37,7 +37,7 @@
                                 </#if>
                             </#list>
                             <li class="nav-item ms-lg-auto">
-                                <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/users">${authorizedUser.principal.getUsername()}</a>
+                                <a class="btn btn-primary me-2 mb-2 mb-md-0" aria-current="page" href="/account/profile">${authorizedUser.principal.getUsername()}</a>
                             </li>
                             <li class="nav-item">
                                 <#if _csrf??>
@@ -53,10 +53,10 @@
                             </li>
                         <#else>
                             <li class="nav-item ms-lg-auto">
-                                <a class="nav-link" aria-current="page" href="/users/register">Регистрация</a>
+                                <a class="nav-link" aria-current="page" href="/register">Регистрация</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/users/login">Войти</a>
+                                <a class="nav-link" aria-current="page" href="/login">Войти</a>
                             </li>
                         </#if>
                     </ul>

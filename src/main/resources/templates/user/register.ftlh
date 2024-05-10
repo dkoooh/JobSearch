@@ -8,7 +8,7 @@
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body py-3 px-4 p-md-5">
                         <h3 class="mb-4 pb-2 pb-md-0">Регистрация</h3>
-                        <form action="/users/register" method="POST" id="form">
+                        <form action="/register" method="POST" id="form">
 
                             <#assign errorClassList = "text-danger d-block error" />
 
@@ -33,11 +33,6 @@
 
                                 <div class="col-md-6 mb-4">
                                     <label for="accountType">Тип аккаунта</label>
-<#--                                    <select id="accountType" class="form-select form-select-lg" name="accountType">-->
-<#--                                        <option value="APPLICANT">Соискатель</option>-->
-<#--                                        <option value="EMPLOYER" selected>Работодатель</option>-->
-<#--                                    </select>-->
-
                                     <@spring.formSingleSelect 'userCreationDto.accountType' {"EMPLOYER": "Работодатель", "APPLICANT": "Соискатель"} 'id="accountType" class="form-select form-select-lg"' />
                                     <@spring.showErrors '<br/>' '${errorClassList}' />
                                 </div>
@@ -87,7 +82,7 @@
                                 </div>
                                 <div class="col align-content-center">
                                     <p class="mb-0">Уже зарегистрированы?
-                                        <a href="/users/login" class="text-primary-50
+                                        <a href="/login" class="text-primary-50
                                             text-decoration-none fw-bold">Войти
                                         </a>
                                     </p>

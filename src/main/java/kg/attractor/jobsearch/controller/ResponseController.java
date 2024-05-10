@@ -35,17 +35,6 @@ public class ResponseController {
         }
     }
 
-    @GetMapping("chooseResume")
-    public String chooseResume(@RequestParam Integer vacancyId, Model model, Authentication auth) {
-        List<ResumeDto> resumes = resumeService.getAllByApplicant(
-                userService.getByEmail(auth.getName()).getId());
-
-        model.addAttribute("resumes", resumes);
-        model.addAttribute("vacancyId", vacancyId);
-
-        return "response/applicant/resumes";
-    }
-
     @PostMapping("respond")
     public String respond(@NotNull Integer vacancyId, @NotNull Integer resumeId) {
         responseService.create(vacancyId, resumeId);

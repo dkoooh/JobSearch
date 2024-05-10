@@ -21,7 +21,7 @@ public interface VacancyService {
 
     List<VacancyDto> getAllByApplicant(int id);
 
-    Page<VacancyDto> getAllByEmployer(Authentication auth, int page);
+    Page<VacancyDto> getAllByEmployer(String email, int page);
 
     List<VacancyDto> getAllByEmployer(Authentication auth);
 

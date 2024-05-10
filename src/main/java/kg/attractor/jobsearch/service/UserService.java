@@ -22,9 +22,9 @@ public interface UserService {
 
     List<UserDto> getApplicantsByVacancy (Integer vacancyId, String email);
 
-    UserDto getEmployer (Integer employerEmail);
+    UserDto getEmployer (String employerEmail);
 
-    UserDto getApplicant (Integer applicantEmail);
+    UserDto getApplicant (String applicantEmail);
 
     Boolean exists(String email);
 
