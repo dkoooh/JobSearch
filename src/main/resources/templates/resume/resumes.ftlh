@@ -140,6 +140,7 @@
                 if (vacanciesRequest.ok) {
                     let vacancies = await vacanciesRequest.json();
 
+                    document.getElementById('vacancies').innerHTML = '';
                     for (let vacancy of vacancies) {
                         let vacancyHtml = document.createElement('div')
                         vacancyHtml.classList.add('col')
