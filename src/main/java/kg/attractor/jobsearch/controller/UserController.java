@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.controller;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
@@ -37,10 +38,16 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public String create(@Valid UserCreationDto dto, BindingResult bindingResult, Model model) {
+    public String create(@Valid UserCreationDto dto, BindingResult bindingResult, Model model, HttpServletRequest request) throws ServletException {
         if (!bindingResult.hasErrors()) {
             userService.create(dto);
-            return "redirect:/login";
+
+            try {
+                request.login(dto.getEmail(), dto.getPassword());
+                return "redirect:/";
+            } catch (ServletException e) {
+                return "redirect:/login";
+            }
         }
         model.addAttribute("userCreationDto", dto);
         return "user/register";
