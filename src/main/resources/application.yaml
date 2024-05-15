@@ -2,6 +2,20 @@ server:
   port: 1234
 
 spring:
+  mail:
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enabled: true
+    host: smtp.gmail.com
+    username: PROTECTED
+    password: PROTECTED
+    port: 587
+
   mvc:
     static-path-pattern: static/**
 #    log-request-details: false

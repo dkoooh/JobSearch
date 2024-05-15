@@ -30,6 +30,7 @@
                                            value="${(_csrf.token)!'--no-token--'}"/>
                                 </#if>
 
+                                <p class="small mb-5 pb-lg-2"><a class="link-secondary text-decoration-none" href="/account/forgot_password">Забыли пароль?</a></p>
                                 <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary btn-lg
                                 px-5" type="submit">Войти</button>
 
@@ -48,19 +49,19 @@
         </div>
     </section>
 
-<#--    <script src="https://code.jquery.com/jquery-3.6.1.min.js"-->
-<#--            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>-->
-<#--    <script &lt;#&ndash;src="/static/js/user/login.js"&ndash;&gt;>-->
-<#--        let params = new URLSearchParams(window.location.search);-->
-<#--        if (params.has("error")) {-->
-<#--            window.onload = () => {-->
-<#--                let msg = $('#login-text')-->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+    <script>
+        let params = new URLSearchParams(window.location.search);
+        if (params.has("error")) {
+            window.onload = () => {
+                let msg = $('#login-text')
 
-<#--                $(msg).text('Неверный email или пароль...')-->
-<#--                $(msg).addClass('text-danger');-->
-<#--                $(msg).removeClass('text-black-50');-->
-<#--            }-->
-<#--        }-->
+                $(msg).text('Неверный email или пароль...')
+                $(msg).addClass('text-danger');
+                $(msg).removeClass('text-black-50');
+            }
+        }
 
 <#--        let form = document.getElementById('login')-->
 <#--        form.addEventListener('submit', onSubmitAddToLocalStorage)-->
@@ -80,5 +81,5 @@
 <#--                console.log(e)-->
 <#--            }-->
 <#--        }-->
-<#--    </script>-->
+    </script>
 </@main.layout>

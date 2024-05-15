@@ -38,7 +38,7 @@ public class SecurityConfig {
                                         .requestMatchers("/applicant/{email}", "/resumes", "/resumes/categories",
                                                 "/vacancies/create", "/vacancies/*/edit").hasAuthority("EMPLOYER")
                                         .requestMatchers("/", "/vacancies", "/vacancies/*", "/register",
-                                                "employer/*", "/api/users/user/image/*").permitAll()
+                                                "employer/*", "/api/users/user/image/*", "account/forgot_password", "account/reset_password").permitAll()
                                         .requestMatchers("resumes/create", "resumes/{id}/edit").hasAuthority("APPLICANT")
                                         .requestMatchers("api/resumes/applicant").hasAuthority("APPLICANT")
                                         .requestMatchers(HttpMethod.POST, "api/users").permitAll()

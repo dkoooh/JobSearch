@@ -35,6 +35,8 @@ public class User implements UserDetails {
     @Column(name = "account_type")
     private String accountType;
     private Boolean enabled;
+    private String resetPasswordToken;
+
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private List<Resume> resumes;
