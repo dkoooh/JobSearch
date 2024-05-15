@@ -47,8 +47,9 @@ public class ResumeController {
                          BindingResult bindingResult,
                          Model model,
                          Authentication authentication) {
-        if (!bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("resumeCreateDto", resumeCreateDto);
+            model.addAttribute("categories", categoryService.getAll());
             return "resume/create";
         }
 

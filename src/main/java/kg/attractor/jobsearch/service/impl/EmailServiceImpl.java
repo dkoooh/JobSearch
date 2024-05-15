@@ -5,7 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import kg.attractor.jobsearch.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
-    private final JavaMailSenderImpl mailSender;
+    private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
     private String from;

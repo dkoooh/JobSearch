@@ -1,11 +1,12 @@
 package kg.attractor.jobsearch.dto.vacancy;
 
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VacancyCreateDto {
     @NotBlank
     private String name;

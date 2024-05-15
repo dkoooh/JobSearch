@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,13 +73,20 @@ public class VacancyController {
     @GetMapping("create")
     public String create(Model model) {
         model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("vacancyCreateDto", new VacancyCreateDto());
         return "vacancy/create";
     }
 
     @PostMapping("create")
-    public String create(@Valid VacancyCreateDto dto, Authentication auth) {
+    public String create(@Valid VacancyCreateDto dto, BindingResult result, Model model, Authentication auth) {
+        if (result.hasErrors()) {
+            model.addAttribute("vacancyCreateDto", dto);
+            model.addAttribute("categories", categoryService.getAll());
+            return "vacancy/create";
+        }
+
         vacancyService.create(dto, auth);
-        return "redirect:/users";
+        return "redirect:/account/profile";
     }
 
     @GetMapping("{id}/edit")
@@ -90,6 +99,6 @@ public class VacancyController {
     @PostMapping("{id}/edit")
     public String edit(@Valid VacancyUpdateDto dto, Authentication auth) {
         vacancyService.update(dto, auth);
-        return "redirect:/users";
+        return "redirect:/account/profile";
     }
 }

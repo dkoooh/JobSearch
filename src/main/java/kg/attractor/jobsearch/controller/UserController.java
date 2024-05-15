@@ -38,7 +38,10 @@ public class UserController {
     }
 
     @PostMapping("register")
-    public String create(@Valid UserCreationDto dto, BindingResult bindingResult, Model model, HttpServletRequest request) throws ServletException {
+    public String create(@Valid UserCreationDto dto,
+                         BindingResult bindingResult,
+                         Model model,
+                         HttpServletRequest request) {
         if (!bindingResult.hasErrors()) {
             userService.create(dto);
 
