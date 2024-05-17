@@ -12,4 +12,6 @@ public interface ContactInfoService {
     List<ContactInfoDto> getAllByResumeId(int resumeId);
 
     void update(ContactInfoUpdateDto contactInfoUpdateDto, int resumeId);
+
+    ContactInfoUpdateDto convertToUpdateDto(ContactInfoDto dto);
 }

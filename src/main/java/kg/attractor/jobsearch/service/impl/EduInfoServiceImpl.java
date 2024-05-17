@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EduInfoInfoServiceImpl implements EduInfoService {
+public class EduInfoServiceImpl implements EduInfoService {
     private final EducationInfoRepository eduInfoRepository;
     private final ResumeRepository resumeRepository;
     private final EducationInfoRepository educationInfoRepository;
@@ -87,5 +87,17 @@ public class EduInfoInfoServiceImpl implements EduInfoService {
 //        TODO валидация пользователя
 
         educationInfoRepository.deleteById(id);
+    }
+
+    @Override
+    public EduInfoUpdateDto convertToUpdateDto(EduInfoDto dto) {
+        return EduInfoUpdateDto.builder()
+                .id(dto.getId())
+                .institution(dto.getInstitution())
+                .program(dto.getProgram())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .degree(dto.getDegree())
+                .build();
     }
 }

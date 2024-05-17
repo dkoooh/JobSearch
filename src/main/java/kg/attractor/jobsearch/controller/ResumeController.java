@@ -61,13 +61,19 @@ public class ResumeController {
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("resume", resumeService.getById(id));
+        model.addAttribute("resumeUpdateDto", resumeService.getUpdateDtoById(id));
         return "resume/edit";
     }
 
     @PostMapping("{id}/edit")
-    @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(@Valid ResumeUpdateDto dto, Authentication auth) {
+//    @ResponseStatus(HttpStatus.SEE_OTHER)
+    public String edit(@PathVariable int id, @Valid ResumeUpdateDto dto, BindingResult result, Model model, Authentication auth) {
+        if (result.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("resumeUpdateDto", dto);
+            return "resume/edit";
+        }
+
         resumeService.update(dto, auth);
         return "redirect:/account/profile";
     }

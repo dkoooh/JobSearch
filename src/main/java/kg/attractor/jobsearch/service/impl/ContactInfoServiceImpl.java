@@ -61,4 +61,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
         contactInfoRepository.save(info);
     }
+
+    @Override
+    public ContactInfoUpdateDto convertToUpdateDto (ContactInfoDto dto) {
+        return ContactInfoUpdateDto.builder()
+                .typeId(contactTypeRepository.findByType(dto.getType()).orElseThrow().getId()) // TODO костыль
+                .contactValue(dto.getValue())
+                .build();
+    }
 }

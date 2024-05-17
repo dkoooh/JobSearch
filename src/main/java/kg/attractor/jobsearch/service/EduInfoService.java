@@ -16,4 +16,6 @@ public interface EduInfoService {
     void update (EduInfoUpdateDto dto, int resumeId);
 
     void delete (Integer id, String applicantEmail);
+
+    EduInfoUpdateDto convertToUpdateDto(EduInfoDto dto);
 }

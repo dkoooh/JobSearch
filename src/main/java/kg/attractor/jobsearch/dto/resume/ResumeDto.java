@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.dto.resume;
 
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
@@ -15,7 +16,7 @@ public class ResumeDto {
     private Integer id;
     private UserDto applicant;
     private String name;
-    private String category;
+    private CategoryDto category;
     private Double salary;
     private Boolean isActive;
     private List<EduInfoDto> educationInfo;

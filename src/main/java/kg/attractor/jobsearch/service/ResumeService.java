@@ -28,4 +28,6 @@ public interface ResumeService {
     void update (ResumeUpdateDto resume, Authentication auth);
 
     void delete(int resumeId, String email);
+
+    ResumeUpdateDto getUpdateDtoById(int id);
 }

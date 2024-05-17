@@ -175,12 +175,36 @@ public class ResumeServiceImpl implements ResumeService {
         return new PageImpl<>(subList, pageable, resumes.size());
     }
 
+    private ResumeUpdateDto convertToUpdateDto (ResumeDto resumeDto) {
+        return ResumeUpdateDto.builder()
+                .id(resumeDto.getId())
+                .name(resumeDto.getName())
+                .categoryId(resumeDto.getCategory().getId()) // TODO DTO?
+                .salary(resumeDto.getSalary())
+                .isActive(resumeDto.getIsActive())
+                .contacts(resumeDto.getContactInfos().stream()
+                        .map(contactInfoService::convertToUpdateDto)
+                        .toList())
+                .educationInfo(resumeDto.getEducationInfo().stream()
+                        .map(eduInfoService::convertToUpdateDto)
+                        .toList())
+                .workExperienceInfo(resumeDto.getWorkExperienceInfo().stream()
+                        .map(workExpInfoService::convertToUpdateDto)
+                        .toList())
+                .build();
+    }
+
+    @Override
+    public ResumeUpdateDto getUpdateDtoById(int id) {
+        return convertToUpdateDto(getById(id));
+    }
+
     private ResumeDto convertToDto(Resume resume) {
         return ResumeDto.builder()
                 .id(resume.getId())
                 .applicant(userService.getByEmail(resume.getAuthor().getEmail()))
                 .name(resume.getName())
-                .category(categoryService.getById(resume.getCategory().getId()).getName()) // TODO CategoryDto?
+                .category(categoryService.getById(resume.getCategory().getId()))
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
                 .educationInfo(eduInfoService.getAllByResumeId(resume.getId()))

@@ -7,14 +7,13 @@ import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoUpdateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoUpdateDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,9 +27,9 @@ public class ResumeUpdateDto {
     private Double salary;
     private Boolean isActive;
     @Valid
-    private List<WorkExpInfoUpdateDto> workExperienceInfo;
+    private List<WorkExpInfoUpdateDto> workExperienceInfo = new ArrayList<>();
     @Valid
-    private List<EduInfoUpdateDto> educationInfo;
+    private List<EduInfoUpdateDto> educationInfo = new ArrayList<>();
     @Valid @NotNull
     private List<ContactInfoUpdateDto> contacts;
 }

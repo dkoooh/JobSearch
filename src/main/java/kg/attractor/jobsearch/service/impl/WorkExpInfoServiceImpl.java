@@ -83,4 +83,15 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
 
         workExpInfoRepository.deleteById(id);
     }
+
+    @Override
+    public WorkExpInfoUpdateDto convertToUpdateDto (WorkExpInfoDto dto) {
+        return WorkExpInfoUpdateDto.builder()
+                .id(dto.getId())
+                .companyName(dto.getCompanyName())
+                .years(dto.getYears())
+                .position(dto.getPosition())
+                .responsibilities(dto.getResponsibilities())
+                .build();
+    }
 }

@@ -16,4 +16,6 @@ public interface WorkExpInfoService {
     List<WorkExpInfoDto> getAllByResumeId(int resumeId);
 
     void delete (int id);
+
+    WorkExpInfoUpdateDto convertToUpdateDto(WorkExpInfoDto dto);
 }
