@@ -12,8 +12,8 @@ spring:
             required: true
             enabled: true
     host: smtp.gmail.com
-    username: PROTECTED
-    password: PROTECTED
+    username: res.pswd.attractor@gmail.com
+    password: udbjmooacwidosgt
     port: 587
 
   mvc:
