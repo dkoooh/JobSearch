@@ -15,12 +15,20 @@
             </div>
             <div class="mb-2">
                 <label for="category">Категория:</label>
-                <#assign options = {"${resumeUpdateDto.categoryId}": "${categories[resumeUpdateDto.categoryId].name}"}>
+
+                <#list categories as category>
+                    <#if category.id == resumeUpdateDto.categoryId>
+                        <#assign oldCategory = category>
+                    </#if>
+                </#list>
+
+                <#assign options = {"${oldCategory.id}": "${oldCategory.name}"}>
                 <#list categories as category>
                     <#if category.id != resumeUpdateDto.categoryId>
                         <#assign options += {"${category.id}": "${category.name}"}>
                     </#if>
                 </#list>
+
                 <@spring.formSingleSelect 'resumeUpdateDto.categoryId' options
                 'class="form-select" aria-label="Choose account type" id="category"' />
                 <@spring.showErrors '<br/>' '${errorClassList}' />

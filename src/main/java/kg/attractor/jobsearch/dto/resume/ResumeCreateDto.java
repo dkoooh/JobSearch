@@ -1,7 +1,6 @@
 package kg.attractor.jobsearch.dto.resume;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
@@ -19,11 +18,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResumeCreateDto {
-    @NotBlank
+    @NotBlank (message = "Название не может быть пустым")
     private String name;
-    @NotNull
+    @NotNull (message = "Необходимо выбрать категорию резюме")
     private Integer categoryId;
-    private Double Salary;
+    private Double salary;
     private Boolean isActive;
     @Valid
     private List<WorkExpInfoCreateDto> workExperienceInfo;
@@ -31,18 +30,4 @@ public class ResumeCreateDto {
     private List<EduInfoCreateDto> educationInfo;
     @Valid @NotNull
     private List<ContactInfoCreateDto> contacts;
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ResumeCreateDto{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", categoryId=").append(categoryId);
-        sb.append(", Salary=").append(Salary);
-        sb.append(", isActive=").append(isActive);
-        sb.append(", workExperienceInfo=").append(workExperienceInfo);
-        sb.append(", educationInfo=").append(educationInfo);
-        sb.append(", contacts=").append(contacts);
-        sb.append('}');
-        return sb.toString();
-    }
 }

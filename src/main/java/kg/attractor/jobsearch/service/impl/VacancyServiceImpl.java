@@ -44,13 +44,13 @@ public class VacancyServiceImpl implements VacancyService {
         List<Vacancy> list = vacancyRepository.findAll();
 
         return list.stream()
-                .map(this::convertListToDto)
+                .map(this::convertToDto)
                 .toList();
     }
 
     @Override
     public VacancyDto getById(int vacancyId) {
-        return convertListToDto(
+        return convertToDto(
                 vacancyRepository.findById(vacancyId).orElseThrow(
                         () -> new NotFoundException("Vacancy not found. The requested vacancy does not exist.")
                 )
@@ -58,10 +58,15 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
+    public VacancyUpdateDto getUpdateDtoById (int vacancyId) {
+        return convertToUpdateDto(getById(vacancyId));
+    }
+
+    @Override
     public List<VacancyDto> getAllByApplicant(int applicantId) {
         List<Vacancy> list = vacancyRepository.findAllByApplicantId(applicantId);
         return list.stream()
-                .map(this::convertListToDto)
+                .map(this::convertToDto)
                 .toList();
     }
 
@@ -69,7 +74,7 @@ public class VacancyServiceImpl implements VacancyService {
     public Page<VacancyDto> getAllByEmployer(String email, int page) {
         List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(email);
         return toPage(list.stream()
-                .map(this::convertListToDto)
+                .map(this::convertToDto)
                 .toList(), PageRequest.of(page, 6));
     }
 
@@ -77,7 +82,7 @@ public class VacancyServiceImpl implements VacancyService {
     public List<VacancyDto> getAllByEmployer(Authentication auth) {
         List<Vacancy> list = vacancyRepository.findAllByAuthorEmail(auth.getName());
         return list.stream()
-                .map(this::convertListToDto)
+                .map(this::convertToDto)
                 .toList();
     }
 
@@ -91,14 +96,14 @@ public class VacancyServiceImpl implements VacancyService {
                 categoryId, Sort.by(Sort.Order.desc("createdDate"))
         );
         return list.stream()
-                .map(this::convertListToDto)
+                .map(this::convertToDto)
                 .toList();
     }
 
     @Override
     public Page<VacancyDto> getAllActive() {
         List<Vacancy> list = vacancyRepository.findAllByIsActiveTrue(Sort.by(Sort.Order.desc("createdDate")));
-        return toPage(list.stream().map(this::convertListToDto).toList(), PageRequest.of(0, 5));
+        return toPage(list.stream().map(this::convertToDto).toList(), PageRequest.of(0, 5));
     }
 
     @Override
@@ -120,7 +125,7 @@ public class VacancyServiceImpl implements VacancyService {
             );
         }
 
-        return toPage(list.stream().map(this::convertListToDto).toList(), PageRequest.of(page, 5));
+        return toPage(list.stream().map(this::convertToDto).toList(), PageRequest.of(page, 5));
     }
 
     @Override
@@ -199,13 +204,25 @@ public class VacancyServiceImpl implements VacancyService {
         return new PageImpl<>(subList, pageable, vacancies.size());
     }
 
-    private VacancyDto convertListToDto(Vacancy vacancy) {
+    private VacancyUpdateDto convertToUpdateDto (VacancyDto vacancyDto) {
+        return VacancyUpdateDto.builder()
+                .id(vacancyDto.getId())
+                .name(vacancyDto.getName())
+                .categoryId(vacancyDto.getCategory().getId())
+                .salary(vacancyDto.getSalary())
+                .description(vacancyDto.getDescription())
+                .expFrom(vacancyDto.getExpFrom())
+                .expTo(vacancyDto.getExpTo())
+                .isActive(vacancyDto.getIsActive())
+                .build();
+    }
+
+    private VacancyDto convertToDto(Vacancy vacancy) {
         return VacancyDto.builder()
                 .id(vacancy.getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
-                .category(categoryService.getById(
-                        vacancy.getCategory().getId()).getName()) // TODO возможно нужно передать весь CategoryDto
+                .category(categoryService.getById(vacancy.getCategory().getId()))
                 .salary(vacancy.getSalary())
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())

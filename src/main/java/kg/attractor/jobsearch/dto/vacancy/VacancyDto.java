@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.dto.vacancy;
 
+import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.user.UserDto;
 import kg.attractor.jobsearch.model.User;
 import lombok.Builder;
@@ -13,7 +14,7 @@ public class VacancyDto {
     private Integer id;
     private String name;
     private String description;
-    private String category;
+    private CategoryDto category;
     private Double salary;
     private Integer expFrom;
     private Integer expTo;

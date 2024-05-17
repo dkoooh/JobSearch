@@ -9,15 +9,17 @@ import lombok.Data;
 public class VacancyUpdateDto {
     @NotNull
     private Integer id;
-    @NotBlank
+    @NotBlank (message = "Название не может быть пустым")
     private String name;
     private String description;
-    @NotNull
+    @NotNull (message = "Необходимо выбрать категорию вакансии")
     private Integer categoryId;
     private Double salary;
-    @Min(0) @Max(80)
+    @Max(value = 70, message = "Некорректное значение")
+    @Min(value = 0, message = "Некорректное значение")
     private Integer expFrom;
-    @Max(80) @Min(0)
+    @Max(value = 70, message = "Некорректное значение")
+    @Min(value = 0, message = "Некорректное значение")
     private Integer expTo;
     private Boolean isActive;
 }

@@ -92,12 +92,19 @@ public class VacancyController {
     @GetMapping("{id}/edit")
     public String edit(@PathVariable int id, Model model) {
         model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("vacancy", vacancyService.getById(id));
+        model.addAttribute("vacancyUpdateDto", vacancyService.getUpdateDtoById(id));
         return "vacancy/edit";
     }
 
     @PostMapping("{id}/edit")
-    public String edit(@Valid VacancyUpdateDto dto, Authentication auth) {
+    public String edit(@Valid VacancyUpdateDto dto, BindingResult result, Model model, Authentication auth) {
+        if (result.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("vacancyUpdateDto", dto);
+            System.out.println(dto.getId());
+            return "vacancy/edit";
+        }
+
         vacancyService.update(dto, auth);
         return "redirect:/account/profile";
     }

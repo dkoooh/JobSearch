@@ -19,6 +19,8 @@ public interface VacancyService {
 
     VacancyDto getById(int vacancyId);
 
+    VacancyUpdateDto getUpdateDtoById(int vacancyId);
+
     List<VacancyDto> getAllByApplicant(int id);
 
     Page<VacancyDto> getAllByEmployer(String email, int page);

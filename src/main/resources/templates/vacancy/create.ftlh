@@ -1,25 +1,19 @@
 <#import "../layout.ftlh" as main>
 
 <@main.layout; spring>
+    <#assign errorClassList = "text-danger d-block error" />
+
     <form method="POST" action="/vacancies/create" class="col-md-9 col-lg-8 mx-auto my-3">
         <h2 class="text-center">Создание вакансии:</h2>
         <div class="col-sm-9 col-lg-7 col-xl-6 mb-4">
-            <#assign errorClassList = "text-danger d-block error" />
             <div class="mb-2 ">
                 <label for="name">Название вакансии:</label>
-                <@spring.formInput 'vacancyCreateDto.name' 'id="name" class="form-control" placeholder="Введите название"'/>
+                <@spring.formInput 'vacancyCreateDto.name' 'id="name" class="form-control"
+                placeholder="Введите название"'/>
                 <@spring.showErrors '<br/>' '${errorClassList}' />
-<#--                <input type="text" id="name" class="form-control" name="name" placeholder="Введите название" required>-->
             </div>
             <div class="mb-2">
                 <label for="category">Категория:</label>
-<#--                <select class="form-select" aria-label="Choose account type" name="categoryId" id="category" required>-->
-<#--                    <option selected disabled>Выберите категорию</option>P-->
-<#--                    <#list categories as category>-->
-<#--                        <option value="${category.id}">${category.name}</option>-->
-<#--                    </#list>-->
-<#--                </select>-->
-
                 <#assign options = {"": "Выберите категорию"}>
                 <#list categories as category>
                     <#assign options += {"${category.id}": "${category.name}"}>
@@ -32,7 +26,6 @@
                 <label for="salary">Заработная плата:</label>
                 <@spring.formInput 'vacancyCreateDto.salary' 'id="salary" class="form-control" step="0.01"' 'number' />
                 <@spring.showErrors '<br/>' '${errorClassList}' />
-<#--                <input type="number" id="salary" step="0.01" class="form-control" name="salary" placeholder="Введите оклад">-->
             </div>
 
             <div class="form-floating mb-3">
