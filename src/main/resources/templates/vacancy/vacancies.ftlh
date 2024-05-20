@@ -6,11 +6,11 @@
         <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
     </#if>
 
-    <h2 class="m-1">Вакансии:</h2>
+    <h2 class="m-1"><@spring.message 'vacancies.vacancies' /></h2>
     <form class="my-3 row align-content-baseline row-gap-1" id="searchForm">
         <div class="col-auto">
             <select class="form-select border-0 bg-body h-100" name="c">
-                <option selected disabled>Выберите категорию</option>
+                <option selected disabled><@spring.message 'vacancies.choose.category' /></option>
                 <#list categories as category>
                     <option value="${category.id}">${category.name}</option>
                 </#list>
@@ -18,16 +18,19 @@
         </div>
         <div class="col-auto">
             <select class="form-select border-0 bg-body h-100" name="sb">
-                <option value="createdDate">По дате публикации</option>
-                <option value="responses">По откликам</option>
+                <option value="createdDate"><@spring.message 'vacancies.sort.created.date' /></option>
+                <option value="responses"><@spring.message 'vacancies.sort.responses' /></option>
             </select>
         </div>
         <div class="col-auto row">
             <div class="col-auto">
-                <input type="search" placeholder="Поиск" name="s" class="form-control rounded-3">
+                <input type="search" placeholder="<@spring.message 'vacancies.live.search' />"
+                       name="s" class="form-control rounded-3">
             </div>
             <div class="col-auto px-0">
-                <button type="submit" class="btn btn-primary rounded-3">Поиск</button>
+                <button type="submit" class="btn btn-primary rounded-3">
+                    <@spring.message 'vacancies.live.search' />
+                </button>
             </div>
         </div>
     </form>
@@ -41,12 +44,13 @@
                         </h5>
                         <#if vacancy.salary??>
                             <#if vacancy.salary != 0>
-                                <h3 class="card-title fw-bolder">${vacancy.salary} сом</h3>
+                                <h3 class="card-title fw-bolder">${vacancy.salary}
+                                    <@spring.message 'vacancies.currency' /></h3>
                             <#else>
-                                <h3 class="card-title fw-bolder">Договорная</h3>
+                                <h3 class="card-title fw-bolder"><@spring.message 'vacancies.salary.negotiable' /></h3>
                             </#if>
                         <#else>
-                            <h3 class="card-title fw-bolder">Договорная</h3>
+                            <h3 class="card-title fw-bolder"><@spring.message 'vacancies.salary.negotiable' /></h3>
                         </#if>
 
                         <a href="/employer/${vacancy.author.email}" class="link-secondary text-decoration-none">
@@ -54,9 +58,16 @@
                         </a>
                         <#if vacancy.expFrom?? && vacancy.expFrom gt 0>
                             <#if vacancy.expTo?? && vacancy.expFrom gt 0>
-                                <p class="card-text mb-0 pb-0">Опыт от ${vacancy.expFrom} до ${vacancy.expTo} лет</p>
+                                <p class="card-text mb-0 pb-0">
+                                    <@spring.message 'vacancies.experience.from' />
+                                    ${vacancy.expFrom} <@spring.message 'vacancies.experience.to' /> ${vacancy.expTo}
+                                    <@spring.message 'vacancies.experience.years' />
+                                </p>
                             <#else>
-                                <p class="card-text mb-0 pb-0">Опыт от ${vacancy.expFrom} лет</p>
+                                <p class="card-text mb-0 pb-0">
+                                    <@spring.message 'vacancies.experience.from' />  ${vacancy.expFrom}
+                                    <@spring.message 'vacancies.experience.years' />
+                                </p>
                             </#if>
                         </#if>
                     </div>
@@ -67,7 +78,7 @@
                                 <#if grantedAuthority.authority == 'APPLICANT'>
                                     <button type="button" class="btn btn-success fw-medium" id="${vacancy.id}"
                                             data-bs-target="#resumeChoiceModal" data-bs-toggle="modal">
-                                        Откликнуться
+                                        <@spring.message 'vacancies.respond' />
                                     </button>
                                 </#if>
                             </#list>
@@ -120,7 +131,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content rounded-4 fw-medium">
                 <div class="modal-header border-0">
-                    <h1 class="modal-title fs-5" id="resumeChoiceModalLabel">Выберите вакансию: </h1>
+                    <h1 class="modal-title fs-5" id="resumeChoiceModalLabel"><@spring.message 'vacancies.choose.resume' /> </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -149,9 +160,9 @@
 
                         let salary;
                         if (!resume['salary'] || resume['salary'] === 0.0) {
-                            salary = 'Договорная'
+                            salary = '<@spring.message 'vacancies.salary.negotiable' />'
                         } else {
-                            salary = resume['salary'] + ' сом'
+                            salary = resume['salary'] + ' <@spring.message 'vacancies.currency' />'
                         }
 
                         let exp = "";
@@ -162,11 +173,14 @@
                             }
 
                             if (years % 10 === 1) {
-                                exp = "Опыт: " + years + ' год';
+                                exp = "<@spring.message 'vacancies.resume.experience' />: " + years +
+                                 ' <@spring.message 'vacancies.resume.experience.years1' />';
                             } else if (years % 10 > 1 && years % 10 < 5) {
-                                exp = "Опыт: " + years + ' года';
+                                exp = "<@spring.message 'vacancies.resume.experience' />: " + years +
+                                 ' <@spring.message 'vacancies.resume.experience.years2' />';
                             } else {
-                                exp = "Опыт: " + years + ' лет';
+                                exp = "<@spring.message 'vacancies.resume.experience' />: " + years +
+                                 ' <@spring.message 'vacancies.resume.experience.years3' />';
                             }
                         }
 
@@ -189,8 +203,9 @@
                                 </div>
                                 <div
                                         class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">Дата создания: ` + resume['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">Последнее обновление:
+                                    <div class="text-body-tertiary mt-auto "><@spring.message 'vacancies.resume.created.date' />: `
+                                    + resume['createdDate'] + `</div>
+                                    <div class="text-body-tertiary ms-auto mt-auto "><@spring.message 'vacancies.resume.update.time' />:
                                         ` + resume['updateTime'] + `</div>
                                 </div>
                             </div>`;
@@ -286,17 +301,17 @@
 
                 let salary;
                 if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
-                    salary = 'Договорная'
+                    salary = '<@spring.message 'vacancies.salary.negotiable' />'
                 } else {
-                    salary = vacancy['salary'] + ' сом'
+                    salary = vacancy['salary'] + ' <@spring.message 'vacancies.currency' />'
                 }
 
                 let exp = "";
                 if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
                     if (vacancy['expTo'] && vacancy['expTo'] > 0) {
-                        exp = 'Опыт от ' + vacancy['expFrom'] + ' до ' + vacancy['expTo'];
+                        exp = '<@spring.message 'vacancies.experience.from' /> ' + vacancy['expFrom'] + ' <@spring.message 'vacancies.experience.to' /> ' + vacancy['expTo'];
                     } else {
-                        exp = 'Опыт от ' + vacancy['expFrom']
+                        exp = '<@spring.message 'vacancies.experience.from' /> ' + vacancy['expFrom']
                     }
                 }
 
@@ -317,7 +332,7 @@
                                         <#if authorizedUser.authorities[0].authority == 'APPLICANT'>
                                             <button type="button" class="btn btn-success fw-medium" id="` + vacancy['id'] + `"
                                                 data-bs-target="#resumeChoiceModal" data-bs-toggle="modal">
-                                                Откликнуться
+                                                <@spring.message 'vacancies.respond' />
                                             </button>
                                         </#if>
                                     </#if>

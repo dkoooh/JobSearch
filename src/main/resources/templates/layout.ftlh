@@ -20,19 +20,25 @@
         <nav class="navbar navbar-expand-lg bg-dark fw-medium" data-bs-theme="dark">
             <div class="container">
                 <a class="navbar-brand" href="/">JobSearch</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="/vacancies">Вакансии</a>
+                            <a class="nav-link" aria-current="page" href="/vacancies">
+                                <@spring.message 'layout.active.vacancies' />
+                            </a>
                         </li>
                         <#if authorizedUser??>
                             <#list authorizedUser.authorities as grantedAuthority>
                                 <#if grantedAuthority.authority == "EMPLOYER">
                                     <li class="nav-item">
-                                        <a class="nav-link" aria-current="page" href="/resumes">Резюме</a>
+                                        <a class="nav-link" aria-current="page" href="/resumes">
+                                            <@spring.message 'layout.active.resumes' />
+                                        </a>
                                     </li>
                                 </#if>
                             </#list>
@@ -44,21 +50,38 @@
                                     <form action="/logout" method="post">
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                                value="${(_csrf.token)!'--no-token--'}"/>
-                                        <button type="submit" class="btn btn-outline-danger fw-medium">Выйти</button>
+                                        <button type="submit" class="btn btn-outline-danger fw-medium">
+                                            <@spring.message 'layout.logout' />
+                                        </button>
                                     </form>
                                 <#else>
-                                    <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">Выйти</a>
+                                    <a class="btn btn-outline-danger fw-medium" aria-current="page" href="/logout">
+                                        <@spring.message 'layout.logout' />
+                                    </a>
                                 </#if>
 
                             </li>
                         <#else>
                             <li class="nav-item ms-lg-auto">
-                                <a class="nav-link" aria-current="page" href="/register">Регистрация</a>
+                                <a class="nav-link" aria-current="page" href="/register">
+                                    <@spring.message 'layout.register' />
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/login">Войти</a>
+                                <a class="nav-link" aria-current="page" href="/login">
+                                    <@spring.message 'layout.login' />
+                                </a>
                             </li>
                         </#if>
+                        <li class="nav-item dropdown">
+                            <a class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                Language
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark">
+                                <li><a class="dropdown-item" href="/?lang=ru">RU</a></li>
+                                <li><a class="dropdown-item" href="/?lang=en">EN</a></li>
+                            </ul>
+                        </li>
                     </ul>
 
                 </div>
