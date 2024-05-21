@@ -13,11 +13,11 @@
         <div class="col">
             <h3>${user.name} ${user.surname!("")}</h3>
             <#if user.accountType == "APPLICANT">
-                <p>Возраст: ${user.age}</p>
+                <p><@spring.message 'account.profile.age' />: ${user.age}</p>
             </#if>
             <#if (authorizedUser)??>
                 <#if authorizedUser.name == user.email>
-                    <a href="/account/edit" type="button" class="btn btn-success" id="editBtn">Редактировать</a>
+                    <a href="/account/edit" type="button" class="btn btn-success" id="editBtn"><@spring.message 'account.profile.edit' /></a>
                 </#if>
             </#if>
         </div>
@@ -26,19 +26,29 @@
                 <#if authorizedUser.name == user.email>
                     <#if user.accountType = "APPLICANT">
                         <a href="/resumes/create" class="btn btn-danger d-flex justify-content-center align-items-center"
-                           style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>резюме</a>
+                           style="height: 100px; width: 100px; text-align: center">
+                            +<br>
+                            <@spring.message 'account.profile.create'/>
+                            <br><@spring.message 'account.profile.createResume'/>
+                        </a>
                     <#else>
                         <a href="/vacancies/create" class="btn btn-danger d-flex justify-content-center align-items-center"
-                           style="height: 100px; width: 100px; text-align: center">+<br>Создать<br>вакансию</a>
+                           style="height: 100px; width: 100px; text-align: center">
+                            +<br>
+                            <@spring.message 'account.profile.create'/>
+                            <br><@spring.message 'account.profile.createVacancy'/>
+                        </a>
                     </#if>
-                    <a href="/responses" class="btn btn-light d-flex border border-1 justify-content-center align-items-center"
-                       style="height: 100px; width: 100px; text-align: center">Отклики</a>
+                    <a href="/responses" class="btn btn-light d-flex border border-1 justify-content-center
+                    align-items-center" style="height: 100px; width: 100px; text-align: center">
+                        <@spring.message 'account.profile.responses'/>
+                    </a>
                 </#if>
             </#if>
         </div>
     </div>
     <#if user.accountType = "APPLICANT">
-        <h5>Резюме: </h5>
+        <h5><@spring.message 'account.profile.resumes.title'/>: </h5>
         <#if userResumes??>
             <#if userResumes.content?size != 0>
                 <div class="row rol-cols gap-2">
@@ -49,18 +59,23 @@
                                     <h5 class="card-title"><a href="/resumes/${resume.id}" class="text-decoration-none text-black">
                                         ${resume.name}
                                         </a></h5>
-                                    <p class="card-text">Дата обновления: <br>${resume.updateTime}</p>
+                                    <p class="card-text"><@spring.message 'account.profile.resumes.updateTime'/>: <br>
+                                        ${resume.updateTime}
+                                    </p>
                                 </div>
                                 <div class="card-footer bg-white border-0 gap-1 mt-auto">
                                     <#if authorizedUser.name == user.email>
-                                        <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">Обновить</a>
-                                        <a href="/resumes/${resume.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
+                                        <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
+                                            <@spring.message 'account.profile.resumes.update'/>
+                                        </a>
+                                        <a href="/resumes/${resume.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">
+                                            <@spring.message 'account.profile.resumes.edit'/>
+                                        </a>
                                     <#else>
-                                        <a href="/res" class="btn btn-success m-1" style="padding: 3px 5px;">Откликнуться</a>
 
                                         <button type="button" id="${resume.id}" class="btn btn-success m-1" style="padding: 3px 5px;"
                                                 data-bs-target="#vacancyChoiceModal" data-bs-toggle="modal">
-                                            Откликнуться
+                                            <@spring.message 'account.profile.resumes.respond'/>
                                         </button>
                                     </#if>
                                 </div>
@@ -106,7 +121,9 @@
                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
                         <div class="modal-content rounded-4">
                             <div class="modal-header border-0">
-                                <h1 class="modal-title fs-5" id="vacancyChoiceModalLabel">Выберите вакансию: </h1>
+                                <h1 class="modal-title fs-5" id="vacancyChoiceModalLabel">
+                                    <@spring.message 'account.profile.resumes.chooseVacancy'/>:
+                                </h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -118,14 +135,14 @@
                     </div>
                 </div>
             <#else>
-                <h5>Резюме не найдены</h5>
+                <h5><@spring.message 'account.profile.resumes.notFound'/></h5>
             </#if>
         <#else>
-            <h5>Резюме не найдены</h5>
+            <h5><@spring.message 'account.profile.resumes.notFound'/></h5>
         </#if>
     </#if>
     <#if user.accountType = "EMPLOYER">
-        <h5>Вакансии: </h5>
+        <h5><@spring.message 'account.profile.vacancies.title'/>: </h5>
         <#if (vacancies)??>
             <#if vacancies.content?size != 0>
                 <div class="row rol-cols gap-2">
@@ -138,18 +155,25 @@
                                             ${vacancy.name}
                                         </a>
                                     </h5>
-                                    <p class="card-text">Дата обновления: <br>${vacancy.updateTime}</p>
+                                    <p class="card-text">
+                                        <@spring.message 'account.profile.vacancies.updateTime'/>: <br>${vacancy.updateTime}
+                                    </p>
                                 </div>
                                 <div class="card-footer bg-white border-0 gap-1 mt-auto">
                                     <#if authorizedUser??>
                                         <#if authorizedUser.name == user.email>
-                                            <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">Обновить</a>
-                                            <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">Ред.</a>
+                                            <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
+                                                <@spring.message 'account.profile.vacancies.update'/>
+                                            </a>
+                                            <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">
+                                                <@spring.message 'account.profile.vacancies.edit'/>
+                                            </a>
                                         <#else>
                                             <#if authorizedUser.principal.accountType == "APPLICANT">
                                                 <button type="button" class="btn btn-success m-1" style="padding: 3px 5px;"
-                                                        id="${vacancy.id}" data-bs-target="#resumeChoiceModal" data-bs-toggle="modal">
-                                                    Откликнуться
+                                                        id="${vacancy.id}" data-bs-target="#resumeChoiceModal"
+                                                        data-bs-toggle="modal">
+                                                    <@spring.message 'account.profile.vacancies.respond'/>
                                                 </button>
                                             </#if>
                                         </#if>
@@ -198,7 +222,9 @@
                     <div class="modal-dialog modal-dialog-scrollable modal-lg">
                         <div class="modal-content rounded-4 fw-medium">
                             <div class="modal-header border-0">
-                                <h1 class="modal-title fs-5" id="resumeChoiceModalLabel">Выберите вакансию: </h1>
+                                <h1 class="modal-title fs-5" id="resumeChoiceModalLabel">
+                                    <@spring.message 'account.profile.vacancies.chooseResume'/>:
+                                </h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -210,10 +236,10 @@
                     </div>
                 </div>
             <#else>
-                <h5>Вакансии не найдены</h5>
+                <h5><@spring.message 'account.profile.vacancies.notFound'/></h5>
             </#if>
         <#else>
-            <h5>Вакансии не найдены</h5>
+            <h5><@spring.message 'account.profile.vacancies.notFound'/></h5>
         </#if>
     </#if>
 
@@ -223,7 +249,7 @@
 
         async function onShowResumesModal(event) {
             try {
-                let resumesRequest = await fetch(`http://localhost:1234/api/resumes/applicant`);
+                let resumesRequest = await fetch(`/api/resumes/applicant`);
                 if (resumesRequest.ok) {
                     let resumes = await resumesRequest.json()
 
@@ -234,9 +260,9 @@
 
                         let salary;
                         if (!resume['salary'] || resume['salary'] === 0.0) {
-                            salary = 'Договорная'
+                            salary = '<@spring.message 'account.profile.modalResumes.negotiable' />'
                         } else {
-                            salary = resume['salary'] + ' сом'
+                            salary = resume['salary'] + ' <@spring.message 'account.profile.modalResumes.currency' />'
                         }
 
                         let exp = "";
@@ -247,11 +273,14 @@
                             }
 
                             if (years % 10 === 1) {
-                                exp = "Опыт: " + years + ' год';
+                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                    ' <@spring.message 'account.profile.modalResumes.experience.years1' />';
                             } else if (years % 10 > 1 && years % 10 < 5) {
-                                exp = "Опыт: " + years + ' года';
+                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                    ' <@spring.message 'account.profile.modalResumes.experience.years2' />';
                             } else {
-                                exp = "Опыт: " + years + ' лет';
+                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                    ' <@spring.message 'account.profile.modalResumes.experience.years3' />';
                             }
                         }
 
@@ -274,8 +303,11 @@
                                 </div>
                                 <div
                                         class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">Дата создания: ` + resume['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">Последнее обновление:
+                                    <div class="text-body-tertiary mt-auto ">
+                                        <@spring.message 'account.profile.modalResumes.createdDate' />: `
+                            + resume['createdDate'] + `</div>
+                                    <div class="text-body-tertiary ms-auto mt-auto ">
+                                        <@spring.message 'account.profile.modalResumes.updateTime' />:
                                         ` + resume['updateTime'] + `</div>
                                 </div>
                             </div>`;
@@ -306,17 +338,20 @@
 
                         let salary;
                         if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
-                            salary = 'Договорная'
+                            salary = '<@spring.message 'account.profile.modalVacancies.negotiable' />'
                         } else {
-                            salary = vacancy['salary'] + ' сом'
+                            salary = vacancy['salary'] + ' <@spring.message 'account.profile.modalVacancies.currency' />'
                         }
 
                         let exp = "";
                         if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
                             if (vacancy['expTo'] && vacancy['expTo'] > 0) {
-                                exp = 'Опыт от ' + vacancy['expFrom'] + ' до ' + vacancy['expTo'];
+                                exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
+                                    + ' <@spring.message 'account.profile.modalVacancies.experience.to' /> ' + vacancy['expTo']
+                                    + ' <@spring.message 'account.profile.modalVacancies.experience.years' />';
                             } else {
-                                exp = 'Опыт от ' + vacancy['expFrom']
+                                exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
+                                    + ' <@spring.message 'account.profile.modalVacancies.experience.years' />'
                             }
                         }
 
@@ -339,8 +374,10 @@
                                 </div>
                                 <div
                                         class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">Дата создания: ` + vacancy['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">Последнее обновление:
+                                    <div class="text-body-tertiary mt-auto ">
+                                        <@spring.message 'account.profile.modalVacancies.createdDate' />: ` + vacancy['createdDate'] + `</div>
+                                    <div class="text-body-tertiary ms-auto mt-auto ">
+                                        <@spring.message 'account.profile.modalVacancies.updateTime' />:
                                         ` + vacancy['updateTime'] + `</div>
                                 </div>
                             </div>`;

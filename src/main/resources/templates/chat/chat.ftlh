@@ -1,11 +1,11 @@
 <#import "../layout.ftlh" as main>
 
-<@main.layout>
+<@main.layout; spring>
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
         <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
     </#if>
-    <a href="/responses" class="btn btn-outline-primary"><i class="bi bi-arrow-left"> Вернуться в отклики</i></a>
+    <a href="/responses" class="btn btn-outline-primary"><i class="bi bi-arrow-left"> <@spring.message 'chat.responses' /></i></a>
 
     <div class="row row-cols-1 row-cols-md-2 justify-content-md-around mt-3 row-gap-3">
         <#if authorizedUser.name == response.resume.applicant.email>
@@ -62,7 +62,7 @@
             <div class="row mb-1 mt-auto">
                 <div class="form-floating col px-0 mx-2">
                         <textarea id="messageForm" class="form-control border-0" placeholder="Leave a message here"></textarea>
-                        <label for="messageForm">Message</label>
+                        <label for="messageForm"><@spring.message 'chat.message' /></label>
                 </div>
                 <div class="col-auto ps-0 pe-2">
                         <button onclick="onMessageSend(event)" class="btn btn-outline-primary h-100"><i class="bi bi-send"></i> </button>

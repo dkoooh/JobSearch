@@ -149,7 +149,7 @@
 
         async function onShowModal(event) {
             try {
-                let resumesRequest = await fetch(`http://localhost:1234/api/resumes/applicant`);
+                let resumesRequest = await fetch(`/api/resumes/applicant`);
                 if (resumesRequest.ok) {
                     let resumes = await resumesRequest.json()
 
