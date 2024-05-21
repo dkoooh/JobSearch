@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as main>
 
-<@main.layout>
+<@main.layout; spring>
     <section class="vh-100 gradient-custom">
         <div class="container py-2 ">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -10,19 +10,19 @@
 
                             <form id="login" class="mt-md-4 pb-5" method="POST" action="/login">
 
-                                <h2 class="fw-bold mb-2 text-uppercase">Вход</h2>
-                                <p id="login-text" class="text-black-50 mb-5">Введите email и пароль</p>
+                                <h2 class="fw-bold mb-2 text-uppercase"><@spring.message 'login.login'/></h2>
+                                <p id="login-text" class="text-black-50 mb-5"><@spring.message 'login.text'/></p>
 
-                                <div data-mdb-input-init class="form-outline form-black mb-4">
+                                <div class="form-outline form-black mb-4">
                                     <input type="email" id="typeEmailX" class="form-control form-control-lg"
                                            name="username"/>
-                                    <label class="form-label" for="typeEmailX">Email</label>
+                                    <label class="form-label" for="typeEmailX"><@spring.message 'login.email'/></label>
                                 </div>
 
-                                <div data-mdb-input-init class="form-outline form-black mb-4">
+                                <div class="form-outline form-black mb-4">
                                     <input type="password" id="typePasswordX" class="form-control form-control-lg"
                                            name="password"/>
-                                    <label class="form-label" for="typePasswordX">Пароль</label>
+                                    <label class="form-label" for="typePasswordX"><@spring.message 'login.password'/></label>
                                 </div>
 
                                 <#if _csrf??>
@@ -30,15 +30,19 @@
                                            value="${(_csrf.token)!'--no-token--'}"/>
                                 </#if>
 
-                                <p class="small mb-5 pb-lg-2"><a class="link-secondary text-decoration-none" href="/account/forgot_password">Забыли пароль?</a></p>
+                                <p class="small mb-5 pb-lg-2">
+                                    <a class="link-secondary text-decoration-none" href="/account/forgot_password">
+                                        <@spring.message 'login.forgotPassword'/>?
+                                    </a>
+                                </p>
                                 <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary btn-lg
-                                px-5" type="submit">Войти</button>
+                                px-5" type="submit"><@spring.message 'login.submit'/></button>
 
                             </form>
 
                             <div>
-                                <p class="mb-0">Нет учетной записи? <a href="/register" class="text-primary-50
-                                 text-decoration-none fw-bold">Зарегестрируйтесь</a>
+                                <p class="mb-0"><@spring.message 'login.noAccount'/>? <a href="/register" class="text-primary-50
+                                 text-decoration-none fw-bold"><@spring.message 'login.register'/></a>
                                 </p>
                             </div>
 
@@ -57,29 +61,10 @@
             window.onload = () => {
                 let msg = $('#login-text')
 
-                $(msg).text('Неверный email или пароль...')
+                $(msg).text('<@spring.message "login.badCredentials"/>')
                 $(msg).addClass('text-danger');
                 $(msg).removeClass('text-black-50');
             }
         }
-
-<#--        let form = document.getElementById('login')-->
-<#--        form.addEventListener('submit', onSubmitAddToLocalStorage)-->
-
-<#--        async function onSubmitAddToLocalStorage (event) {-->
-<#--            let data = new FormData(event.target);-->
-<#--            let user = Object.fromEntries(data);-->
-
-<#--            try {-->
-<#--                let request = await fetch("http://localhost:1234/login")-->
-
-<#--                if (request.ok) {-->
-<#--                    localStorage.setItem("user", JSON.stringify(user));-->
-<#--                }-->
-
-<#--            } catch (e) {-->
-<#--                console.log(e)-->
-<#--            }-->
-<#--        }-->
     </script>
 </@main.layout>

@@ -7,7 +7,7 @@
             <div class="col-12 col-lg-9 col-xl-7">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body py-3 px-4 p-md-5">
-                        <h3 class="mb-4 pb-2 pb-md-0">Регистрация</h3>
+                        <h3 class="mb-4 pb-2 pb-md-0"><@spring.message 'registration.registration'/></h3>
                         <form action="/register" method="POST" id="form">
 
                             <#assign errorClassList = "text-danger d-block error" />
@@ -15,14 +15,13 @@
                             <div class="row">
 
                                 <div class="col-12 mb-2">
-                                    <div id="emailHelp" class="form-text">После регистрации изменить
-                                        адрес почты и тип аккаунта нельзя
+                                    <div id="emailHelp" class="form-text"><@spring.message 'registration.emailHelp'/>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 mb-4 pb-2">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label for="emailAddress">Адрес электронной почты
+                                        <label for="emailAddress"><@spring.message 'registration.email'/>
                                         </label>
                                         <@spring.formInput 'userCreationDto.email' 'type="email" id="emailAddress"
                                                class="form-control form-control-lg"' />
@@ -32,8 +31,13 @@
                                 </div>
 
                                 <div class="col-md-6 mb-4">
-                                    <label for="accountType">Тип аккаунта</label>
-                                    <@spring.formSingleSelect 'userCreationDto.accountType' {"EMPLOYER": "Работодатель", "APPLICANT": "Соискатель"} 'id="accountType" class="form-select form-select-lg"' />
+                                    <label for="accountType"><@spring.message 'registration.accountType'/></label>
+                                    <#assign applicant><@spring.message 'registration.accountType.applicant'/></#assign>
+                                    <#assign employer><@spring.message 'registration.accountType.employer'/></#assign>
+                                    <@spring.formSingleSelect 'userCreationDto.accountType'
+                                    {"EMPLOYER": "${employer}",
+                                    "APPLICANT": "${applicant}"}
+                                    'id="accountType" class="form-select form-select-lg"' />
                                     <@spring.showErrors '<br/>' '${errorClassList}' />
                                 </div>
 
@@ -43,7 +47,9 @@
                                 <div class="col-md-6 mb-4">
 
                                     <div data-mdb-input-init class="form-outline">
-                                        <label for="name" id="nameLabel">Имя компании</label>
+                                        <label for="name" id="nameLabel">
+                                            <@spring.message 'registration.companyName'/>
+                                        </label>
                                         <@spring.formInput "userCreationDto.name" 'type="text" id="name"
                                                class="form-control form-control-lg"' />
                                         <@spring.showErrors '<br/>' '${errorClassList}' />
@@ -54,7 +60,7 @@
                                 <div id='phoneNumberCol' class="col-md-6 mb-4 pb-2">
 
                                     <div data-mdb-input-init class="form-outline">
-                                        <label for="phoneNumber">Номер телефона</label>
+                                        <label for="phoneNumber"><@spring.message 'registration.phoneNumber'/></label>
                                         <@spring.formInput 'userCreationDto.phoneNumber' 'type="tel" id="phoneNumber"
                                                    class="form-control form-control-lg" ' />
                                         <@spring.showErrors '<br/>' '${errorClassList}' />
@@ -65,7 +71,7 @@
 
                             <div id="passwordRow" class="row">
                                 <div class="col-md-6">
-                                    <label for="password">Придумайте пароль</label>
+                                    <label for="password"><@spring.message 'registration.password'/></label>
                                     <@spring.formPasswordInput 'userCreationDto.password' 'id="password" class="form-control
                                     form-control-lg"' />
                                     <@spring.showErrors '<br/>' '${errorClassList}' />
@@ -78,12 +84,12 @@
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
                                                value="${(_csrf.token)!'--no-token--'}"/>
                                     </#if>
-                                    <button type="submit" class="btn btn-outline-primary fw-medium btn-lg">Зарегистрироваться</button>
+                                    <button type="submit" class="btn btn-outline-primary fw-medium btn-lg"><@spring.message 'registration.register'/></button>
                                 </div>
                                 <div class="col align-content-center">
-                                    <p class="mb-0">Уже зарегистрированы?
+                                    <p class="mb-0"><@spring.message 'registration.registered'/>?
                                         <a href="/login" class="text-primary-50
-                                            text-decoration-none fw-bold">Войти
+                                            text-decoration-none fw-bold"><@spring.message 'registration.login'/>
                                         </a>
                                     </p>
                                 </div>
@@ -156,14 +162,14 @@
                 phoneNumberHtml.setAttribute('id', 'phoneNumberCol');
                 phoneNumberHtml.innerHTML = `
                                         <div data-mdb-input-init class="form-outline">
-                                            <label for="phoneNumber">Номер телефона</label>
+                                            <label for="phoneNumber"><@spring.message 'registration.phoneNumber'/></label>
                                             <@spring.formInput "userCreationDto.phoneNumber" 'type="tel" id="phoneNumber"
                                                    class="form-control form-control-lg"' />
                                             <@spring.showErrors "<br/>" "${errorClassList}"/>
                                         </div>`;
                 nameSurnameRow.appendChild(phoneNumberHtml);
 
-                nameLabel.innerText = 'Имя компании';
+                nameLabel.innerText = '<@spring.message 'registration.companyName'/>';
             }
         }
 
@@ -175,7 +181,7 @@
                 surnameHtml.setAttribute('id', 'surnameCol');
                 surnameHtml.classList.add('col-md-6', 'mb-4');
                 surnameHtml.innerHTML = `<div data-mdb-input-init class="form-outline">
-                                            <label for="lastName">Фамилия</label>
+                                            <label for="lastName"><@spring.message 'registration.surname'/></label>
                                             <@spring.formInput "userCreationDto.surname" 'type="text" id="surname"
                                                    class="form-control form-control-lg"' />
                                             <@spring.showErrors "<br/>" "${errorClassList}"/>
@@ -189,7 +195,7 @@
                 removableRowHtml.setAttribute('id', 'removableRow');
                 removableRowHtml.innerHTML = `<div class="col-md-6 mb-4 d-flex">
                                              <div data-mdb-input-init class="form-outline datepicker w-100">
-                                                 <label for="birthdayDate">Возраст</label>
+                                                 <label for="birthdayDate"><@spring.message 'registration.age'/></label>
                                                  <@spring.formInput 'userCreationDto.age' 'type="number" class="form-control form-control-lg"
                                                      id="birthdayDate"' />
                                                  <@spring.showErrors "<br/>" "${errorClassList}"/>
@@ -198,7 +204,7 @@
 
                                          <div class="col-md-6 mb-4 pb-2">
                                              <div data-mdb-input-init class="form-outline">
-                                                 <label for="phoneNumber">Номер телефона</label>
+                                                 <label for="phoneNumber"><@spring.message 'registration.phoneNumber'/></label>
                                                  <@spring.formInput 'userCreationDto.phoneNumber' 'type="tel" id="phoneNumber"
                                                      class="form-control form-control-lg"' />
                                                  <@spring.showErrors "<br/>" "${errorClassList}"/>
@@ -208,7 +214,7 @@
 
                 form.insertBefore(removableRowHtml, passwordRow);
 
-                nameLabel.innerText = 'Имя';
+                nameLabel.innerText = '<@spring.message 'registration.name'/>';
             }
         }
     </script>
