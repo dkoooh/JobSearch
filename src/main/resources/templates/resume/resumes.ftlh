@@ -1,23 +1,23 @@
 <#import "../layout.ftlh" as main>
 
-<@main.layout>
+<@main.layout ; spring>
     <#assign known = SPRING_SECURITY_CONTEXT??>
     <#if known>
         <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
     </#if>
 
-    <h2>Все вакансии:</h2>
+    <h2><@spring.message 'resumes.resumes' />:</h2>
     <form class="my-3 row align-content-baseline" method="GET" action="http://localhost:1234/resumes/categories">
         <div class="col-auto">
             <select class="form-select border-0 bg-body h-100" name="categoryId" aria-label="Default select example">
-                <option selected disabled>Выберите категорию</option>
+                <option selected disabled><@spring.message 'resumes.choose.category' /></option>
                 <#list categories as category>
                     <option value="${category.id}">${category.name}</option>
                 </#list>
             </select>
         </div>
         <div class="col-auto px-0">
-            <button type="submit" class="btn btn-primary">Поиск</button>
+            <button type="submit" class="btn btn-primary"><@spring.message 'resumes.search' /></button>
         </div>
     </form>
     <div class="row row-cols-1 row-gap-2 fw-medium">
@@ -30,12 +30,12 @@
                         </h5>
                         <#if resume.salary??>
                             <#if resume.salary != 0>
-                                <h3 class="card-title fw-bolder">${resume.salary} сом</h3>
+                                <h3 class="card-title fw-bolder">${resume.salary} <@spring.message 'resumes.currency' /></h3>
                             <#else>
-                                <h3 class="card-title fw-bolder">Договорная</h3>
+                                <h3 class="card-title fw-bolder"><@spring.message 'resumes.salary.negotiable' /></h3>
                             </#if>
                         <#else>
-                            <h3 class="card-title fw-bolder">Договорная</h3>
+                            <h3 class="card-title fw-bolder"><@spring.message 'resumes.salary.negotiable' /></h3>
                         </#if>
 
                         <a href="/applicant/${resume.applicant.email}" class="link-secondary text-decoration-none">
@@ -49,16 +49,16 @@
                             </#list>
                             <#assign wordForm>
                                 <#if sum % 10 = 1>
-                                    год
+                                    <@spring.message 'resumes.experience.years1' />
                                 </#if>
                                 <#if sum % 10 gt 1 && sum % 10 lt 5>
-                                    года
+                                    <@spring.message 'resumes.experience.years2' />
                                 </#if>
                                 <#if sum % 10 gt 4 || sum % 10 = 0>
-                                    лет
+                                    <@spring.message 'resumes.experience.years3' />
                                 </#if>
                             </#assign>
-                            <p class="card-text mb-0 pb-0">Опыт работы: ${sum} ${wordForm}</p>
+                            <p class="card-text mb-0 pb-0"><@spring.message 'resumes.experience' />: ${sum} ${wordForm}</p>
                         </#if>
 
 
@@ -69,7 +69,7 @@
                             <#if grantedAuthority.authority == 'EMPLOYER'>
                                 <button type="button" id="${resume.id}" class="btn btn-success fw-medium"
                                         data-bs-target="#vacancyChoiceModal" data-bs-toggle="modal">
-                                    Откликнуться
+                                    <@spring.message 'resumes.respond' />
                                 </button>
                             </#if>
                         </#list>
@@ -118,7 +118,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-lg">
             <div class="modal-content rounded-4">
                 <div class="modal-header border-0">
-                    <h1 class="modal-title fs-5" id="vacancyChoiceModalLabel">Выберите вакансию: </h1>
+                    <h1 class="modal-title fs-5" id="vacancyChoiceModalLabel"><@spring.message 'resumes.choose.vacancy' />: </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -147,17 +147,20 @@
 
                         let salary;
                         if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
-                            salary = 'Договорная'
+                            salary = '<@spring.message 'resumes.vacancies.salary.negotiable' />'
                         } else {
-                            salary = vacancy['salary'] + ' сом'
+                            salary = vacancy['salary'] + ' <@spring.message 'resumes.vacancies.currency' />'
                         }
 
                         let exp = "";
                         if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
                             if (vacancy['expTo'] && vacancy['expTo'] > 0) {
-                                exp = 'Опыт от ' + vacancy['expFrom'] + ' до ' + vacancy['expTo'];
+                                exp = '<@spring.message 'resumes.vacancies.experience.from' /> ' + vacancy['expFrom']
+                                    + ' <@spring.message 'resumes.vacancies.experience.to' /> ' + vacancy['expTo']
+                                    + ' <@spring.message 'resumes.vacancies.experience.years' />';
                             } else {
-                                exp = 'Опыт от ' + vacancy['expFrom']
+                                exp = '<@spring.message 'resumes.vacancies.experience.from' /> ' + vacancy['expFrom']
+                                    + ' <@spring.message 'resumes.vacancies.experience.years' />'
                             }
                         }
 
@@ -180,8 +183,8 @@
                                 </div>
                                 <div
                                         class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">Дата создания: ` + vacancy['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">Последнее обновление:
+                                    <div class="text-body-tertiary mt-auto "><@spring.message 'resumes.vacancies.created.date' />: ` + vacancy['createdDate'] + `</div>
+                                    <div class="text-body-tertiary ms-auto mt-auto "><@spring.message 'resumes.vacancies.update.time' />:
                                         ` + vacancy['updateTime'] + `</div>
                                 </div>
                             </div>`;

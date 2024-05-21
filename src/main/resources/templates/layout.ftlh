@@ -78,8 +78,8 @@
                                 Language
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="/?lang=ru">RU</a></li>
-                                <li><a class="dropdown-item" href="/?lang=en">EN</a></li>
+                                <li><a class="dropdown-item" href="?lang=ru">RU</a></li>
+                                <li><a class="dropdown-item" href="?lang=en">EN</a></li>
                             </ul>
                         </li>
                     </ul>
