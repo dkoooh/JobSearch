@@ -7,7 +7,7 @@
         <h2 class="text-center"><@spring.message 'edit.vacancy' />:</h2>
         <div class="col-sm-9 col-lg-7 col-xl-6 mb-4">
             <div class="mb-2 ">
-                <label for="name"><@spring.message 'create.vacancy.name' />:</label>
+                <label for="name"><@spring.message 'create.vacancy.title' />:</label>
                 <@spring.formInput 'vacancyUpdateDto.name' 'id="name" class="form-control"
                 placeholder="Введите название"' />
                 <@spring.showErrors '<br/>' '${errorClassList}' />

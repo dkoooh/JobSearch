@@ -5,16 +5,16 @@
     <#assign eduInfoIndex = 0>
 
     <form class="col-md-9 col-lg-8 mx-auto my-3" action="/resumes/${resumeUpdateDto.id}/edit" method="POST">
-        <h1 class="text-center mb-4">Редактирование резюме:</h1>
+        <h1 class="text-center mb-4"><@spring.message 'edit.resume' />:</h1>
 
         <div class="col-sm-9 col-lg-7 col-xl-6 mb-4">
             <div class="mb-2 ">
-                <label for="name">Название резюме:</label>
+                <label for="name"><@spring.message 'create.resume.title' />:</label>
                 <@spring.formInput 'resumeUpdateDto.name' 'id="name" class="form-control"' />
                 <@spring.showErrors '<br/>' '${errorClassList}' />
             </div>
             <div class="mb-2">
-                <label for="category">Категория:</label>
+                <label for="category"><@spring.message 'create.resume.category' />:</label>
 
                 <#list categories as category>
                     <#if category.id == resumeUpdateDto.categoryId>
@@ -34,13 +34,13 @@
                 <@spring.showErrors '<br/>' '${errorClassList}' />
             </div>
             <div class="mb-2">
-                <label for="salary">Ожидаемый уровень оклада:</label>
+                <label for="salary"><@spring.message 'create.resume.salary' />:</label>
                 <@spring.formInput 'resumeUpdateDto.salary' 'step="0.01" id="salary" class="form-control"' 'number' />
                 <@spring.showErrors '<br/>' '${errorClassList}' />
             </div>
         </div>
 
-        <p class="py-0 mb-1">О себе:</p>
+        <p class="py-0 mb-1"><@spring.message 'create.resume.aboutYourself' />:</p>
         <div class="row row-cols-1 row-gap-4 mb-3">
 
             <div id="workExpInfo" class="col row row-cols-1 row-gap-2">
@@ -49,7 +49,7 @@
                     <div class="col-12 col-sm-10 col-lg-8 col-xl-7">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Опыт работы: </h5>
+                                <h5 class="card-title"><@spring.message 'create.resume.workExperience' />: </h5>
 
                                 <#if workExp.id??>
                                     <input type="hidden" class="form-control form-control-sm" value="${workExp.id}"
@@ -58,7 +58,7 @@
 
                                 <div class="card-text row my-1">
                                     <div class="col-12 col-sm-auto">
-                                        <label for="years" class="col-form-label">Год работы:</label>
+                                        <label for="years" class="col-form-label"><@spring.message 'create.resume.workExperience.years' />:</label>
                                     </div>
                                     <div class="col-12 col-sm-auto">
                                         <@spring.formInput 'resumeUpdateDto.workExperienceInfo[${workExpIndex}].years'
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
                                     <div class="col-12 col-sm-auto">
-                                        <label for="companyName" class="col-form-label">Название компании:</label>
+                                        <label for="companyName" class="col-form-label"><@spring.message 'create.resume.workExperience.companyName' />:</label>
                                     </div>
                                     <div class="col-12 col-sm-auto">
                                         <@spring.formInput 'resumeUpdateDto.workExperienceInfo[${workExpIndex}].companyName'
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
                                     <div class="col-12 col-sm-auto">
-                                        <label for="position" class="col-form-label">Должность:</label>
+                                        <label for="position" class="col-form-label"><@spring.message 'create.resume.workExperience.position' />:</label>
                                     </div>
                                     <div class="col-12 col-sm-auto">
                                         <@spring.formInput 'resumeUpdateDto.workExperienceInfo[${workExpIndex}].position'
@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
                                     <div class="col-12 col-sm-auto">
-                                        <label for="responsibilities" class="col-form-label">Обязанности:</label>
+                                        <label for="responsibilities" class="col-form-label"><@spring.message 'create.resume.workExperience.responsibilities' />:</label>
                                     </div>
                                     <div class="col-12 col-sm-auto">
                                         <@spring.formInput 'resumeUpdateDto.workExperienceInfo[${workExpIndex}].responsibilities'
@@ -112,7 +112,7 @@
                     <div class="col-12 col-sm-10 col-lg-8 col-xl-7">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Образование:</h5>
+                                <h5 class="card-title"><@spring.message 'create.resume.education' />:</h5>
 
                                 <#if eduInfo.id??>
                                     <input type="hidden" class="form-control form-control-sm" value="${eduInfo.id}" name="educationInfo[${eduInfoIndex}].id" >
@@ -120,7 +120,7 @@
 
                                 <div class="card-text row my-1">
                                     <div class="col-auto">
-                                        <label for="institution" class="col-form-label">Учреждение:</label>
+                                        <label for="institution" class="col-form-label"><@spring.message 'create.resume.education.institution' />:</label>
                                     </div>
                                     <div class="col-auto">
                                         <@spring.formInput 'resumeUpdateDto.educationInfo[${eduInfoIndex}].institution'
@@ -130,7 +130,7 @@
                                 </div>
                                 <div class="card-text row my-1">
                                     <div class="col-auto">
-                                        <label for="program" class="col-form-label">Программа:</label>
+                                        <label for="program" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>
                                     </div>
                                     <div class="col-auto">
                                         <@spring.formInput 'resumeUpdateDto.educationInfo[${eduInfoIndex}].program'
@@ -140,7 +140,7 @@
                                 </div>
                                 <div class="card-text row my-1">
                                     <div class="col-auto">
-                                        <label for="startDate" class="col-form-label">Начало обучения:</label>
+                                        <label for="startDate" class="col-form-label"><@spring.message 'create.resume.education.startDate' />:</label>
                                     </div>
                                     <div class="col-auto">
                                         <@spring.formInput 'resumeUpdateDto.educationInfo[${eduInfoIndex}].startDate'
@@ -151,7 +151,7 @@
                                 </div>
                                 <div class="card-text row my-1">
                                     <div class="col-auto">
-                                        <label for="endDate" class="col-form-label">Конец обучения:</label>
+                                        <label for="endDate" class="col-form-label"><@spring.message 'create.resume.education.endDate' />:</label>
                                     </div>
                                     <div class="col-auto">
                                         <@spring.formInput 'resumeUpdateDto.educationInfo[${eduInfoIndex}].endDate'
@@ -162,7 +162,7 @@
                                 </div>
                                 <div class="card-text row my-1">
                                     <div class="col-auto">
-                                        <label for="degree" class="col-form-label">Степень:</label>
+                                        <label for="degree" class="col-form-label"><@spring.message 'create.resume.education.degree' />:</label>
                                     </div>
                                     <div class="col-auto">
                                         <@spring.formInput 'resumeUpdateDto.educationInfo[${eduInfoIndex}].degree'
@@ -182,7 +182,7 @@
         </div>
 
 
-        <p class="py-0 mb-1 mt-4">Сссылки на соц. сети:</p>
+        <p class="py-0 mb-1 mt-4"><@spring.message 'create.resume.contacts' />:</p>
         <div class="row row-cols-1 row-cols-sm-2 row-gap-2 mb-3">
             <div class="col">
                 <div class="input-group">
@@ -234,8 +234,6 @@
         <div class="form-check mb-3 mt-4">
             <#if resumeUpdateDto.isActive??>
                 <#if resumeUpdateDto.isActive>
-                <#--                <@spring.checkSelected />-->
-                <#--                <@spring.formCheckbox />-->
                     <input class="form-check-input"  type="checkbox" value="true" name="isActive" id="isActive" checked>
                 <#else>
                     <input class="form-check-input"  type="checkbox" value="true" name="isActive" id="isActive">
@@ -253,7 +251,7 @@
                    value="${(_csrf.token)!'--no-token--'}"/>
         </#if>
 
-        <button type="submit" class="btn btn-success w-100">Сохранить изменения</button>
+        <button type="submit" class="btn btn-success w-100"><@spring.message 'edit.resume.save' /></button>
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"
@@ -276,10 +274,10 @@
             $('#eduInfo').append('<div class="col-12 col-sm-10 col-lg-8 col-xl-7"> ' +
                 '<div class="card">\n' +
                 '                        <div class="card-body">\n' +
-                '                            <h5 class="card-title">Образование:</h5>\n' +
+                '                            <h5 class="card-title"><@spring.message 'create.resume.education' />:</h5>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <label for="institution" class="col-form-label">Учреждение:</label>\n' +
+                '                                    <label for="institution" class="col-form-label"><@spring.message 'create.resume.education.institution' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
                 '                                    <input type="text" id="institution" class="form-control form-control-sm" name="educationInfo[' + ${eduInfoIndex} + '].institution">\n' +
@@ -287,7 +285,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <label for="program" class="col-form-label">Программа:</label>\n' +
+                '                                    <label for="program" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
                 '                                    <input type="text" id="program" class="form-control form-control-sm" name="educationInfo[' + ${eduInfoIndex} + '].program">\n' +
@@ -295,7 +293,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <label for="startDate" class="col-form-label">Начало обучения:</label>\n' +
+                '                                    <label for="startDate" class="col-form-label"><@spring.message 'create.resume.education.startDate' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
                 '                                    <input type="date" id="startDate" class="form-control form-control-sm" name="educationInfo[' + ${eduInfoIndex} + '].startDate">\n' +
@@ -303,7 +301,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <label for="endDate" class="col-form-label">Конец обучения:</label>\n' +
+                '                                    <label for="endDate" class="col-form-label"><@spring.message 'create.resume.education.endDate' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
                 '                                    <input type="date" id="endDate" class="form-control form-control-sm" name="educationInfo[' + ${eduInfoIndex} + '].endDate">\n' +
@@ -311,7 +309,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-auto">\n' +
-                '                                    <label for="degree" class="col-form-label">Степень:</label>\n' +
+                '                                    <label for="degree" class="col-form-label"><@spring.message 'create.resume.education.degree' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-auto">\n' +
                 '                                    <input type="text" id="degree" class="form-control form-control-sm" name="educationInfo[' + ${eduInfoIndex} + '].degree">\n' +
@@ -327,10 +325,10 @@
             $('#workExpInfo').append('<div class="col-12 col-sm-10 col-lg-8 col-xl-7">' +
                 '<div class="card">\n' +
                 '                        <div class="card-body">\n' +
-                '                            <h5 class="card-title">Опыт работы: </h5>\n' +
+                '                            <h5 class="card-title"><@spring.message 'create.resume.workExperience' />: </h5>\n' +
                 '                            <div class="card-text row my-1">\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
-                '                                    <label for="years" class="col-form-label">Год работы:</label>\n' +
+                '                                    <label for="years" class="col-form-label"><@spring.message 'create.resume.workExperience.years' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
                 '                                    <input type="number" id="years" class="form-control form-control-sm" name="workExperienceInfo[' + ${workExpIndex} + '].years">\n' +
@@ -338,7 +336,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row row-cols-1 row-cols-sm-2 my-1">\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
-                '                                    <label for="companyName" class="col-form-label">Название компании:</label>\n' +
+                '                                    <label for="companyName" class="col-form-label"><@spring.message 'create.resume.workExperience.companyName' />:</label>\n' +
                 '                                 </div>\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
                 '                                    <input type="text" id="companyName" class="form-control form-control-sm" name="workExperienceInfo[' + ${workExpIndex} + '].companyName">\n' +
@@ -346,7 +344,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row row-cols-1 row-cols-sm-2 my-1">\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
-                '                                    <label for="position" class="col-form-label">Должность:</label>\n' +
+                '                                    <label for="position" class="col-form-label"><@spring.message 'create.resume.workExperience.position' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
                 '                                    <input type="text" id="position" class="form-control form-control-sm" name="workExperienceInfo[' + ${workExpIndex} + '].position">\n' +
@@ -354,7 +352,7 @@
                 '                            </div>\n' +
                 '                            <div class="card-text row row-cols-1 row-cols-sm-2 my-1">\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
-                '                                    <label for="responsibilities" class="col-form-label">Обязанности:</label>\n' +
+                '                                    <label for="responsibilities" class="col-form-label"><@spring.message 'create.resume.workExperience.responsibilities' />:</label>\n' +
                 '                                </div>\n' +
                 '                                <div class="col-12 col-sm-auto">\n' +
                 '                                    <input type="text" id="responsibilities" class="form-control form-control-sm" name="workExperienceInfo[' + ${workExpIndex} + '].responsibilities">\n' +
