@@ -74,7 +74,8 @@
                                     <#else>
 
                                         <button type="button" id="${resume.id}" class="btn btn-success m-1" style="padding: 3px 5px;"
-                                                data-bs-target="#vacancyChoiceModal" data-bs-toggle="modal">
+                                                data-bs-target="#vacancyChoiceModal" data-bs-toggle="modal"
+                                                id="modalVacanciesBtn">
                                             <@spring.message 'account.profile.resumes.respond'/>
                                         </button>
                                     </#if>
@@ -244,152 +245,155 @@
     </#if>
 
     <script>
-        let resumesModal = document.getElementById('resumeChoiceModal');
-        resumesModal.addEventListener('show.bs.modal', onShowResumesModal);
+        <#if authorizedUser.principal.authorities[0].authority == "APPLICANT">
+            let resumesModal = document.getElementById('resumeChoiceModal');
+            resumesModal.addEventListener('show.bs.modal', onShowResumesModal);
 
-        async function onShowResumesModal(event) {
-            try {
-                let resumesRequest = await fetch(`/api/resumes/applicant`);
-                if (resumesRequest.ok) {
-                    let resumes = await resumesRequest.json()
+            async function onShowResumesModal(event) {
+                try {
+                    let resumesRequest = await fetch(`/api/resumes/applicant`);
+                    if (resumesRequest.ok) {
+                        let resumes = await resumesRequest.json()
 
-                    document.getElementById('resumes').innerHTML = '';
-                    for (let resume of resumes) {
-                        let resumeHtml = document.createElement('div')
-                        resumeHtml.classList.add('col')
+                        document.getElementById('resumes').innerHTML = '';
+                        for (let resume of resumes) {
+                            let resumeHtml = document.createElement('div')
+                            resumeHtml.classList.add('col')
 
-                        let salary;
-                        if (!resume['salary'] || resume['salary'] === 0.0) {
-                            salary = '<@spring.message 'account.profile.modalResumes.negotiable' />'
-                        } else {
-                            salary = resume['salary'] + ' <@spring.message 'account.profile.modalResumes.currency' />'
-                        }
-
-                        let exp = "";
-                        if (resume['workExperienceInfo'].length !== 0) {
-                            let years = 0;
-                            for (let info of resume['workExperienceInfo']) {
-                                years += info['years'];
-                            }
-
-                            if (years % 10 === 1) {
-                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
-                                    ' <@spring.message 'account.profile.modalResumes.experience.years1' />';
-                            } else if (years % 10 > 1 && years % 10 < 5) {
-                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
-                                    ' <@spring.message 'account.profile.modalResumes.experience.years2' />';
+                            let salary;
+                            if (!resume['salary'] || resume['salary'] === 0.0) {
+                                salary = '<@spring.message 'account.profile.modalResumes.negotiable' />'
                             } else {
-                                exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
-                                    ' <@spring.message 'account.profile.modalResumes.experience.years3' />';
+                                salary = resume['salary'] + ' <@spring.message 'account.profile.modalResumes.currency' />'
                             }
+
+                            let exp = "";
+                            if (resume['workExperienceInfo'].length !== 0) {
+                                let years = 0;
+                                for (let info of resume['workExperienceInfo']) {
+                                    years += info['years'];
+                                }
+
+                                if (years % 10 === 1) {
+                                    exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                        ' <@spring.message 'account.profile.modalResumes.experience.years1' />';
+                                } else if (years % 10 > 1 && years % 10 < 5) {
+                                    exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                        ' <@spring.message 'account.profile.modalResumes.experience.years2' />';
+                                } else {
+                                    exp = "<@spring.message 'account.profile.modalResumes.experience' />: " + years +
+                                        ' <@spring.message 'account.profile.modalResumes.experience.years3' />';
+                                }
+                            }
+
+                            resumeHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
+                                    <div class="card-body px-md-4">
+                                        <h5 class="m-0 p-0">
+                                            <form action="/responses/respond" method="post">
+                                                <input type="hidden" name="resumeId" value="` + resume['id'] + `">
+                                                <input type="hidden" name="vacancyId" value="` + event.relatedTarget.id + `">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                                           value="${(_csrf.token)!'--no-token--'}"/>
+                                                </#if>
+                                                <button type="submit" class="border-0 bg-body-tertiary p-0 m-0 fw-medium
+                                                 link-primary">` + resume['name'] + `</button>
+                                            </form>
+                                        </h5>
+                                        <h3 class="card-title">` + salary + `</h3>
+                                        <p class="card-text m-0 p-0">` + exp + `</p>
+                                    </div>
+                                    <div
+                                            class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
+                                        <div class="text-body-tertiary mt-auto ">
+                                            <@spring.message 'account.profile.modalResumes.createdDate' />: `
+                                + resume['createdDate'] + `</div>
+                                        <div class="text-body-tertiary ms-auto mt-auto ">
+                                            <@spring.message 'account.profile.modalResumes.updateTime' />:
+                                            ` + resume['updateTime'] + `</div>
+                                    </div>
+                                </div>`;
+
+                            document.getElementById('resumes').appendChild(resumeHtml)
                         }
-
-                        resumeHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
-                                <div class="card-body px-md-4">
-                                    <h5 class="m-0 p-0">
-                                        <form action="/responses/respond" method="post">
-                                            <input type="hidden" name="resumeId" value="` + resume['id'] + `">
-                                            <input type="hidden" name="vacancyId" value="` + event.relatedTarget.id + `">
-                                            <#if _csrf??>
-                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
-                                                       value="${(_csrf.token)!'--no-token--'}"/>
-                                            </#if>
-                                            <button type="submit" class="border-0 bg-body-tertiary p-0 m-0 fw-medium
-                                             link-primary">` + resume['name'] + `</button>
-                                        </form>
-                                    </h5>
-                                    <h3 class="card-title">` + salary + `</h3>
-                                    <p class="card-text m-0 p-0">` + exp + `</p>
-                                </div>
-                                <div
-                                        class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">
-                                        <@spring.message 'account.profile.modalResumes.createdDate' />: `
-                            + resume['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">
-                                        <@spring.message 'account.profile.modalResumes.updateTime' />:
-                                        ` + resume['updateTime'] + `</div>
-                                </div>
-                            </div>`;
-
-                        document.getElementById('resumes').appendChild(resumeHtml)
+                    } else {
+                        throw new Error();
                     }
-                } else {
-                    throw new Error();
+                } catch (error) {
+                    console.log(error)
                 }
-            } catch (error) {
-                console.log(error)
             }
-        }
+        <#else>
+            let vacanciesModal = document.getElementById('vacancyChoiceModal');
+            console.log(vacanciesModal)
+            vacanciesModal.addEventListener('show.bs.modal', onShowVacanciesModal);
 
-        let vacanciesModal = document.getElementById('vacancyChoiceModal');
-        vacanciesModal.addEventListener('show.bs.modal', onShowVacanciesModal);
+            async function onShowVacanciesModal (event) {
+                try {
+                    let vacanciesRequest = await fetch (`/api/vacancies/employer`);
+                    if (vacanciesRequest.ok) {
+                        let vacancies = await vacanciesRequest.json();
 
-        async function onShowVacanciesModal (event) {
-            try {
-                let vacanciesRequest = await fetch (`http://localhost:1234/api/vacancies/employer`);
-                if (vacanciesRequest.ok) {
-                    let vacancies = await vacanciesRequest.json();
+                        document.getElementById('vacancies').innerHTML = '';
+                        for (let vacancy of vacancies) {
+                            let vacancyHtml = document.createElement('div')
+                            vacancyHtml.classList.add('col')
 
-                    document.getElementById('vacancies').innerHTML = '';
-                    for (let vacancy of vacancies) {
-                        let vacancyHtml = document.createElement('div')
-                        vacancyHtml.classList.add('col')
-
-                        let salary;
-                        if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
-                            salary = '<@spring.message 'account.profile.modalVacancies.negotiable' />'
-                        } else {
-                            salary = vacancy['salary'] + ' <@spring.message 'account.profile.modalVacancies.currency' />'
-                        }
-
-                        let exp = "";
-                        if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
-                            if (vacancy['expTo'] && vacancy['expTo'] > 0) {
-                                exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
-                                    + ' <@spring.message 'account.profile.modalVacancies.experience.to' /> ' + vacancy['expTo']
-                                    + ' <@spring.message 'account.profile.modalVacancies.experience.years' />';
+                            let salary;
+                            if (!vacancy['salary'] || vacancy['salary'] === 0.0) {
+                                salary = '<@spring.message 'account.profile.modalVacancies.negotiable' />'
                             } else {
-                                exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
-                                    + ' <@spring.message 'account.profile.modalVacancies.experience.years' />'
+                                salary = vacancy['salary'] + ' <@spring.message 'account.profile.modalVacancies.currency' />'
                             }
+
+                            let exp = "";
+                            if (vacancy['expFrom'] && vacancy['expFrom'] > 0) {
+                                if (vacancy['expTo'] && vacancy['expTo'] > 0) {
+                                    exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
+                                        + ' <@spring.message 'account.profile.modalVacancies.experience.to' /> ' + vacancy['expTo']
+                                        + ' <@spring.message 'account.profile.modalVacancies.experience.years' />';
+                                } else {
+                                    exp = '<@spring.message 'account.profile.modalVacancies.experience.from' /> ' + vacancy['expFrom']
+                                        + ' <@spring.message 'account.profile.modalVacancies.experience.years' />'
+                                }
+                            }
+
+                            vacancyHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
+                                    <div class="card-body px-md-4">
+                                        <h5 class="m-0 p-0">
+                                            <form action="/responses/respond" method="post">
+                                                <input type="hidden" name="vacancyId" value="` + vacancy['id'] + `">
+                                                <input type="hidden" name="resumeId" value="` + event.relatedTarget.id + `">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                                           value="${(_csrf.token)!'--no-token--'}"/>
+                                                </#if>
+                                                <button type="submit" class="border-0 bg-body-tertiary p-0 m-0 fw-medium
+                                                 link-primary">` + vacancy['name'] + `</button>
+                                            </form>
+                                        </h5>
+                                        <h3 class="card-title">` + salary + `</h3>
+                                        <p class="card-text m-0 p-0">` + exp + `</p>
+                                    </div>
+                                    <div
+                                            class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
+                                        <div class="text-body-tertiary mt-auto ">
+                                            <@spring.message 'account.profile.modalVacancies.createdDate' />: ` + vacancy['createdDate'] + `</div>
+                                        <div class="text-body-tertiary ms-auto mt-auto ">
+                                            <@spring.message 'account.profile.modalVacancies.updateTime' />:
+                                            ` + vacancy['updateTime'] + `</div>
+                                    </div>
+                                </div>`;
+
+                            document.getElementById('vacancies').appendChild(vacancyHtml)
                         }
-
-                        vacancyHtml.innerHTML = `<div class="card border-0 bg-body-tertiary rounded-4">
-                                <div class="card-body px-md-4">
-                                    <h5 class="m-0 p-0">
-                                        <form action="/responses/respond" method="post">
-                                            <input type="hidden" name="vacancyId" value="` + vacancy['id'] + `">
-                                            <input type="hidden" name="resumeId" value="` + event.relatedTarget.id + `">
-                                            <#if _csrf??>
-                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
-                                                       value="${(_csrf.token)!'--no-token--'}"/>
-                                            </#if>
-                                            <button type="submit" class="border-0 bg-body-tertiary p-0 m-0 fw-medium
-                                             link-primary">` + vacancy['name'] + `</button>
-                                        </form>
-                                    </h5>
-                                    <h3 class="card-title">` + salary + `</h3>
-                                    <p class="card-text m-0 p-0">` + exp + `</p>
-                                </div>
-                                <div
-                                        class="card-footer px-md-4 pb-3 pt-0 bg-body-tertiary border-0 d-flex rounded-4">
-                                    <div class="text-body-tertiary mt-auto ">
-                                        <@spring.message 'account.profile.modalVacancies.createdDate' />: ` + vacancy['createdDate'] + `</div>
-                                    <div class="text-body-tertiary ms-auto mt-auto ">
-                                        <@spring.message 'account.profile.modalVacancies.updateTime' />:
-                                        ` + vacancy['updateTime'] + `</div>
-                                </div>
-                            </div>`;
-
-                        document.getElementById('vacancies').appendChild(vacancyHtml)
+                    } else {
+                        throw new Error();
                     }
-                } else {
-                    throw new Error();
+                } catch (error) {
+                    console.log(error)
                 }
-            } catch (error) {
-                console.log(error)
             }
-        }
+        </#if>
     </script>
 </@main.layout>
