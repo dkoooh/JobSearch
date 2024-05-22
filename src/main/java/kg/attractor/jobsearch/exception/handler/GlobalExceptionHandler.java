@@ -1,18 +1,36 @@
 package kg.attractor.jobsearch.exception.handler;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.exception.ForbiddenException;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.exception.UserAlreadyExistsException;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+@Controller
+public class GlobalExceptionHandler implements ErrorController {
+
+    @RequestMapping("/error")
+    public String defaultErrorHandler(Model model, HttpServletRequest request) {
+        var status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+        int statusCode = Integer.parseInt(status.toString());
+        String reason = HttpStatus.valueOf(statusCode).getReasonPhrase();
+
+        model.addAttribute("status", statusCode);
+        model.addAttribute("reason", reason);
+        model.addAttribute("details", request);
+
+        return "/error/error";
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public String NotFoundExceptionHandler(NotFoundException e, Model model, HttpServletRequest request) {

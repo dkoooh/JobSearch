@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
 
         if (!vacancyRepository.existsById(vacancyId)) {
-            throw new NotFoundException("Invalid vacancy");
+            throw new NotFoundException("Vacancy not found. The requested vacancy does not exist.");
         }
         List<User> applicants = userRepository.findApplicantsByVacancyId(vacancyId);
 
@@ -181,19 +181,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
-    }
-
-    @Override
-    public void login(Authentication auth, UserLoginDto userDto) {
-        Optional<User> foundUser = userRepository.findByEmail(userDto.getUsername());
-
-        if (foundUser.isEmpty()) {
-            throw new NotFoundException("Bad Credentials");
-        }
-
-        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), foundUser.get().getPassword())) {
-            throw new NotFoundException("Bad Credentials");
-        }
     }
 
     @Override

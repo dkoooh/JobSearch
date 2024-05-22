@@ -1,6 +1,5 @@
 package kg.attractor.jobsearch.dto.contactInfo;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class ContactInfoCreateDto {
     @NotNull
     private Integer typeId;
-    @NotBlank
     private String contactValue;
 }

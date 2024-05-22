@@ -16,7 +16,7 @@
                     <#if resume.salary?? && resume.salary gt 0>
                         <h5 class="card-subtitle">- ${resume.salary} сом</h5>
                     </#if>
-                    <h6 class="card-subtitle my-1">- Категория: ${resume.category}</h6>
+                    <h6 class="card-subtitle my-1">- Категория: ${resume.category.name}</h6>
                     <h6 CLASS="card-subtitle my-1">- Дата создания: ${resume.createdDate}</h6>
                     <div class="card-text border-top border-bottom border-1 my-2 py-2">
                         <h5>Образование: </h5>
@@ -58,16 +58,33 @@
                     Соискатель
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">${resume.applicant.name}</h3>
-                    <h6 class="card-subtitle">
-                        <i class="bi bi-envelope"></i>
-                        <a href="mailto:${resume.applicant.email}" style="text-decoration: none; color:black;">${resume.applicant.email}</a>
-                    </h6>
+                    <h3 class="card-title">${resume.applicant.name} ${resume.applicant.surname!("")}</h3>
                     <div class="my-2">
-
-                        <#list resume.contactInfos as contact>
-                            <p class="my-1">${contact.type}: ${contact.value}</p>
-                        </#list>
+                        <#if resume.contactInfos[0].value != "">
+                            <div>
+                                <i class="bi bi-telegram"></i> : ${resume.contactInfos[0].value}
+                            </div>
+                        </#if>
+                        <#if resume.contactInfos[1].value != "">
+                            <div>
+                                <i class="bi bi-facebook"></i> : ${resume.contactInfos[1].value}
+                            </div>
+                        </#if>
+                        <#if resume.contactInfos[2].value != "">
+                            <div>
+                                <i class="bi bi-envelope-at"></i> : ${resume.contactInfos[2].value}
+                            </div>
+                        </#if>
+                        <#if resume.contactInfos[3].value != "">
+                            <div>
+                                <i class="bi bi-linkedin"></i> : ${resume.contactInfos[3].value}
+                            </div>
+                        </#if>
+                        <#if resume.contactInfos[4].value != "">
+                            <div>
+                                <i class="bi bi-telephone"></i> : ${resume.contactInfos[4].value}
+                            </div>
+                        </#if>
                     </div>
                 </div>
             </div>

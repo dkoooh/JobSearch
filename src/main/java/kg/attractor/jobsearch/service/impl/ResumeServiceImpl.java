@@ -56,7 +56,7 @@ public class ResumeServiceImpl implements ResumeService {
     public ResumeDto getById(int resumeId) {
         return convertToDto(
                 resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Resume not found. The requested resume does not exist"))
+                        .orElseThrow(() -> new NotFoundException("Resume not found. The requested resume does not exist."))
         );
     }
 

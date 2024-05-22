@@ -89,7 +89,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public List<VacancyDto> getAllActiveByCategory(Integer categoryId) {
         if (!categoryService.isExists(categoryId)) {
-            throw new NotFoundException("Invalid category");
+            throw new NotFoundException("Category not found. The requested category does not exist");
         }
 
         List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
@@ -109,7 +109,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public Page<VacancyDto> getAllActive(Integer page, Integer categoryId, String sortedBy, String search) {
         if (categoryId != null && !categoryService.isExists(categoryId)) {
-            throw new NotFoundException("Invalid category");
+            throw new NotFoundException("Category not found. The requested category does not exist");
         } // TODO проверки могут дублироваться
 
         List<Vacancy> list;

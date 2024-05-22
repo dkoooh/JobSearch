@@ -27,7 +27,6 @@
         body {
             background-color: var(--color-bg-primary);
             color: var(--color-text-primary);
-            font-family: 'Nunito Sans', sans-serif;
         }
 
         .error_block {
@@ -38,6 +37,7 @@
         }
 
         .main_block {
+            font-family: 'Nunito Sans', sans-serif;
             width: 100%;
             max-width: 1140px;
             display: flex;
