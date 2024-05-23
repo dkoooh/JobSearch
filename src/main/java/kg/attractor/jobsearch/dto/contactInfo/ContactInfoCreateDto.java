@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class ContactInfoCreateDto {
     @NotNull
     private Integer typeId;
+    @NotNull
     private String contactValue;
 }
