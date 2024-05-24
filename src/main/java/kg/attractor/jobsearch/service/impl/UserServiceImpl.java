@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import kg.attractor.jobsearch.config.SecurityConfig;
 import kg.attractor.jobsearch.dto.user.*;
 import kg.attractor.jobsearch.dto.user.UserDto;
-import kg.attractor.jobsearch.dto.user.UserLoginDto;
 import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.exception.NotFoundException;
 import kg.attractor.jobsearch.exception.UserAlreadyExistsException;
@@ -22,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -153,7 +151,6 @@ public class UserServiceImpl implements UserService {
         }
 
         return employer;
-        // TODO возможно переделать под енам и сразу с базы доставать
     }
 
     @Override
@@ -191,14 +188,6 @@ public class UserServiceImpl implements UserService {
         return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }
 
-    private void updateResetPasswordToken (String token, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
-
-        user.setResetPasswordToken(token);
-        userRepository.saveAndFlush(user);
-    }
-
     @Override
     public User getByResetPasswordToken(String token) {
         return userRepository.findByResetPasswordToken(token)
@@ -223,7 +212,6 @@ public class UserServiceImpl implements UserService {
         emailService.sendMail(email, resetPasswordLink);
     }
 
-
     private UserDto transformToDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -235,5 +223,13 @@ public class UserServiceImpl implements UserService {
                 .avatar(user.getAvatar())
                 .accountType(user.getAccountType())
                 .build();
+    }
+
+    private void updateResetPasswordToken (String token, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
+
+        user.setResetPasswordToken(token);
+        userRepository.saveAndFlush(user);
     }
 }

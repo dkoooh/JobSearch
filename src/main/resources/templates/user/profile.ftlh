@@ -6,6 +6,7 @@
         <#assign authorizedUser = SPRING_SECURITY_CONTEXT.authentication>
     </#if>
 
+
     <div class="row row-cols-2 row-cols-md-3 gap-3 mb-4 justify-content-center">
         <div class="col px-0" style="max-width: 128px">
             <img src="/api/users/user/image/${user.email}" class="img w-100 my-auto" alt="avatar">
@@ -92,7 +93,7 @@
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 <#else>
-                                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Previous">
+                                    <a class="page-link" href="?page=${page-1}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </#if>
@@ -101,7 +102,7 @@
                                 <#if p == userResumes.getNumber() + 1>
                                     <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
                                 <#else>
-                                    <li class="page-item"><a class="page-link" href="/vacancies?page=${p}">${p}</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page=${p}">${p}</a></li>
                                 </#if>
                             </#list>
                             <li class="page-item">
@@ -110,7 +111,7 @@
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 <#else>
-                                    <a class="page-link" href="/vacancies?page=${page-1}" aria-label="Next">
+                                    <a class="page-link" href="?page=${page-1}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </#if>
@@ -192,7 +193,7 @@
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 <#else>
-                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Previous">
+                                    <a class="page-link" href="?page=${page-1}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </#if>
@@ -201,7 +202,7 @@
                                 <#if p == vacancies.getNumber() + 1>
                                     <li class="page-item"><a class="page-link active" href="#">${p}</a></li>
                                 <#else>
-                                    <li class="page-item"><a class="page-link" href="/vacancies?${attributes!("")}page=${p}">${p}</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page=${p}">${p}</a></li>
                                 </#if>
                             </#list>
                             <li class="page-item">
@@ -210,7 +211,7 @@
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 <#else>
-                                    <a class="page-link" href="/vacancies?${attributes!("")}page=${page-1}" aria-label="Next">
+                                    <a class="page-link" href="?page=${page-1}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </#if>

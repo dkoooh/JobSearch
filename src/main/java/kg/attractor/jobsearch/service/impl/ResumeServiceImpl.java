@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -54,10 +56,18 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public ResumeDto getById(int resumeId) {
-        return convertToDto(
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        ResumeDto resumeDto = convertToDto(
                 resumeRepository.findById(resumeId)
                         .orElseThrow(() -> new NotFoundException("Resume not found. The requested resume does not exist."))
         );
+
+        if (!resumeDto.getApplicant().getEmail().equals(userEmail) && !resumeDto.getIsActive()) {
+            throw new ForbiddenException("You do not have permission to access this resume");
+        }
+
+        return resumeDto;
     }
 
     @Override
@@ -68,6 +78,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .toList();
     }
 
+    @Override
     public Page<ResumeDto> getAllActiveByCategory(int categoryId, int page) {
         List<ResumeDto> list = resumeRepository.findAllByCategoryIdAndIsActiveTrue(categoryId).stream()
                 .map(this::convertToDto)
@@ -92,6 +103,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public void create(ResumeCreateDto dto, Authentication auth){
         Resume resume = Resume.builder()
@@ -109,12 +121,16 @@ public class ResumeServiceImpl implements ResumeService {
 
         int resumeId = resumeRepository.save(resume).getId();
 
-        dto.getEducationInfo().forEach(
-                eduInfoCreateDto -> eduInfoService.create(eduInfoCreateDto, resumeId)
-        );
-        dto.getWorkExperienceInfo().forEach(
-                workExpInfoCreateDto -> workExpInfoService.create(workExpInfoCreateDto, resumeId)
-        );
+        if (dto.getEducationInfo() != null) {
+            dto.getEducationInfo().forEach(
+                    eduInfoCreateDto -> eduInfoService.create(eduInfoCreateDto, resumeId)
+            );
+        }
+        if (dto.getWorkExperienceInfo() != null) {
+            dto.getWorkExperienceInfo().forEach(
+                    workExpInfoCreateDto -> workExpInfoService.create(workExpInfoCreateDto, resumeId)
+            );
+        }
         dto.getContacts().forEach(
                 contactInfoCreateDto -> contactInfoService.create(contactInfoCreateDto, resumeId)
         );

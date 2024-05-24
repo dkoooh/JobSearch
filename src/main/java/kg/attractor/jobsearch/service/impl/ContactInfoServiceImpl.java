@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoCreateDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoDto;
 import kg.attractor.jobsearch.dto.contactInfo.ContactInfoUpdateDto;
@@ -21,6 +22,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     private final ResumeRepository resumeRepository;
 
     @Override
+    @Transactional
     public void create(ContactInfoCreateDto dto, int resumeId) {
         ContactInfo info = ContactInfo.builder()
                 .resume(resumeRepository.findById(resumeId)

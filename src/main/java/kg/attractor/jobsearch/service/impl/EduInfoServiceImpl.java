@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoCreateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoUpdateDto;
 import kg.attractor.jobsearch.dto.educationInfo.EduInfoDto;
@@ -20,6 +21,8 @@ public class EduInfoServiceImpl implements EduInfoService {
     private final ResumeRepository resumeRepository;
     private final EducationInfoRepository educationInfoRepository;
 
+    @Override
+    @Transactional
     public void create(EduInfoCreateDto dto, int resumeId) {
         EducationInfo eduInfo = EducationInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
@@ -79,14 +82,6 @@ public class EduInfoServiceImpl implements EduInfoService {
                         .degree(info.getDegree())
                         .build())
                 .toList();
-    }
-
-
-    @Override
-    public void delete(Integer id, String applicantEmail) {
-//        TODO валидация пользователя
-
-        educationInfoRepository.deleteById(id);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyUpdateDto;
@@ -110,7 +111,7 @@ public class VacancyServiceImpl implements VacancyService {
     public Page<VacancyDto> getAllActive(Integer page, Integer categoryId, String sortedBy, String search) {
         if (categoryId != null && !categoryService.isExists(categoryId)) {
             throw new NotFoundException("Category not found. The requested category does not exist");
-        } // TODO проверки могут дублироваться
+        }
 
         List<Vacancy> list;
         if (categoryId != null) {
@@ -129,6 +130,7 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
+    @Transactional
     public void create(VacancyCreateDto dto, Authentication auth){
         Vacancy vacancy = Vacancy.builder()
                 .name(dto.getName())
@@ -168,7 +170,7 @@ public class VacancyServiceImpl implements VacancyService {
                         .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
-                .expTo(dto.getExpTo()) // TODO валидация
+                .expTo(dto.getExpTo())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .author(userRepository.findByEmail(auth.getName())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid user email")))

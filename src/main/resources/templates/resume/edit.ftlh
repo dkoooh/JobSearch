@@ -2,7 +2,8 @@
 
 <@main.layout ; spring>
     <#assign errorClassList = "text-danger d-block error" />
-    <#assign eduInfoIndex = 0>
+    <#assign eduInfoIndex = -1>
+    <#assign workExpIndex = -1>
 
     <form class="col-md-9 col-lg-8 mx-auto my-3" action="/resumes/${resumeUpdateDto.id}/edit" method="POST">
         <h1 class="text-center mb-4"><@spring.message 'edit.resume' />:</h1>

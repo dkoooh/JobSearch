@@ -2,8 +2,8 @@
 
 <@main.layout ; spring>
     <#assign errorClassList = "text-danger d-block error" />
-    <#assign workExpIndex = 0>
-    <#assign eduInfoIndex = 0>
+    <#assign workExpIndex = -1>
+    <#assign eduInfoIndex = -1>
 
     <form class="col-md-9 col-lg-8 mx-auto my-3" action="/resumes/create" method="POST">
         <h1 class="text-center mb-4"><@spring.message 'create.resume' />:</h1>
@@ -88,53 +88,53 @@
                             </div>
                         </div>
                     </#list>
-                <#else>
-                    <div class="col-12 col-sm-10 col-lg-8 col-xl-7">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><@spring.message 'create.resume.workExperience' />: </h5>
-                                <div class="card-text row my-1">
-                                    <div class="col-12 col-sm-auto">
-                                        <label for="years" class="col-form-label"><@spring.message 'create.resume.workExperience.years' />:</label>
-                                    </div>
-                                    <div class="col-12 col-sm-auto">
-                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].years'
-                                        'id="years" class="form-control form-control-sm"' 'number' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
-                                    <div class="col-12 col-sm-auto">
-                                        <label for="companyName" class="col-form-label"><@spring.message 'create.resume.workExperience.companyName' />:</label>
-                                    </div>
-                                    <div class="col-12 col-sm-auto">
-                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].companyName'
-                                        'id="companyName" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
-                                    <div class="col-12 col-sm-auto">
-                                        <label for="position" class="col-form-label"><@spring.message 'create.resume.workExperience.position' />:</label>
-                                    </div>
-                                    <div class="col-12 col-sm-auto">
-                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].position' 'id="position" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">
-                                    <div class="col-12 col-sm-auto">
-                                        <label for="responsibilities" class="col-form-label"><@spring.message 'create.resume.workExperience.responsibilities' />:</label>
-                                    </div>
-                                    <div class="col-12 col-sm-auto">
-                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].responsibilities'
-                                        'id="responsibilities" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<#--                <#else>-->
+<#--                    <div class="col-12 col-sm-10 col-lg-8 col-xl-7">-->
+<#--                        <div class="card">-->
+<#--                            <div class="card-body">-->
+<#--                                <h5 class="card-title"><@spring.message 'create.resume.workExperience' />: </h5>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <label for="years" class="col-form-label"><@spring.message 'create.resume.workExperience.years' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].years'-->
+<#--                                        'id="years" class="form-control form-control-sm"' 'number' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <label for="companyName" class="col-form-label"><@spring.message 'create.resume.workExperience.companyName' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].companyName'-->
+<#--                                        'id="companyName" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <label for="position" class="col-form-label"><@spring.message 'create.resume.workExperience.position' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].position' 'id="position" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row row-cols-1 row-cols-sm-2 my-1">-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <label for="responsibilities" class="col-form-label"><@spring.message 'create.resume.workExperience.responsibilities' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-12 col-sm-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.workExperienceInfo[0].responsibilities'-->
+<#--                                        'id="responsibilities" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                            </div>-->
+<#--                        </div>-->
+<#--                    </div>-->
                 </#if>
 
                 <div class="col-1 align-items-center justify-start">
@@ -207,64 +207,64 @@
                             </div>
                         </div>
                     </#list>
-                <#else>
-                    <div class="col-12 col-sm-10 col-lg-8 col-xl-7 row-gap-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><@spring.message 'create.resume.education' />:</h5>
-                                <div class="card-text row my-1">
-                                    <div class="col-auto">
-                                        <label for="institution" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].institution'
-                                        'id="institution" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row my-1">
-                                    <div class="col-auto">
-                                        <label for="program" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].program'
-                                        'id="program" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row my-1">
-                                    <div class="col-auto">
-                                        <label for="startDate" class="col-form-label"><@spring.message 'create.resume.education.startDate' />:</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].startDate'
-                                        'id="startDate" class="form-control form-control-sm"' 'date' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row my-1">
-                                    <div class="col-auto">
-                                        <label for="endDate" class="col-form-label"><@spring.message 'create.resume.education.endDate' />:</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].endDate'
-                                        'id="endDate" class="form-control form-control-sm"' 'date' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                                <div class="card-text row my-1">
-                                    <div class="col-auto">
-                                        <label for="degree" class="col-form-label"><@spring.message 'create.resume.education.degree' />:</label>
-                                    </div>
-                                    <div class="col-auto">
-                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].degree'
-                                        'id="degree" class="form-control form-control-sm"' />
-                                        <@spring.showErrors '<br/>' '${errorClassList}' />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<#--                <#else>-->
+<#--                    <div class="col-12 col-sm-10 col-lg-8 col-xl-7 row-gap-2">-->
+<#--                        <div class="card">-->
+<#--                            <div class="card-body">-->
+<#--                                <h5 class="card-title"><@spring.message 'create.resume.education' />:</h5>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <label for="institution" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].institution'-->
+<#--                                        'id="institution" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <label for="program" class="col-form-label"><@spring.message 'create.resume.education.program' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].program'-->
+<#--                                        'id="program" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <label for="startDate" class="col-form-label"><@spring.message 'create.resume.education.startDate' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].startDate'-->
+<#--                                        'id="startDate" class="form-control form-control-sm"' 'date' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <label for="endDate" class="col-form-label"><@spring.message 'create.resume.education.endDate' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].endDate'-->
+<#--                                        'id="endDate" class="form-control form-control-sm"' 'date' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                                <div class="card-text row my-1">-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <label for="degree" class="col-form-label"><@spring.message 'create.resume.education.degree' />:</label>-->
+<#--                                    </div>-->
+<#--                                    <div class="col-auto">-->
+<#--                                        <@spring.formInput 'resumeCreateDto.educationInfo[0].degree'-->
+<#--                                        'id="degree" class="form-control form-control-sm"' />-->
+<#--                                        <@spring.showErrors '<br/>' '${errorClassList}' />-->
+<#--                                    </div>-->
+<#--                                </div>-->
+<#--                            </div>-->
+<#--                        </div>-->
+<#--                    </div>-->
                 </#if>
 
                 <div class="col-1 align-items-center justify-start">

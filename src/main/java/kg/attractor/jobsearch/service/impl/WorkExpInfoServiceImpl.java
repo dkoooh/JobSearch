@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoCreateDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoDto;
 import kg.attractor.jobsearch.dto.workExpInfo.WorkExpInfoUpdateDto;
@@ -19,6 +20,7 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
     private final ResumeRepository resumeRepository;
 
     @Override
+    @Transactional
     public void create(WorkExpInfoCreateDto dto, int resumeId) {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
@@ -75,13 +77,6 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
                         .responsibilities(workExperienceInfo.getResponsibilities())
                         .build())
                 .toList();
-    }
-
-    @Override
-    public void delete(int id) {
-//        TODO проверка пользователя
-
-        workExpInfoRepository.deleteById(id);
     }
 
     @Override

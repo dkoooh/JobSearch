@@ -1,5 +1,6 @@
 package kg.attractor.jobsearch.service.impl;
 
+import jakarta.transaction.Transactional;
 import kg.attractor.jobsearch.dao.ResponseDao;
 import kg.attractor.jobsearch.dto.response.ResponseDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
@@ -43,7 +44,6 @@ public class ResponseServiceImpl implements ResponseService {
 ////        if (!"applicant".equalsIgnoreCase(userDao.getUserByEmail(email).get().getAccountType())) {
 ////            throw new CustomException("Access denied");
 ////        }
-////        TODO Spring Security
 //
 //        int applicantId = userDao.getUserByEmail(email).get().getId();
 //
@@ -58,7 +58,6 @@ public class ResponseServiceImpl implements ResponseService {
 //                .isConfirmed(respondedApplicant.getIsConfirmed())
 //                .build();
 //    }
-//    TODO за что отвечает
 
     @Override
     public ResponseDto getById(Integer id, String userEmail) {
@@ -112,6 +111,7 @@ public class ResponseServiceImpl implements ResponseService {
     }
 
     @Override
+    @Transactional
     public void create(Integer vacancyId, Integer resumeId) {
         RespondedApplicant response = RespondedApplicant.builder()
                 .resume(resumeRepository.findById(resumeId)
