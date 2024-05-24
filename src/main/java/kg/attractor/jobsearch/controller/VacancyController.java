@@ -1,6 +1,7 @@
 package kg.attractor.jobsearch.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyCreateDto;
 import kg.attractor.jobsearch.dto.vacancy.VacancyDto;
@@ -9,10 +10,11 @@ import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,7 +107,15 @@ public class VacancyController {
             return "vacancy/edit";
         }
 
-        vacancyService.update(dto, auth);
+        vacancyService.edit(dto, auth);
+        return "redirect:/account/profile";
+    }
+
+    @PostMapping("{id}/update")
+    public String update(@PathVariable (name = "id") Integer vacancyId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        vacancyService.update(vacancyId, userEmail);
+
         return "redirect:/account/profile";
     }
 }

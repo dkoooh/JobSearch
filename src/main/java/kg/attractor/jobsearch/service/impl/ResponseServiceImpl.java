@@ -63,7 +63,7 @@ public class ResponseServiceImpl implements ResponseService {
     public ResponseDto getById(Integer id, String userEmail) {
 
         RespondedApplicant response = responseRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("Response not found. The requested response does not exists")
+                () -> new NotFoundException("error.notFound.response")
         );
 
         System.out.println("ResponseService authorized: " + SecurityContextHolder.getContext().getAuthentication());
@@ -80,7 +80,7 @@ public class ResponseServiceImpl implements ResponseService {
         Integer userId = userService.getByEmail(userEmail).getId();
 
         if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
-            throw new ForbiddenException("You do not have permission to access this response");
+            throw new ForbiddenException("error.forbidden.response");
         }
 
         return responseDto;
@@ -115,9 +115,9 @@ public class ResponseServiceImpl implements ResponseService {
     public void create(Integer vacancyId, Integer resumeId) {
         RespondedApplicant response = RespondedApplicant.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .vacancy(vacancyRepository.findById(vacancyId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid vacancy")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.vacancy")))
                 .isConfirmed(false)
                 .build();
         responseRepository.saveAndFlush(response);

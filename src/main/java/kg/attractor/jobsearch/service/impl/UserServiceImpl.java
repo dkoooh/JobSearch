@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void create(UserCreationDto userDto) {
         if (exists(userDto.getEmail())) {
-            throw new UserAlreadyExistsException("User with this email is already exists");
+            throw new UserAlreadyExistsException("error.userAlreadyExists");
         }
 
         User newUser = User.builder()
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
+                .orElseThrow(() -> new NotFoundException("error.notFound.user"));
 
         return transformToDto(user);
     }
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(("User not found. The requested user does not exist")));
+                .orElseThrow(() -> new NotFoundException(("error.notFound.user")));
 
         return transformToDto(user);
     }
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getApplicantsByVacancy(Integer vacancyId, String email) {
 
         if (!vacancyRepository.existsById(vacancyId)) {
-            throw new NotFoundException("Vacancy not found. The requested vacancy does not exist.");
+            throw new NotFoundException("error.notFound.vacancy");
         }
         List<User> applicants = userRepository.findApplicantsByVacancyId(vacancyId);
 
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         UserDto employer = getByEmail(employerEmail);
 
         if (!"EMPLOYER".equals(employer.getAccountType())) {
-            throw new NotFoundException("User not found. The requested user does not exist");
+            throw new NotFoundException("error.notFound.user");
         }
 
         return employer;
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
         UserDto applicant = getByEmail(applicantEmail);
 
         if (!"APPLICANT".equals(applicant.getAccountType())) {
-            throw new NotFoundException("User not found. The requested user does not exist");
+            throw new NotFoundException("error.notFound.user");
         }
 
         return applicant;
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> downloadUserAvatar(String userEmail) {
         String fileName = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"))
+                .orElseThrow(() -> new NotFoundException("error.notFound.user"))
                 .getAvatar();
         return fileUtil.getOutputFile(fileName, "images/users/", MediaType.IMAGE_PNG);
     }
@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByResetPasswordToken(String token) {
         return userRepository.findByResetPasswordToken(token)
-                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
+                .orElseThrow(() -> new NotFoundException("error.notFound.user"));
     }
 
     @Override
@@ -227,7 +227,7 @@ public class UserServiceImpl implements UserService {
 
     private void updateResetPasswordToken (String token, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found. The requested user does not exist"));
+                .orElseThrow(() -> new NotFoundException("error.notFound.user"));
 
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);

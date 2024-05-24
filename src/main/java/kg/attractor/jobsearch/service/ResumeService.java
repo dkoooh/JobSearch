@@ -25,9 +25,11 @@ public interface ResumeService {
 
     void create (ResumeCreateDto resume, Authentication auth);
 
-    void update (ResumeUpdateDto resume, Authentication auth);
+    void edit(ResumeUpdateDto resume, Authentication auth);
 
     void delete(int resumeId, String email);
+
+    void update(int resumeId, String email);
 
     ResumeUpdateDto getUpdateDtoById(int id);
 }

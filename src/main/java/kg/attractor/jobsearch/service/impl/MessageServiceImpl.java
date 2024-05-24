@@ -32,7 +32,7 @@ public class MessageServiceImpl implements MessageService {
         Integer userId = userService.getByEmail(userEmail).getId();
 
         if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
-            throw new ForbiddenException("You do not have permission to access chat");
+            throw new ForbiddenException("error.forbidden.chat");
         }
 
         List<Message> messages = messageRepository.findAllByResponseId(respondedApplicantId);
@@ -47,15 +47,15 @@ public class MessageServiceImpl implements MessageService {
         Integer userId = userService.getByEmail(userEmail).getId();
 
         if ( !(userId.equals(employerId) || userId.equals(applicantId)) ) {
-            throw new ForbiddenException("You do not have permission to access chat");
+            throw new ForbiddenException("error.forbidden.chat");
         }
 
         Message message = Message.builder()
                 .content(dto.getContent())
                 .sender(userRepository.findById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .response(responseRepository.findById(dto.getResponseId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .timestamp(LocalDateTime.now())
                 .build();
 

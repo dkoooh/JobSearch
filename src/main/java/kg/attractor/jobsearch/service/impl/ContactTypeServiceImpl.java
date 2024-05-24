@@ -14,7 +14,7 @@ public class ContactTypeServiceImpl implements ContactTypeService {
     @Override
     public String getById(Integer typeId) {
         ContactType contactType = contactTypeRepository.findById(typeId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid contact type"));
+                .orElseThrow(() -> new IllegalArgumentException("error.invalid.contactType"));
 
         return contactType.getType();
     }

@@ -31,7 +31,9 @@ public interface VacancyService {
 
     void create(VacancyCreateDto vacancyDto, Authentication auth);
 
-    void update(VacancyUpdateDto vacancyDto, Authentication auth);
+    void edit(VacancyUpdateDto vacancyDto, Authentication auth);
 
     void delete(int vacancyId, String email);
+
+    void update(int vacancyId, String email);
 }

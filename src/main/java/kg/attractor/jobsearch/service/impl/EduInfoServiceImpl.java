@@ -26,7 +26,7 @@ public class EduInfoServiceImpl implements EduInfoService {
     public void create(EduInfoCreateDto dto, int resumeId) {
         EducationInfo eduInfo = EducationInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -42,7 +42,7 @@ public class EduInfoServiceImpl implements EduInfoService {
         EducationInfo eduInfo = EducationInfo.builder()
                 .id(dto.getId())
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .institution(dto.getInstitution())
                 .program(dto.getProgram())
                 .startDate(dto.getStartDate())
@@ -56,7 +56,7 @@ public class EduInfoServiceImpl implements EduInfoService {
     @Override
     public EduInfoDto getById(int id) {
         EducationInfo eduInfo = educationInfoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Education info not found"));
+                .orElseThrow(() -> new NotFoundException("error.notFound.educationInfo"));
 
         return EduInfoDto.builder()
                 .id(eduInfo.getId())

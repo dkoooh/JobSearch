@@ -66,9 +66,15 @@
                                 </div>
                                 <div class="card-footer bg-white border-0 gap-1 mt-auto">
                                     <#if authorizedUser.name == user.email>
-                                        <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
-                                            <@spring.message 'account.profile.resumes.update'/>
-                                        </a>
+                                        <form method="POST" class="d-inline m-0 p-0" action="/resumes/${resume.id}/update">
+                                            <#if _csrf??>
+                                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                                       value="${(_csrf.token)!'--no-token--'}"/>
+                                            </#if>
+                                            <button type="submit" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
+                                                <@spring.message 'account.profile.resumes.update'/>
+                                            </button>
+                                        </form>
                                         <a href="/resumes/${resume.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">
                                             <@spring.message 'account.profile.resumes.edit'/>
                                         </a>
@@ -164,9 +170,15 @@
                                 <div class="card-footer bg-white border-0 gap-1 mt-auto">
                                     <#if authorizedUser??>
                                         <#if authorizedUser.name == user.email>
-                                            <a href="#" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
-                                                <@spring.message 'account.profile.vacancies.update'/>
-                                            </a>
+                                            <form method="POST" class="d-inline m-0 p-0" action="/vacancies/${vacancy.id}/update">
+                                                <#if _csrf??>
+                                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                                           value="${(_csrf.token)!'--no-token--'}"/>
+                                                </#if>
+                                                <button type="submit" class="btn btn-info text-white wh m-1" style="padding: 3px 5px;">
+                                                    <@spring.message 'account.profile.vacancies.update'/>
+                                                </button>
+                                            </form>
                                             <a href="/vacancies/${vacancy.id}/edit" class="btn btn-success m-1" style="padding: 3px 5px;">
                                                 <@spring.message 'account.profile.vacancies.edit'/>
                                             </a>

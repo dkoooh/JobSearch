@@ -26,9 +26,9 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     public void create(ContactInfoCreateDto dto, int resumeId) {
         ContactInfo info = ContactInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .type(contactTypeRepository.findById(dto.getTypeId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid contact type ID:" + dto.getTypeId())))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.contactType")))
                 .contactValue(dto.getContactValue())
                 .build();
 
@@ -50,9 +50,9 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     public void update(ContactInfoUpdateDto dto, int resumeId) {
         ContactInfo info = ContactInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID: " + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .type(contactTypeRepository.findById(dto.getTypeId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid contact type ID:" + dto.getTypeId())))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.contactType")))
                 .contactValue(dto.getContactValue())
                 .build();
 
