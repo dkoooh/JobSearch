@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getById(Integer id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Category not found. The requested category does not exist"));
+                .orElseThrow(() -> new NotFoundException("error.notFound.category"));
 
         return convertToDto(category);
     }

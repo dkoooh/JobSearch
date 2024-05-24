@@ -24,7 +24,7 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
     public void create(WorkExpInfoCreateDto dto, int resumeId) {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID:" + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .years(dto.getYears())
                 .companyName(dto.getCompanyName())
                 .position(dto.getPosition())
@@ -39,7 +39,7 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
         WorkExperienceInfo info = WorkExperienceInfo.builder()
                 .id(dto.getId())
                 .resume(resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid resume ID:" + resumeId)))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.resume")))
                 .years(dto.getYears())
                 .companyName(dto.getCompanyName())
                 .position(dto.getPosition())
@@ -52,7 +52,7 @@ public class WorkExpInfoServiceImpl implements WorkExpInfoService {
     @Override
     public WorkExpInfoDto getById(int id) {
         WorkExperienceInfo info = workExpInfoRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Invalid work experience info ID: " + id)
+                () -> new IllegalArgumentException("error.invalid.workExp")
         );
 
         return WorkExpInfoDto.builder()

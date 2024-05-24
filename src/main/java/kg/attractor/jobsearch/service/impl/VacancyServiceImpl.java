@@ -53,7 +53,7 @@ public class VacancyServiceImpl implements VacancyService {
     public VacancyDto getById(int vacancyId) {
         return convertToDto(
                 vacancyRepository.findById(vacancyId).orElseThrow(
-                        () -> new NotFoundException("Vacancy not found. The requested vacancy does not exist.")
+                        () -> new NotFoundException("error.notFound.vacancy")
                 )
         );
     }
@@ -90,7 +90,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public List<VacancyDto> getAllActiveByCategory(Integer categoryId) {
         if (!categoryService.isExists(categoryId)) {
-            throw new NotFoundException("Category not found. The requested category does not exist");
+            throw new NotFoundException("error.notFound.category");
         }
 
         List<Vacancy> list = vacancyRepository.findAllByCategoryIdAndIsActiveTrue(
@@ -110,7 +110,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public Page<VacancyDto> getAllActive(Integer page, Integer categoryId, String sortedBy, String search) {
         if (categoryId != null && !categoryService.isExists(categoryId)) {
-            throw new NotFoundException("Category not found. The requested category does not exist");
+            throw new NotFoundException("error.notFound.category");
         }
 
         List<Vacancy> list;
@@ -136,7 +136,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.category")))
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
                 .expTo(dto.getExpTo())
@@ -144,22 +144,22 @@ public class VacancyServiceImpl implements VacancyService {
                 .createdDate(LocalDateTime.now())
                 .updateTime(LocalDateTime.now())
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user email")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .build();
 
         vacancyRepository.save(vacancy);
     }
 
     @Override
-    public void update(VacancyUpdateDto dto, Authentication auth)  {
+    public void edit(VacancyUpdateDto dto, Authentication auth)  {
         if (!Objects.equals(
                 vacancyRepository.findById(dto.getId())
-                        .orElseThrow(() -> new NotFoundException("Vacancy not found. The requested vacancy does not exist."))
+                        .orElseThrow(() -> new NotFoundException("error.notFound.vacancy"))
                         .getAuthor().getId(),
                 userService.getByEmail(auth.getName()).getId()
             )
         ) {
-            throw new ForbiddenException("You do not have permission to edit this vacancy");
+            throw new ForbiddenException("error.forbidden.vacancy");
         }
 
         Vacancy vacancy = Vacancy.builder()
@@ -167,13 +167,13 @@ public class VacancyServiceImpl implements VacancyService {
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.category")))
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
                 .expTo(dto.getExpTo())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user email")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .createdDate(vacancyRepository.getReferenceById(dto.getId()).getCreatedDate())
                 .updateTime(LocalDateTime.now())
                 .build();
@@ -185,15 +185,33 @@ public class VacancyServiceImpl implements VacancyService {
     public void delete(int vacancyId, String email)  {
         if (!Objects.equals(
                 vacancyRepository.findById(vacancyId)
-                        .orElseThrow(() -> new NotFoundException("Vacancy not found. The requested vacancy does not exist."))
+                        .orElseThrow(() -> new NotFoundException("error.notFound.vacancy"))
                         .getAuthor().getId(),
                 userService.getByEmail(email).getId()
         )
         ) {
-            throw new ForbiddenException("You do not have permission to delete this vacancy");
+            throw new ForbiddenException("error.forbidden.vacancy");
         }
         vacancyRepository.deleteById(vacancyId);
     }
+
+    @Override
+    public void update(int vacancyId, String email) {
+        if (!Objects.equals(
+                vacancyRepository.findById(vacancyId)
+                        .orElseThrow(() -> new NotFoundException("error.notFound.vacancy"))
+                        .getAuthor().getId(),
+                userService.getByEmail(email).getId()
+        )
+        ) {
+            throw new ForbiddenException("error.forbidden.vacancy");
+        }
+
+        Vacancy vacancy = vacancyRepository.findById(vacancyId).orElseThrow();
+        vacancy.setUpdateTime(LocalDateTime.now());
+        vacancyRepository.saveAndFlush(vacancy);
+    }
+
 
     private Page<VacancyDto> toPage(List<VacancyDto> vacancies, Pageable pageable){
         if (pageable.getOffset() >= vacancies.size()){

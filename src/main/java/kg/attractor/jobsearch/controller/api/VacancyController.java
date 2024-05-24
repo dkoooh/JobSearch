@@ -38,7 +38,7 @@ public class VacancyController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateVacancy(@RequestBody @Valid VacancyUpdateDto vacancyDto, Authentication auth) {
-        vacancyService.update(vacancyDto, auth);
+        vacancyService.edit(vacancyDto, auth);
         return ResponseEntity.ok("Vacancy is successfully updated");
     }
 

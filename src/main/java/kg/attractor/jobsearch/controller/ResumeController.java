@@ -5,13 +5,13 @@ import kg.attractor.jobsearch.dto.CategoryDto;
 import kg.attractor.jobsearch.dto.resume.ResumeCreateDto;
 import kg.attractor.jobsearch.dto.resume.ResumeDto;
 import kg.attractor.jobsearch.dto.resume.ResumeUpdateDto;
-import kg.attractor.jobsearch.dto.user.UserUpdateDto;
 import kg.attractor.jobsearch.service.CategoryService;
 import kg.attractor.jobsearch.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,17 +66,25 @@ public class ResumeController {
     }
 
     @PostMapping("{id}/edit")
-//    @ResponseStatus(HttpStatus.SEE_OTHER)
-    public String edit(@PathVariable int id, @Valid ResumeUpdateDto dto, BindingResult result, Model model, Authentication auth) {
+    public String edit(@Valid ResumeUpdateDto dto, BindingResult result, Model model, Authentication auth) {
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.getAll());
             model.addAttribute("resumeUpdateDto", dto);
             return "resume/edit";
         }
 
-        resumeService.update(dto, auth);
+        resumeService.edit(dto, auth);
         return "redirect:/account/profile";
     }
+
+    @PostMapping("{id}/update")
+    public String update (@PathVariable (name = "id") Integer resumeId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        resumeService.update(resumeId, userEmail);
+        return "redirect:/account/profile";
+    }
+
 
     @GetMapping
     public String getAll(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {

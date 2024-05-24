@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as main>
-<@main.layout>
+<@main.layout; spring>
     <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito+Sans" rel="stylesheet">
@@ -327,7 +327,7 @@
                 <#if details??>
                     <ul class="details">
                         <#if message??>
-                            <li class="mb-3"><span>Причина</span>: <span><code>${message}</code></span></li>
+                            <li class="mb-3"><span><@spring.message 'error.msg' /></span>: <span><code><@spring.message '${message}' /></code></span></li>
                         </#if>
                         <#if details.serverName??>
                             <li><span><span data-l10n>Host</span>:</span> <code>${details.serverName}</code></li>

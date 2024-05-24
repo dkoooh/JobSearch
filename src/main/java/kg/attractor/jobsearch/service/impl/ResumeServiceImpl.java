@@ -60,11 +60,11 @@ public class ResumeServiceImpl implements ResumeService {
 
         ResumeDto resumeDto = convertToDto(
                 resumeRepository.findById(resumeId)
-                        .orElseThrow(() -> new NotFoundException("Resume not found. The requested resume does not exist."))
+                        .orElseThrow(() -> new NotFoundException("error.notFound.resume"))
         );
 
         if (!resumeDto.getApplicant().getEmail().equals(userEmail) && !resumeDto.getIsActive()) {
-            throw new ForbiddenException("You do not have permission to access this resume");
+            throw new ForbiddenException("error.forbidden.resume");
         }
 
         return resumeDto;
@@ -108,10 +108,10 @@ public class ResumeServiceImpl implements ResumeService {
     public void create(ResumeCreateDto dto, Authentication auth){
         Resume resume = Resume.builder()
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .name(dto.getName())
                 .category(categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.category")))
                 .salary(dto.getSalary())
                 .isActive(dto.getIsActive() != null ? dto.getIsActive() : false)
                 .createdDate(LocalDateTime.now())
@@ -137,18 +137,18 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void update(ResumeUpdateDto resumeDto, Authentication auth) {
+    public void edit(ResumeUpdateDto resumeDto, Authentication auth) {
         if (!resumeRepository.existsById(resumeDto.getId())) {
-            throw new NotFoundException("Resume not found. The requested resume does not exist.");
+            throw new NotFoundException("error.notFound.resume");
         }
 
         Resume resume = Resume.builder()
                 .id(resumeDto.getId())
                 .author(userRepository.findByEmail(auth.getName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid user")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.user")))
                 .name(resumeDto.getName())
                 .category(categoryRepository.findById(resumeDto.getCategoryId())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid category")))
+                        .orElseThrow(() -> new IllegalArgumentException("error.invalid.category")))
                 .salary(resumeDto.getSalary())
                 .isActive(resumeDto.getIsActive() != null ? resumeDto.getIsActive() : Boolean.FALSE)
                 .createdDate(LocalDateTime.parse(getById(resumeDto.getId()).getCreatedDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
@@ -172,13 +172,27 @@ public class ResumeServiceImpl implements ResumeService {
     public void delete(int resumeId, String email){
 
         if (!resumeRepository.existsById(resumeId)) {
-            throw new NotFoundException("Resume not found. The requested resume does not exist.");
+            throw new NotFoundException("error.notFound.resume");
         } if (!userService.getByEmail(email).getId().equals(getById(resumeId).getApplicant().getId())) {
-            throw new ForbiddenException("You do not have permission to delete this resume");
+            throw new ForbiddenException("error.forbidden.resume");
         }
 
         resumeRepository.deleteById(resumeId);
     }
+
+    @Override
+    public void update(int resumeId, String email) {
+        if (!resumeRepository.existsById(resumeId)) {
+            throw new NotFoundException("error.notFound.resume");
+        } if (!userService.getByEmail(email).getId().equals(getById(resumeId).getApplicant().getId())) {
+            throw new ForbiddenException("error.forbidden.resume");
+        }
+
+        Resume resume = resumeRepository.findById(resumeId).orElseThrow();
+        resume.setUpdateTime(LocalDateTime.now());
+        resumeRepository.saveAndFlush(resume);
+    }
+
 
     private Page<ResumeDto> toPage(List<ResumeDto> resumes, Pageable pageable){
         if (pageable.getOffset() >= resumes.size()){
